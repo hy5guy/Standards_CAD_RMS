@@ -1,0 +1,205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Assignment_Master — Hackensack PD Personnel Reference",
+  "description": "Schema for Assignment_Master_V3_FINAL.xlsx / Assignment_Master_V2.csv. Single source of truth for personnel data used by ETL pipelines and Power BI reports.",
+  "x_source_file": "Assignment_Master_V3_FINAL.xlsx",
+  "x_sheet_name": "Assignment_Master_V2",
+  "x_csv_alias": "Assignment_Master_V2.csv",
+  "x_record_count": 166,
+  "x_last_updated": "2026-02-21",
+  "x_schema_version": "2.0.0",
+  "x_author": "R. A. Carucci",
+  "type": "object",
+  "properties": {
+    "REF_NUMBER": {
+      "type": ["integer", "null"],
+      "description": "Internal reference / sort number. ~5 nulls.",
+      "x_null_count": 5
+    },
+    "FULL_NAME": {
+      "type": "string",
+      "description": "Composite display name in format: {TITLE} {FIRST_NAME} {LAST_NAME} {BADGE_NUMBER}. Unbadged personnel omit badge.",
+      "examples": ["P.O. JANN ABERDE 386", "CLK MADDALENA CANDELA"],
+      "x_null_count": 0
+    },
+    "TITLE": {
+      "type": "string",
+      "description": "Job title abbreviation (functional role). Distinct from RANK — detectives have TITLE=DET. but RANK=P.O.",
+      "enum": ["P.O.", "SGT.", "LT.", "CAPT.", "CHIEF", "DET.", "SPO II", "SPO III", "C.O.", "CLK", "PEO", "DPW", "TM", "PLA", "HCOP"],
+      "x_null_count": 0
+    },
+    "FIRST_NAME": {
+      "type": "string",
+      "description": "Officer first name.",
+      "x_null_count": 0
+    },
+    "LAST_NAME": {
+      "type": "string",
+      "description": "Officer last name.",
+      "x_null_count": 0
+    },
+    "BADGE_NUMBER": {
+      "type": ["string", "null"],
+      "description": "Badge number as text. Blank for unbadged civilian personnel (~10 nulls).",
+      "x_null_count": 10
+    },
+    "PADDED_BADGE_NUMBER": {
+      "type": "string",
+      "description": "4-digit zero-padded badge number. '0000' for unbadged personnel. Primary join key for ETL pipelines.",
+      "pattern": "^\\d{4}$",
+      "examples": ["0386", "0817", "2027", "0000"],
+      "x_null_count": 0,
+      "x_join_key": true,
+      "x_validation_rules": [
+        "Must be exactly 4 digits.",
+        "Must not be null.",
+        "Must not be parsed as numeric (leading zeros required).",
+        "PEO badges are 4-digit values (2008, 2013, 2025, 2027, 2030) — not zero-padded short numbers.",
+        "Unbadged personnel use '0000'."
+      ]
+    },
+    "TEAM": {
+      "type": "string",
+      "description": "Squad-level assignment sourced from POSS_EMPLOYEE. 37 valid values.",
+      "enum": [
+        "PLT A Squad 1", "PLT A Squad 2", "PLT A Squad 3", "PLT A Squad 4",
+        "PLT B Squad 1", "PLT B Squad 2", "PLT B Squad 3", "PLT B Squad 4",
+        "PLT A TC", "PLT B TC", "PLT A DESK", "PLT B DESK",
+        "PATROL", "Probationary PO",
+        "Detective/Juv Bureau", "Crime Suppression Bureau", "School Threat Bureau",
+        "SCHOOL THREAT ASSESSMENT & CRIME PREVENTION", "SPO III",
+        "Emergency Services Unit", "Communications Unit", "Records & Evidence",
+        "Traffic Bureau", "TRAFFIC", "Training Unit", "Safe Streets Operations",
+        "Housing", "HCOP", "Community Outreach", "Parking Enforcement",
+        "Parking Lot Attendant",
+        "Operations Division", "Division Commanders", "Office of Police Chief",
+        "Internal Affairs Unit",
+        "DPW", "Traffic Maintenance"
+      ],
+      "x_null_count": 0
+    },
+    "WG1": {
+      "type": ["string", "null"],
+      "description": "Division-level work group (e.g., OPERATIONS DIVISION).",
+      "x_null_count": 12
+    },
+    "WG2": {
+      "type": ["string", "null"],
+      "description": "Bureau / section-level work group (e.g., PATROL DIVISION, TRAFFIC BUREAU). Primary bureau field used in Power BI summons visuals.",
+      "x_null_count": 12,
+      "x_known_typo": "RECODS AND EVIDENCE MANAGEMENT — missing R in RECORDS"
+    },
+    "WG3": {
+      "type": ["string", "null"],
+      "description": "Sub-unit or role (e.g., PLATOON A, CLASS I).",
+      "x_null_count": 60
+    },
+    "WG4": {
+      "type": ["string", "null"],
+      "description": "Squad code — patrol division only. Null for all other assignments.",
+      "enum": ["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4", null],
+      "x_null_count": 100
+    },
+    "CONTRACT_TYPE": {
+      "type": ["string", "null"],
+      "description": "Bargaining unit / employment contract type. Previously named POSS_CONTRACT_TYPE.",
+      "enum": [
+        "PBA LOCAL 9 (12 HOUR)",
+        "PBA LOCAL 9 (8 HOUR)",
+        "PBA LOCAL 9A",
+        "SLEO2",
+        "SLEO3",
+        "SLEO4",
+        "CIVILIAN DISPATCHERS",
+        "PARKING ENFORCEMENT OFF",
+        "WHITE COLLAR CONTRACT",
+        null
+      ],
+      "x_null_count": 20
+    },
+    "STANDARD_NAME": {
+      "type": "string",
+      "description": "Standardized display name for reports: F. LAST #BADGE. Previously named 'Proposed 4-Digit Format'. 20 records flagged REQUIRES_MANUAL_MAPPING.",
+      "examples": ["J. ABERDE #0386", "A. ABUEG #0817", "REQUIRES_MANUAL_MAPPING"],
+      "x_null_count": 0
+    },
+    "CONFLICT_RESOLUTION": {
+      "type": ["string", "null"],
+      "description": "YES/NO flag for name conflict resolution.",
+      "enum": ["YES", "NO", null],
+      "x_null_count": 50
+    },
+    "CODE": {
+      "type": ["string", "null"],
+      "description": "Short unique lookup ID: first initial + last initial + badge number (e.g., JA386).",
+      "x_null_count": 15
+    },
+    "WORKING_GROUP": {
+      "type": ["string", "null"],
+      "description": "Contract group — often mirrors CONTRACT_TYPE. May be redundant (trim candidate).",
+      "x_null_count": 30
+    },
+    "DOB": {
+      "type": ["string", "null"],
+      "description": "Date of birth. Stored as Excel serial number; display format mm/dd/yyyy.",
+      "x_null_count": 60
+    },
+    "JOINED_SERVICE": {
+      "type": ["string", "null"],
+      "description": "Service start date. Stored as Excel serial number.",
+      "x_null_count": 30
+    },
+    "SGT": {
+      "type": ["string", "null"],
+      "description": "Sergeant promotion date. Null for non-promoted officers (~140 nulls).",
+      "x_null_count": 140
+    },
+    "LT": {
+      "type": ["string", "null"],
+      "description": "Lieutenant promotion date. Null for non-promoted officers (~150 nulls).",
+      "x_null_count": 150
+    },
+    "CAPT": {
+      "type": ["string", "null"],
+      "description": "Captain promotion date. Null for non-promoted officers (~160 nulls).",
+      "x_null_count": 160
+    },
+    "CHIEF": {
+      "type": ["string", "null"],
+      "description": "Chief promotion date. Null for non-promoted officers (~165 nulls).",
+      "x_null_count": 165
+    },
+    "STATUS": {
+      "type": "string",
+      "description": "Employment status. Currently 1 INACTIVE record (F. LORENZO).",
+      "enum": ["ACTIVE", "INACTIVE"],
+      "x_null_count": 0
+    },
+    "RANK": {
+      "type": "string",
+      "description": "Standardized civil service rank abbreviation. 100% populated (28 blanks filled in V3). Distinct from TITLE — detectives have RANK=P.O. regardless of assignment.",
+      "enum": ["P.O.", "SGT.", "LT.", "CAPT.", "CHIEF", "SPO II", "SPO III", "C.O.", "CLK", "PEO", "DPW", "TM", "PLA", "HCOP"],
+      "x_null_count": 0
+    }
+  },
+  "required": [
+    "FULL_NAME", "TITLE", "FIRST_NAME", "LAST_NAME",
+    "PADDED_BADGE_NUMBER", "TEAM", "STATUS", "RANK", "STANDARD_NAME"
+  ],
+  "x_etl_usage": {
+    "primary_join_key": "PADDED_BADGE_NUMBER",
+    "bureau_field": "WG2",
+    "display_name_field": "STANDARD_NAME",
+    "active_filter": "STATUS == 'ACTIVE'",
+    "peo_exclusion": "TITLE == 'PEO'",
+    "sworn_ranks": ["P.O.", "SGT.", "LT.", "CAPT.", "CHIEF", "SPO II", "SPO III"]
+  },
+  "x_version_history": [
+    {"version": "1.0.0", "date": "2026-02-04", "changes": "Schema created, duplicates archived", "records": 168},
+    {"version": "1.1.0", "date": "2026-02-04", "changes": "Deleted 6 duplicate PEO rows", "records": 166},
+    {"version": "2.0.0", "date": "2026-02-04", "changes": "MAJOR: 42→26 cols; renamed cols; flagged STANDARD_NAME", "records": 166},
+    {"version": "3.0.0", "date": "2026-02-05", "changes": "MAJOR: 138 TEAM updates from POSS; 8 CONTRACT_TYPE; 2 name fixes; TC/DESK distinction", "records": 166},
+    {"version": "3.1.0", "date": "2026-02-05", "changes": "28 RANK blanks filled; all RANK standardized; SPECIAL_NOTES deleted", "records": 166},
+    {"version": "3.2.0", "date": "2026-02-05", "changes": "Deleted PQ sheet; renamed sheet/table; saved as V3_FINAL", "records": 166}
+  ]
+}
