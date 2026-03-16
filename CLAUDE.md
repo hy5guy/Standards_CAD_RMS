@@ -89,27 +89,34 @@ Here's an improved version that combines Gemini's structure with the technical a
             # This is the SINGLE SOURCE OF TRUTH for field normalization
 ```
 
-### Canonical Standards Location
+### Canonical Standards Location (v3.0.0 - Rationalized 2026-03-17)
 
 ```
-09_Reference/Standards/                # External authoritative schemas
-├── CAD/DataDictionary/current/        # CAD-specific standards
-│   ├── schemas/                       # CAD field schemas
-│   └── scripts/                       # CAD cleaning scripts
+09_Reference/Standards/                    # External authoritative schemas
+├── CAD/DataDictionary/current/schema/     # CAD-specific: cad_export_field_definitions.md
+├── RMS/DataDictionary/current/schema/     # RMS-specific: rms_export_field_definitions.md
+├── Clery/DataDictionary/current/          # Clery Act: crime definitions, geography
+├── NIBRS/DataDictionary/current/          # NIBRS: offense definitions, RMS-to-NIBRS map
+├── Personnel/                             # Assignment Master schema
 │
-├── RMS/DataDictionary/current/        # RMS-specific standards
-│   └── schemas/                       # RMS field schemas
+├── CAD_RMS/                               # 🎯 SINGLE SOURCE OF TRUTH
+│   ├── DataDictionary/current/schema/     # ALL cross-system schemas:
+│   │   ├── canonical_schema.json          #   Unified field dictionary (100+ fields)
+│   │   ├── cad_fields_schema_latest.json  #   CAD export field schema
+│   │   ├── rms_fields_schema_latest.json  #   RMS export field schema
+│   │   ├── transformation_spec.json       #   ETL transformation rules
+│   │   ├── cad_rms_schema_registry.yaml   #   Schema registry + domain values
+│   │   ├── cad_to_rms_field_map.json      #   v2.0 (2025-12-30) - 280 lines
+│   │   ├── rms_to_cad_field_map.json      #   v2.0 (2025-12-30) - 258 lines
+│   │   └── multi_column_matching_strategy.md
+│   └── mappings/                          # Field mapping rules, CSVs, policies
 │
-├── CAD_RMS/DataDictionary/current/    # Canonical unified standards
-│   ├── schemas/
-│   │   └── canonical_schema.json     # Master field definitions
-│   └── mappings/
-│       ├── cad_to_rms_field_map.json # v2.0 (2025-12-30) - 280 lines
-│       └── rms_to_cad_field_map.json # v2.0 (2025-12-30) - 258 lines
+├── unified_data_dictionary/schemas/       # ⚠️ COMPATIBILITY SHIM ONLY
+│   # 4 files for schemas.yaml backward compatibility
+│   # Identical copies of CAD_RMS canonical versions
+│   # Do NOT modify — update CAD_RMS copy and re-sync
 │
-└── unified_data_dictionary/           # ⚠️ DEPRECATED - In consolidation
-    # DO NOT reference paths here
-    # Update any references to point to CAD/RMS/CAD_RMS structure
+└── archive/                               # All retired content (preserve-first)
 ```
 
 ### Processed Data Location
@@ -130,9 +137,10 @@ Here's an improved version that combines Gemini's structure with the technical a
 ### When Multiple Versions Exist
 
 **Field Mappings:**
-- ✅ **AUTHORITATIVE:** `CAD_RMS/DataDictionary/current/mappings/` (v2.0, 2025-12-30)
-- ❌ **DEPRECATED:** `CAD/DataDictionary/current/schema/` (v1.0, basic mappings)
-- ❌ **DEPRECATED:** `unified_data_dictionary/mappings/` (different format)
+- ✅ **AUTHORITATIVE:** `CAD_RMS/DataDictionary/current/schema/` (v2.0, 2025-12-30)
+- ✅ **PROMOTED:** `CAD_RMS/mappings/` (mapping rules, field maps, CSVs — promoted from UDD)
+- ❌ **ARCHIVED:** `CAD/DataDictionary/archive/` (v1.0 maps, archived 2026-03-17)
+- ❌ **ARCHIVED:** `archive/mappings_field_mappings_20260317/` (v1.0 copies)
 
 **Rationale:** v2.0 includes multi-column matching strategy and comprehensive edge case handling
 
@@ -305,33 +313,32 @@ schemas:
 
 ## 📋 Standards Repository Consolidation Status
 
-### Current State (As of 2026-02-04)
+### Current State (As of 2026-03-17)
 
-**Active Crisis:** Dashboard showing invalid HowReported values
-- **Root Cause:** Normalization step skipped after baseline consolidation
-- **Status:** ✅ Mappings updated in `enhanced_esri_output_generator.py`
-- **Next Step:** Re-run ESRI polishing (see `CURSOR_AI_CONSOLIDATION_GUIDE.md` Phase 1)
+**Repository Rationalization:** COMPLETE
+- **v3.0.0** — Full rationalization executed 2026-03-17
+- All schemas promoted to `CAD_RMS/DataDictionary/current/schema/`
+- `unified_data_dictionary/` slimmed to 4-file compatibility shim
+- 64 `-PD_BCI_01` files archived to `archive/PD_BCI_01_versions/`
+- Duplicate schemas/mappings archived with date-stamped folders
+- Root clutter reduced from 50+ to ~12 essential files
+- `schemas.yaml` shim paths validated and functional
 
-**Repository Consolidation:** In progress (60% complete)
-- **Structure:** CAD/, RMS/, CAD_RMS/ directories exist
-- **Pending:** Archive unified_data_dictionary/, update paths
-- **Plan:** See `CURSOR_AI_CONSOLIDATION_GUIDE.md` Phase 2
+**Archive Contents:**
+- `archive/PD_BCI_01_versions/` — 64 frozen v0.2.1 files
+- `archive/unified_data_dictionary_20260317/` — UDD bulk content
+- `archive/schemas_udd_20260317/` — Older duplicate schema copies
+- `archive/mappings_field_mappings_20260317/` — v1.0 field mappings
+- `archive/root_loose_files_20260317/` — Relocated root-level files
+- `archive/completed_planning/` — Finished planning docs
+- `archive/directory_trees/` — Historical tree snapshots
 
-**Archive Candidates:**
-- `unified_data_dictionary/` → Moving to `archive/unified_data_dictionary_backup_20260204/`
-- All `-PD_BCI_01` suffixed files → Moving to `archive/PD_BCI_01_versions/`
-- `schemas/udd/` misnamed files (contain quality reports, not schemas) → Already identified
-
-**Updated Files Today:**
-1. ✅ `enhanced_esri_output_generator.py` - Added HACKENSACK, PHONE/911 mappings
-2. ✅ `CURSOR_AI_CONSOLIDATION_GUIDE.md` - Complete Phase 1 & 2 instructions
-3. ✅ `ENHANCED_ESRI_GENERATOR_README.md` - Documentation for normalizer
-4. ✅ `Claude.md` (this file) - Updated with 4 critical decisions
+**Pending Action:**
+- Update `schemas.yaml` `field_rules` path: `mappings/field_mappings/mapping_rules.md` → `CAD_RMS/mappings/mapping_rules.md`
 
 **Related Documentation:**
-- 📄 `CURSOR_AI_CONSOLIDATION_GUIDE.md` - Complete step-by-step instructions
-- 📄 `ENHANCED_ESRI_GENERATOR_README.md` - Normalizer documentation
-- 📄 `2026_02_03_Standards_directory_tree.json` - Current directory state
+- 📄 `docs/ai_handoff/CURSOR_AI_CONSOLIDATION_GUIDE.md` — Original consolidation instructions
+- 📄 `docs/merge/STANDARDS_RATIONALIZATION_PROMPT_OPTIMIZED.md` — Rationalization governing prompt
 
 ---
 
@@ -418,6 +425,7 @@ print(f"Unique values: {df['How Reported'].nunique()}")
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.4.0 | 2026-03-17 | **RATIONALIZATION COMPLETE:** Updated architecture for v3.0.0, CAD_RMS is single source of truth, UDD slimmed to shim, consolidation status updated, deprecated paths removed |
 | 1.3.4 | 2026-02-04 | **EMERGENCY UPDATE:** Added dashboard crisis context, 4 critical decisions, Phase 1/2 priorities, updated mapping status |
 | 1.3.3 | 2026-02-04 | Added HowReported normalization crisis context, enhanced validation commands |
 | 1.3.2 | 2026-02-03 | Baseline generation documentation, enhanced ESRI output workflow |

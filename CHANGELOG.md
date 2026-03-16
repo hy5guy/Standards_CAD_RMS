@@ -2,6 +2,44 @@
 
 All notable changes to this Standards folder (structure and key artifacts) will be documented here.
 
+## [v3.0.0] - 2026-03-17
+
+### Repository Rationalization
+
+Comprehensive consolidation and cleanup of the Standards repository. Reduced root-level clutter from 50+ files to ~12 essential files. Established `CAD_RMS/DataDictionary/current/schema/` as the single source of truth for all cross-system schemas and mappings.
+
+#### Schema Consolidation
+- **Promoted 5 schemas** from `unified_data_dictionary/schemas/` to `CAD_RMS/DataDictionary/current/schema/`: `canonical_schema.json`, `cad_fields_schema_latest.json`, `rms_fields_schema_latest.json`, `transformation_spec.json`, `cad_rms_schema_registry.yaml`
+- **Promoted 12 mapping files** from `unified_data_dictionary/mappings/` to `CAD_RMS/mappings/`
+- **Created compatibility shim**: `unified_data_dictionary/schemas/` retains 4 files for `schemas.yaml` backward compatibility
+
+#### Archives Created
+- `archive/PD_BCI_01_versions/` - 64 frozen v0.2.1 files from initial AI setup session
+- `archive/schemas_udd_20260317/` - 6 older/duplicate schema files from `schemas/udd/`
+- `archive/mappings_field_mappings_20260317/` - 12 v1.0 field mapping files
+- `archive/unified_data_dictionary_20260317/` - UDD bulk content (docs, scripts, src, tests, etc.)
+- `archive/root_loose_files_20260317/` - 10 root-level data dict/reference files
+- `archive/completed_planning/` - 7 completed planning/merge docs
+- `archive/directory_trees/` - 6 historical tree snapshots
+
+#### Cleanup
+- **Deleted** 4 OneDrive "(1)" sync artifacts from `RMS/`
+- **Removed** empty placeholder directories: `FBI_UCR/`, `StateReporting/`, `tools/`
+- **Archived** v1.0 field maps from `CAD/DataDictionary/current/schema/` (superseded by CAD_RMS v2.0)
+- **Moved** `image/` to `docs/image/`, `task_templates/` to `docs/task_templates/`
+
+#### Documentation Reorganized
+- **10 AI handoff docs** (OPUS_*, CURSOR_*, CONTEXT_*) moved to `docs/ai_handoff/`
+- **6 data quality crisis docs** moved from `CAD/DataDictionary/current/` to `docs/data_quality/`
+- **2 ResponseTime docs** moved to `docs/response_time/`
+
+#### Breaking Changes for Consumers
+- `mappings/field_mappings/mapping_rules.md` moved to `CAD_RMS/mappings/mapping_rules.md` - update `schemas.yaml` `field_rules` path
+- `schemas/udd/` directory removed (contents archived)
+- `unified_data_dictionary/` slimmed to 4-file schemas-only shim
+
+---
+
 ## [v2.0.0] - 2026-01-15
 
 ### Repository Restructuring

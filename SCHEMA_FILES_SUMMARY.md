@@ -52,17 +52,21 @@ C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\
 - **`README.md`**
   - Documentation for RMS schema directory
 
-### 3. Legacy CAD Mapping Schemas (Updated)
+### 3. Unified Schemas (Promoted from UDD - 2026-03-17)
 
-**Directory**: `CAD/DataDictionary/current/schema/`
+**Directory**: `CAD_RMS/DataDictionary/current/schema/`
 
-- **`cad_to_rms_field_map.json`** (v1.0, updated with note)
-  - Legacy schema maintained for backward compatibility
-  - Note added pointing to enhanced v2.0 schema
+- **`canonical_schema.json`** (v1.0.0) - Unified CAD/RMS field dictionary (100+ fields)
+- **`cad_fields_schema_latest.json`** (v1.0) - CAD export field schema
+- **`rms_fields_schema_latest.json`** (v1.0) - RMS export field schema
+- **`transformation_spec.json`** (v1.0.0) - ETL transformation rules (uses "FullAddress"/"Zone")
+- **`cad_rms_schema_registry.yaml`** (v2.0) - Schema registry with canonical HowReported domain values
 
-- **`rms_to_cad_field_map.json`** (v1.0, updated with note)
-  - Legacy schema maintained for backward compatibility
-  - Note added pointing to enhanced v2.0 schema
+### 3b. Legacy CAD Mapping Schemas (ARCHIVED 2026-03-17)
+
+**Directory**: `CAD/DataDictionary/archive/`
+
+- v1.0 field maps archived (superseded by CAD_RMS v2.0)
 
 ### 4. Summary Documentation
 
@@ -75,30 +79,21 @@ C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\
 
 ---
 
-## Unified Data Dictionary Locations (Pointer Files)
+## Compatibility Shim (schemas.yaml backward compatibility)
 
-**Directory**: `unified_data_dictionary/`
+**Directory**: `unified_data_dictionary/schemas/`
 
-> **Note (2026-01-15)**: Following repository restructuring, duplicate files in unified_data_dictionary
-> have been replaced with pointer files that reference the canonical locations.
+> **Note (2026-03-17)**: Following repository rationalization, `unified_data_dictionary/` has been
+> slimmed to a 4-file compatibility shim. Bulk content archived to `archive/unified_data_dictionary_20260317/`.
+> Mapping pointer files promoted to `CAD_RMS/mappings/`.
 
-### Mappings Directory
-**Path**: `unified_data_dictionary/mappings/`
+These 4 files are referenced by `02_ETL_Scripts/cad_rms_data_quality/config/schemas.yaml`:
+- `canonical_schema.json` - identical to `CAD_RMS/DataDictionary/current/schema/canonical_schema.json`
+- `cad_fields_schema_latest.json` - identical to `CAD_RMS/DataDictionary/current/schema/cad_fields_schema_latest.json`
+- `rms_fields_schema_latest.json` - identical to `CAD_RMS/DataDictionary/current/schema/rms_fields_schema_latest.json`
+- `transformation_spec.json` - identical to `CAD_RMS/DataDictionary/current/schema/transformation_spec.json`
 
-- **`cad_to_rms_field_map_v2_enhanced.md`** (POINTER)
-  - Points to canonical: `CAD_RMS/DataDictionary/current/schema/cad_to_rms_field_map.json`
-
-- **`rms_to_cad_field_map_v2_enhanced.md`** (POINTER)
-  - Points to canonical: `CAD_RMS/DataDictionary/current/schema/rms_to_cad_field_map.json`
-
-- **`multi_column_matching_strategy_POINTER.md`** (POINTER)
-  - Points to canonical: `CAD_RMS/DataDictionary/current/schema/multi_column_matching_strategy.md`
-
-### Documentation Directory
-**Path**: `unified_data_dictionary/docs/`
-
-- **`rms_export_field_definitions_POINTER.md`** (POINTER)
-  - Points to canonical: `RMS/DataDictionary/current/schema/rms_export_field_definitions.md`
+**Do not modify these files directly.** Update the CAD_RMS canonical copy and re-sync the shim.
 
 ---
 
@@ -110,8 +105,11 @@ C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\
 | `rms_to_cad_field_map.json` (v2.0) | `CAD_RMS/DataDictionary/current/schema/` | `mappings/rms_to_cad_field_map_v2_enhanced.md` | Enhanced RMS-to-CAD mapping schema |
 | `multi_column_matching_strategy.md` | `CAD_RMS/DataDictionary/current/schema/` | `mappings/multi_column_matching_strategy_POINTER.md` | Multi-column matching guide |
 | `rms_export_field_definitions.md` | `RMS/DataDictionary/current/schema/` | `docs/rms_export_field_definitions_POINTER.md` | RMS field definitions |
-| `cad_to_rms_field_map.json` (v1.0) | `CAD/DataDictionary/current/schema/` | N/A | Legacy schema (backward compatibility) |
-| `rms_to_cad_field_map.json` (v1.0) | `CAD/DataDictionary/current/schema/` | N/A | Legacy schema (backward compatibility) |
+| `canonical_schema.json` (v1.0.0) | `CAD_RMS/DataDictionary/current/schema/` | `unified_data_dictionary/schemas/` (shim) | Unified field dictionary |
+| `cad_fields_schema_latest.json` | `CAD_RMS/DataDictionary/current/schema/` | `unified_data_dictionary/schemas/` (shim) | CAD export field schema |
+| `rms_fields_schema_latest.json` | `CAD_RMS/DataDictionary/current/schema/` | `unified_data_dictionary/schemas/` (shim) | RMS export field schema |
+| `transformation_spec.json` | `CAD_RMS/DataDictionary/current/schema/` | `unified_data_dictionary/schemas/` (shim) | ETL transformation rules |
+| `cad_rms_schema_registry.yaml` | `CAD_RMS/DataDictionary/current/schema/` | N/A | Schema registry with domain values |
 | `SCHEMA_ENHANCEMENT_SUMMARY.md` | `CAD_RMS/DataDictionary/` | N/A | Enhancement summary |
 | `README.md` (CAD-RMS) | `CAD_RMS/DataDictionary/current/schema/` | N/A | Schema directory documentation |
 | `README.md` (RMS) | `RMS/DataDictionary/current/schema/` | N/A | RMS schema directory documentation |
@@ -133,7 +131,7 @@ These schemas include:
 
 ### For Backward Compatibility
 
-The legacy v1.0 schemas in `CAD/DataDictionary/current/schema/` remain available for existing code that uses primary key matching only.
+The legacy v1.0 schemas have been archived to `CAD/DataDictionary/archive/` (2026-03-17). Use the v2.0 schemas in `CAD_RMS/DataDictionary/current/schema/` for all new and existing code.
 
 ### For Reference
 
@@ -148,9 +146,9 @@ The legacy v1.0 schemas in `CAD/DataDictionary/current/schema/` remain available
 ### Existing Documentation
 
 - **CAD Field Definitions**: `CAD/DataDictionary/current/schema/cad_export_field_definitions.md`
-- **Mapping Rules**: `unified_data_dictionary/mappings/mapping_rules.md`
-- **RMS Field Map**: `unified_data_dictionary/mappings/rms_field_map_latest.json`
-- **CAD Field Map**: `unified_data_dictionary/mappings/cad_field_map_latest.json`
+- **Mapping Rules**: `CAD_RMS/mappings/mapping_rules.md`
+- **RMS Field Map**: `CAD_RMS/mappings/rms_field_map_latest.json`
+- **CAD Field Map**: `CAD_RMS/mappings/cad_field_map_latest.json`
 
 ---
 
@@ -174,3 +172,4 @@ The legacy v1.0 schemas in `CAD/DataDictionary/current/schema/` remain available
 | 2025-12-30 | RMS field definitions document created |
 | 2025-12-30 | Files copied to unified_data_dictionary directory |
 | 2026-01-15 | Repository restructuring: duplicates replaced with pointer files |
+| 2026-03-17 | Repository rationalization: schemas promoted to CAD_RMS, UDD slimmed to shim, v1.0 maps archived |

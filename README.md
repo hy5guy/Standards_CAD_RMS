@@ -2,51 +2,76 @@
 
 Central repository for CAD/RMS data standards, schemas, and field mappings.
 
-## Repository Layout
+## Repository Layout (v3.0.0 - Rationalized 2026-03-17)
 
 ```
 Standards/
-├── archive/                    # Archived files (packages, legacy, duplicates)
-│   ├── packages/               # Packaging artifacts (Standards.7z)
-│   ├── legacy_copies/          # Legacy file versions
-│   └── removed_duplicates/     # Removed duplicate files
-├── CAD/                        # CAD system standards
+├── CAD/                        # CAD-specific standards
 │   └── DataDictionary/
-│       └── current/schema/     # CAD field definitions
-├── Clery/                      # Clery Act crime statistics (institution requests)
+│       ├── current/schema/     # cad_export_field_definitions.md
+│       └── archive/            # Retired v1.0 field maps
+├── CAD_RMS/                    # CANONICAL unified standards (source of truth)
+│   ├── DataDictionary/
+│   │   └── current/schema/     # ALL cross-system schemas + mappings (v2.0)
+│   └── mappings/               # Field mapping rules, CSVs, policies
+├── RMS/                        # RMS-specific standards
 │   └── DataDictionary/
-│       └── current/            # clery_crime_definitions, geography, nibrs_to_clery_map
-├── CAD_RMS/                    # Cross-system mapping (CANONICAL)
-│   └── DataDictionary/
-│       └── current/schema/     # cad_to_rms_field_map.json, rms_to_cad_field_map.json
+│       └── current/schema/     # RMS field definitions
+├── Clery/                      # Clery Act crime statistics (v1.1.0)
+│   └── DataDictionary/current/ # Crime definitions, geography, NIBRS-to-Clery map
+├── NIBRS/                      # NIBRS offense standards
+│   └── DataDictionary/current/ # Offense definitions, RMS-to-NIBRS mapping
+├── Personnel/                  # Personnel/Assignment Master schema
+├── Processed_Exports/          # Dashboard CSV outputs (regenerated monthly)
 ├── config/                     # ETL configuration files
-├── docs/                       # Documentation
-├── mappings/                   # Call type mappings and lookups
-├── RMS/                        # RMS system standards
-│   └── DataDictionary/
-│       └── current/schema/     # RMS field definitions (CANONICAL)
-└── unified_data_dictionary/    # Unified data dictionary project
-    ├── docs/chatlogs/          # Development chatlogs
-    ├── mappings/               # Additional mappings (pointer files to canonical)
-    ├── schemas/                # Schema definitions
-    └── src/                    # Python utilities
+├── data/                       # Sample/test data
+├── mappings/                   # Call type category CSVs and JSON lookup
+├── scripts/                    # Utility scripts (extraction, validation)
+├── docs/                       # All documentation
+│   ├── ai_handoff/             # AI session handoff documents
+│   ├── chat_logs/              # Development chat logs
+│   ├── data_quality/           # Data quality crisis/fix docs
+│   ├── merge/                  # Repository merge documentation
+│   ├── response_time/          # Response time data dictionaries
+│   ├── image/                  # Images and diagrams
+│   └── task_templates/         # Task management templates
+├── unified_data_dictionary/    # COMPATIBILITY SHIM ONLY (4 files for schemas.yaml)
+│   └── schemas/                # canonical_schema, cad/rms_fields_schema, transformation_spec
+└── archive/                    # All retired/archived content
+    ├── PD_BCI_01_versions/     # Frozen v0.2.1 files from initial AI setup
+    ├── unified_data_dictionary_20260317/  # UDD bulk content
+    ├── schemas_udd_20260317/   # Older duplicate schemas
+    ├── mappings_field_mappings_20260317/  # v1.0 field mappings
+    ├── root_loose_files_20260317/  # Relocated root-level files
+    ├── completed_planning/     # Finished merge/planning docs
+    ├── directory_trees/        # Historical tree snapshots
+    ├── legacy_copies/          # Legacy file versions
+    └── merged_residue/         # Merge artifacts
 ```
 
 ## Canonical File Locations
 
 | File | Canonical Location |
 |------|-------------------|
-| `cad_to_rms_field_map.json` | `CAD_RMS/DataDictionary/current/schema/` |
-| `rms_to_cad_field_map.json` | `CAD_RMS/DataDictionary/current/schema/` |
+| `canonical_schema.json` | `CAD_RMS/DataDictionary/current/schema/` |
+| `cad_fields_schema_latest.json` | `CAD_RMS/DataDictionary/current/schema/` |
+| `rms_fields_schema_latest.json` | `CAD_RMS/DataDictionary/current/schema/` |
+| `transformation_spec.json` | `CAD_RMS/DataDictionary/current/schema/` |
+| `cad_rms_schema_registry.yaml` | `CAD_RMS/DataDictionary/current/schema/` |
+| `cad_to_rms_field_map.json` (v2.0) | `CAD_RMS/DataDictionary/current/schema/` |
+| `rms_to_cad_field_map.json` (v2.0) | `CAD_RMS/DataDictionary/current/schema/` |
 | `multi_column_matching_strategy.md` | `CAD_RMS/DataDictionary/current/schema/` |
+| `mapping_rules.md` | `CAD_RMS/mappings/` |
 | `rms_export_field_definitions.md` | `RMS/DataDictionary/current/schema/` |
 | `cad_export_field_definitions.md` | `CAD/DataDictionary/current/schema/` |
 | `clery_crime_definitions.json` | `Clery/DataDictionary/current/schema/` |
 | `nibrs_to_clery_map.json` | `Clery/DataDictionary/current/mappings/` |
 
+**Note:** `unified_data_dictionary/schemas/` is a 4-file compatibility shim for `02_ETL_Scripts/cad_rms_data_quality/config/schemas.yaml`. The canonical copies live in `CAD_RMS/DataDictionary/current/schema/`.
+
 ## Archive Policy
 
-Files in `archive/` are retained for 30 days after merge to main. See `archive/README.md` for details.
+Files in `archive/` are retained indefinitely for reference. See `archive/README.md` for details.
 
 ---
 
@@ -101,7 +126,7 @@ The enhanced schemas are backward compatible with v1.0 schemas. Existing code th
 - **CAD Field Definitions**: `CAD/DataDictionary/current/schema/cad_export_field_definitions.md`
 - **RMS Field Definitions**: `rms_export_field_definitions.md` (comprehensive v1.0 with 29 fields organized into 8 functional groups)
 - **Call Type Classification**: `docs/call_type_category_mapping.md` (527 call types mapped to 11 ESRI categories with response types)
-- **Mapping Rules**: `unified_data_dictionary/mappings/mapping_rules.md`
+- **Mapping Rules**: `CAD_RMS/mappings/mapping_rules.md`
 
 ## Call Type Classification System
 
