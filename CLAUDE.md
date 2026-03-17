@@ -6,8 +6,8 @@ Here's an improved version that combines Gemini's structure with the technical a
 
 # Claude.md — CAD/RMS Data Quality System AI Agent Protocol
 
-**Version:** 1.3.4  
-**Last Updated:** 2026-02-04  
+**Version:** 1.4.0  
+**Last Updated:** 2026-03-17  
 **Purpose:** Context and operational guidelines for AI agents working on this codebase
 
 ---
@@ -22,9 +22,9 @@ Here's an improved version that combines Gemini's structure with the technical a
 - **Solution:** Re-run `enhanced_esri_output_generator.py` with updated mappings
 - **Status:** ✅ Mappings added (HACKENSACK, PHONE/911), ready to execute
 
-**SECONDARY PRIORITY:** Phase 2 - Repository Consolidation (3-4 hours, execute tomorrow)
-- **Plan:** See `CURSOR_AI_CONSOLIDATION_GUIDE.md` in this directory
-- **Status:** 60% complete (CAD/, RMS/, CAD_RMS/ structure exists, unified_data_dictionary/ needs archival)
+**SECONDARY PRIORITY:** Phase 2 - Repository Consolidation — **COMPLETE (2026-03-17)**
+- **Plan:** See `docs/ai_handoff/CURSOR_AI_CONSOLIDATION_GUIDE.md`
+- **Status:** ✅ Complete — CAD_RMS is single source of truth; UDD slimmed to shim; manifest at `docs/merge/RATIONALIZATION_MANIFEST_20260317.md`
 
 ### 4 Critical Decisions Made (Authority for AI Agents)
 
@@ -333,10 +333,8 @@ schemas:
 - `archive/completed_planning/` — Finished planning docs
 - `archive/directory_trees/` — Historical tree snapshots
 
-**Pending Action:**
-- Update `schemas.yaml` `field_rules` path: `mappings/field_mappings/mapping_rules.md` → `CAD_RMS/mappings/mapping_rules.md`
-
 **Related Documentation:**
+- 📄 `docs/merge/RATIONALIZATION_MANIFEST_20260317.md` — Full audit trail of rationalization
 - 📄 `docs/ai_handoff/CURSOR_AI_CONSOLIDATION_GUIDE.md` — Original consolidation instructions
 - 📄 `docs/merge/STANDARDS_RATIONALIZATION_PROMPT_OPTIMIZED.md` — Rationalization governing prompt
 

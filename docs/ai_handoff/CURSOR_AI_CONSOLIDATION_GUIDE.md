@@ -1,14 +1,26 @@
 # Cursor AI Agent: Standards Repository Consolidation & Dashboard Fix
 
-**Version:** 1.1  
+**Version:** 1.2  
 **Created:** 2026-02-04  
-**Updated:** 2026-02-04 (Added 4 critical decisions, updated normalizer status)  
-**Priority:** EMERGENCY - Production Dashboard Data Quality Issue  
-**Estimated Time:** 5-6 hours (structure 60% complete)
+**Updated:** 2026-03-17 (Repository rationalization complete)  
+**Priority:** COMPLETE — Repository consolidation finished  
+**Estimated Time:** ~~5-6 hours~~ **DONE** (rationalization completed 2026-03-17)
 
 ---
 
-## ✅ LATEST UPDATE - 2026-02-04
+## ✅ RATIONALIZATION COMPLETE - 2026-03-17
+
+**Standards Repository Rationalization:** Complete. See `docs/merge/RATIONALIZATION_MANIFEST_20260317.md` for full audit trail.
+
+- CAD_RMS is now single source of truth for schemas and mappings
+- unified_data_dictionary reduced to 4-file compatibility shim
+- 64 PD_BCI_01 files archived; schemas/udd, mappings/field_mappings archived
+- schemas.yaml paths validated; field_rules now points to CAD_RMS/mappings/
+- GitHub: https://github.com/racmac57/standards
+
+---
+
+## ✅ LATEST UPDATE - 2026-02-04 (Historical)
 
 ### Mappings Updated - Ready to Execute Phase 1
 
@@ -57,13 +69,12 @@ Fix production ArcGIS Pro dashboard showing invalid "Call Source" values, then c
 - **Production Impact:** Live dashboard feeding police resource allocation decisions
 - **Timeline:** Dashboard fix needed TODAY, structure cleanup can follow
 
-### Repository State
-- Directory structure `CAD/`, `RMS/`, `CAD_RMS/` already exists (60% migrated)
-- `unified_data_dictionary/` still present (needs consolidation)
-- Multiple duplicate mapping files across 3+ locations
-- Misnamed files in `schemas/udd/` (contain quality reports, not schemas)
-- Legacy normalization script `standardize_cads.py` (superseded by `enhanced_esri_output_generator.py`)
-- See attached `2026_02_03_Standards_directory_tree.json` for exact current state
+### Repository State (Updated 2026-03-17)
+- **COMPLETE:** Directory structure `CAD/`, `CAD_RMS/`, `RMS/`, `Clery/`, `NIBRS/` consolidated
+- **COMPLETE:** `unified_data_dictionary/` slimmed to 4-file compatibility shim
+- **COMPLETE:** Duplicates archived (schemas/udd, mappings/field_mappings, PD_BCI_01)
+- **COMPLETE:** CAD_RMS/DataDictionary/current/schema/ is single source of truth
+- See `docs/merge/RATIONALIZATION_MANIFEST_20260317.md` for full change log
 
 **Repository Locations:**
 - **Standards Repository:** `C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards`
