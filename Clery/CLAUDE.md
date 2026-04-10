@@ -122,4 +122,25 @@ Clery/
 
 ---
 
+## Path Resolution
+
+OneDrive root resolves via two junctions (created 2026-03-22):
+1. Profile junction:
+     C:\Users\carucci_r  →  C:\Users\RobertCarucci
+2. OneDrive junction (laptop only — must be replicated on desktop):
+     C:\Users\RobertCarucci\OneDrive
+     →  C:\Users\RobertCarucci\OneDrive - City of Hackensack
+
+Active root returned by path_config.get_onedrive_root():
+  C:\Users\carucci_r\OneDrive - City of Hackensack
+
+### Rules for AI agents
+- DO NOT change carucci_r to RobertCarucci in scripts or configs
+- DO NOT change PowerBI_Data to PowerBI_Date (PowerBI_Date was the typo)
+- scripts.json uses carucci_r paths — this is correct and intentional
+- path_config.py resolves the correct root at runtime via get_onedrive_root()
+- If a path appears broken, check junction status before editing any file
+
+---
+
 **Maintained by:** R. A. Carucci
