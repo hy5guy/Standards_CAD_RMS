@@ -156,6 +156,31 @@ These are **locked** — any modification requires re-audit:
 
 **Standards are auditable and structurally sound at v3.0.0.** Nine gaps identified (0 blockers, 2 high, 4 medium, 3 low). No schema conflicts between documentation files. All five pre-Phase-2 questions resolved.
 
-**Also note for Phase 2:** CLAUDE.md's claim of "280 HOW_REPORTED entries" is incorrect (actual: 145 → 12 targets). Correct CLAUDE.md when next touched.
-
 **Phase 1 locked. Confirm to proceed to Phase 2.**
+
+---
+
+## Phase 2 Completion Record
+
+**Completed:** 2026-04-09 | **Repo:** [hy5guy/Standards_CAD_RMS](https://github.com/hy5guy/Standards_CAD_RMS)
+
+| Gap | Stage | Resolution | Commit | Files Modified |
+|-----|-------|------------|--------|----------------|
+| #2 | A | Extracted mappings to JSON | `03d3aed` | `CAD_RMS/mappings/how_reported_normalization_map.json` (140 entries), `CAD_RMS/mappings/disposition_normalization_map.json` (55 entries) |
+| #3 | B | Fixed schema registry enum 6→12; Walk-in→Walk-In; added post-normalization header | `03d3aed` | `CAD_RMS/DataDictionary/current/schema/cad_rms_schema_registry.yaml` (v1.0.0→v1.1.0) |
+| #5 | C3 | Documented PDZone (CAD) vs Zone (RMS) in Stage 1.3 | `e476508` | `CAD_RMS/DataDictionary/current/schema/transformation_spec.json` |
+| #8 | C1 | Fixed TimeOfCall → "Time of Call" in Stage 1.3 expected_cad_cols | `e476508` | `CAD_RMS/DataDictionary/current/schema/transformation_spec.json` |
+| #9 | C2 | Documented HourMinuetsCalc → Hour_Calc rename in Stage 2.1 | `e476508` | `CAD_RMS/DataDictionary/current/schema/transformation_spec.json` |
+| #4 | C4 | Added shim sync script and manifest | `e476508` | `scripts/sync_udd_shim.py`, `scripts/shim_sync_manifest.json` |
+| — | D1 | Corrected CLAUDE.md mapping counts (280→140 HOW_REPORTED, 100+→55 DISPOSITION) | `6ed2533` | `CLAUDE.md` |
+| — | — | Synced transformation_spec.json shim after Stage C changes | `554b235` | `unified_data_dictionary/schemas/transformation_spec.json` |
+
+**Also completed (ETL scripts repo — [hy5guy/CAD_Data_Cleaning_Engine](https://github.com/hy5guy/CAD_Data_Cleaning_Engine)):**
+- `enhanced_esri_output_generator.py` wired to load from Standards JSON instead of hardcoded dicts (commit `cc06069`)
+
+**Gaps remaining open after Phase 2:**
+- Gap #1 (LOW): `${standards_root}` resolver — deferred, no production script consumes it
+- Gap #6 (LOW): `schemas.yaml` version metadata check on ETL startup — deferred
+- Gap #7 (LOW): `CAD_Data_Cleaning_Engine` OneDrive bloat — extraction done; archive pending confirmation
+
+**Count correction (D2, deferred from Phase 2):** This document's §5 table and §Thinking section reference "145/58" mapping counts. Correct to "140/55 (effective runtime entries — duplicates removed)" on next revision.
