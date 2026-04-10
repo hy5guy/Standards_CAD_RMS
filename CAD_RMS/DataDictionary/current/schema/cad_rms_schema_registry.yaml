@@ -3,8 +3,8 @@
 # Author: R. A. Carucci
 # Purpose: Defines the canonical schema for CAD/RMS integration with field mappings, validation rules, and transformations
 
-version: "1.0.0"
-updated: "2025-10-16"
+version: "1.1.0"
+updated: "2026-04-09"
 schema_name: "unified_cad_rms"
 
 fields:
@@ -202,20 +202,30 @@ fields:
       - "How Reported" # CAD export header
     type: "string"
     required: false
+    # NOTE: These are POST-normalization canonical targets — the valid OUTPUT
+    # values after the ESRI generator applies how_reported_normalization_map.json.
+    # Raw CAD input has 140+ variants (typos, abbreviations, concatenations)
+    # that normalize down to these 12 values.
     enum:
-      - "9-1-1" # Canonical value (matches canonical_schema.json)
+      - "9-1-1"
+      - "Canceled Call"
+      - "eMail"
+      - "Fax"
+      - "Mail"
+      - "Other - See Notes"
       - "Phone"
-      - "Walk-in"
-      - "Self-Initiated"
       - "Radio"
-      - "Other"
+      - "Self-Initiated"
+      - "Teletype"
+      - "Virtual Patrol"
+      - "Walk-In"
     description: "How incident was reported (method of contact)"
     example: "9-1-1"
     group: "classification"
     notes: |
-      Valid values ONLY: 9-1-1, Phone, Walk-in, Self-Initiated, Radio, Other
-      Legacy values (Teletype, Fax, eMail, Mail, Virtual Patrol, Canceled Call) 
-      should be mapped to appropriate canonical value during ETL.
+      Enum lists all 12 post-normalization canonical targets.
+      Raw input variants (140 entries) are mapped via
+      Standards/CAD_RMS/mappings/how_reported_normalization_map.json.
       IMPORTANT: 9-1-1 must be stored as TEXT to prevent Excel date conversion.
 
   # ==============================
@@ -391,6 +401,14 @@ transformations:
 # Version History
 # ==============================
 versions:
+  - version: "1.1.0"
+    date: "2026-04-09"
+    author: "R. A. Carucci"
+    changes:
+      - "Expanded how_reported enum from 6 to 12 post-normalization canonical targets"
+      - "Fixed Walk-in → Walk-In (case correction)"
+      - "Added header note clarifying enum = post-normalization output values"
+      - "Added reference to how_reported_normalization_map.json (Phase 2, Gap #3)"
   - version: "1.0.0"
     date: "2025-10-16"
     author: "R. A. Carucci"
