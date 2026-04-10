@@ -30,8 +30,8 @@ Here's an improved version that combines Gemini's structure with the technical a
 
 1. **Which mapping format is authoritative?**
    - **ANSWER: A (with additions) - CAD_RMS v2.0 (2025-12-30) + dashboard validation fixes**
-   - Rationale: Most recent, includes multi-column matching, 280 lines comprehensive
-   - Location: `enhanced_esri_output_generator.py` HOW_REPORTED_MAPPING (lines 137-299)
+   - Rationale: Most recent, includes multi-column matching, comprehensive coverage
+   - Location: `enhanced_esri_output_generator.py` HOW_REPORTED_MAPPING (140 entries → 12 targets); mappings now extracted to `Standards/CAD_RMS/mappings/how_reported_normalization_map.json`
 
 2. **How to handle -PD_BCI_01 suffixed files?**
    - **ANSWER: A - Archive all (scripts reference non-suffixed versions)**
@@ -85,8 +85,9 @@ Here's an improved version that combines Gemini's structure with the technical a
 └── CAD_Data_Cleaning_Engine/          # CRITICAL - Normalization engine
     └── scripts/
         └── enhanced_esri_output_generator.py  # 🔥 AUTHORITATIVE normalization logic
-            # Lines 137-297: HOW_REPORTED_MAPPING (280 entries)
-            # This is the SINGLE SOURCE OF TRUTH for field normalization
+            # HOW_REPORTED_MAPPING (140 entries → 12 targets)
+            # DISPOSITION_MAPPING (55 entries → 20 targets)
+            # Mappings extracted to Standards/CAD_RMS/mappings/ as JSON (Phase 2)
 ```
 
 ### Canonical Standards Location (v3.0.0 - Rationalized 2026-03-17)
@@ -146,8 +147,9 @@ Here's an improved version that combines Gemini's structure with the technical a
 
 **Normalization Rules:**
 - ✅ **AUTHORITATIVE:** `CAD_Data_Cleaning_Engine/scripts/enhanced_esri_output_generator.py`
-  - `HOW_REPORTED_MAPPING` (lines 137-297): 280 entries including typos, abbreviations, concatenations
-  - `DISPOSITION_MAPPING`: 100+ disposition variants → 20 standard values
+  - `HOW_REPORTED_MAPPING`: 140 entries (12 canonical targets) — typos, abbreviations, concatenations
+  - `DISPOSITION_MAPPING`: 55 entries (20 canonical targets)
+  - Both mappings extracted to `Standards/CAD_RMS/mappings/` as standalone JSON files (Phase 2)
   - Advanced normalization functions for unmapped values
 
 **Python Package Versions:**
@@ -202,7 +204,7 @@ python -c "import yaml; print(yaml.safe_load(open('config/schemas.yaml')))"
 # 2. Test normalization mapping loads
 cd "..\CAD_Data_Cleaning_Engine"
 python -c "from scripts.enhanced_esri_output_generator import HOW_REPORTED_MAPPING; print(f'Loaded {len(HOW_REPORTED_MAPPING)} mappings')"
-# Expected output: Loaded 280 mappings (or higher if new mappings added)
+# Expected output: Loaded 140 mappings
 
 # 3. Check for deprecated paths in codebase
 Get-ChildItem -Recurse -Include *.py,*.yaml,*.bat,*.ps1 | Select-String "unified_data_dictionary" | Where-Object {$_.Line -notmatch "^#"}
@@ -460,7 +462,7 @@ ArcGIS Pro Dashboard (Production)
 - Disposition has 101 variants → Normalized to 20 standard values
 
 **How It Works:**
-1. **Direct Mapping:** `'911' → '9-1-1'` (case-insensitive, 280 mappings)
+1. **Direct Mapping:** `'911' → '9-1-1'` (case-insensitive, 140 HOW_REPORTED + 55 DISPOSITION entries)
 2. **Pattern Matching:** Unmapped values checked for patterns (`'91-1'` contains `'911'`)
 3. **Default Fallback:** Unknown values get sensible defaults (`'U' → 'Phone'`)
 
@@ -475,4 +477,4 @@ ArcGIS Pro Dashboard (Production)
 **Maintained By:** R. A. Carucci  
 **For AI Agents:** Treat this as your operational manual - when in doubt, refer here first.
 
----
+# Path resolution rules are defined globally in ~/.claude/CLAUDE.md
