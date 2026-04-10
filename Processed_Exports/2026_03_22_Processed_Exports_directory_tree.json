@@ -1,0 +1,708 @@
+{
+  "name": "Processed_Exports",
+  "path": ".",
+  "type": "directory",
+  "children": [
+    {
+      "name": "arrests",
+      "path": "arrests",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_arrest_categories_by_type_gender.csv",
+          "path": "arrests\\2026_01_arrest_categories_by_type_gender.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_arrest_distribution_by_location.csv",
+          "path": "arrests\\2026_01_arrest_distribution_by_location.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_top_5_arrest_leaders.csv",
+          "path": "arrests\\2026_01_top_5_arrest_leaders.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_arrest_categories_by_type_gender.csv",
+          "path": "arrests\\2026_02_arrest_categories_by_type_gender.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_arrest_category_trend.csv",
+          "path": "arrests\\2026_02_arrest_category_trend.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_arrest_distribution_by_location.csv",
+          "path": "arrests\\2026_02_arrest_distribution_by_location.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_resident_origin_arrest_trend.csv",
+          "path": "arrests\\2026_02_resident_origin_arrest_trend.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_top_5_arrest_leaders.csv",
+          "path": "arrests\\2026_02_top_5_arrest_leaders.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "Benchmark",
+      "path": "Benchmark",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2025_01_benchmark_incident_count.csv",
+          "path": "Benchmark\\2025_01_benchmark_incident_count.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2025_07_benchmark_incident_count.csv",
+          "path": "Benchmark\\2025_07_benchmark_incident_count.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2025_08_benchmark_incident_count.csv",
+          "path": "Benchmark\\2025_08_benchmark_incident_count.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_benchmark_incident_distribution.csv",
+          "path": "Benchmark\\2026_01_benchmark_incident_distribution.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_benchmark_use_of_force_matrix.csv",
+          "path": "Benchmark\\2026_01_benchmark_use_of_force_matrix.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_benchmark_incident_count.csv",
+          "path": "Benchmark\\2026_02_benchmark_incident_count.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_benchmark_incident_distribution.csv",
+          "path": "Benchmark\\2026_02_benchmark_incident_distribution.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_benchmark_use_of_force_matrix.csv",
+          "path": "Benchmark\\2026_02_benchmark_use_of_force_matrix.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "chief",
+      "path": "chief",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2025_01_chief_executive_duties.csv",
+          "path": "chief\\2025_01_chief_executive_duties.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_chief_executive_duties.csv",
+          "path": "chief\\2026_01_chief_executive_duties.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_chiefs_projects_initiatives.csv",
+          "path": "chief\\2026_01_chiefs_projects_initiatives.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_chief_executive_duties.csv",
+          "path": "chief\\2026_02_chief_executive_duties.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_chiefs_projects_initiatives.csv",
+          "path": "chief\\2026_02_chiefs_projects_initiatives.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "crime_suppression_bureau",
+      "path": "crime_suppression_bureau",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_csb_monthly_activity.csv",
+          "path": "crime_suppression_bureau\\2026_01_csb_monthly_activity.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_csb_monthly_activity.csv",
+          "path": "crime_suppression_bureau\\2026_02_csb_monthly_activity.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "detectives_case_dispositions",
+      "path": "detectives_case_dispositions",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_detective_case_dispositions.csv",
+          "path": "detectives_case_dispositions\\2026_01_detective_case_dispositions.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_detective_clearance_rate_performance.csv",
+          "path": "detectives_case_dispositions\\2026_01_detective_clearance_rate_performance.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_detective_case_dispositions.csv",
+          "path": "detectives_case_dispositions\\2026_02_detective_case_dispositions.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_detective_clearance_rate_performance.csv",
+          "path": "detectives_case_dispositions\\2026_02_detective_clearance_rate_performance.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "detectives_pt1",
+      "path": "detectives_pt1",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_detective_division_part_1.csv",
+          "path": "detectives_pt1\\2026_01_detective_division_part_1.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_detective_division_part_1.csv",
+          "path": "detectives_pt1\\2026_02_detective_division_part_1.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "detectives_pt2",
+      "path": "detectives_pt2",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_detective_division_part_2.csv",
+          "path": "detectives_pt2\\2026_01_detective_division_part_2.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_detective_division_part_2.csv",
+          "path": "detectives_pt2\\2026_02_detective_division_part_2.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "Drone",
+      "path": "Drone",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2025_01_dfr_activity_performance_metrics.csv",
+          "path": "Drone\\2025_01_dfr_activity_performance_metrics.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2025_01_non_dfr_performance_metrics.csv",
+          "path": "Drone\\2025_01_non_dfr_performance_metrics.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_dfr_activity_performance_metrics.csv",
+          "path": "Drone\\2026_01_dfr_activity_performance_metrics.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_non_dfr_performance_metrics.csv",
+          "path": "Drone\\2026_01_non_dfr_performance_metrics.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_dfr_activity_performance_metrics.csv",
+          "path": "Drone\\2026_02_dfr_activity_performance_metrics.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_dfr_directed_patrol_summons.csv",
+          "path": "Drone\\2026_02_dfr_directed_patrol_summons.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_dfr_total_fines_ytd.csv",
+          "path": "Drone\\2026_02_dfr_total_fines_ytd.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_non_dfr_performance_metrics.csv",
+          "path": "Drone\\2026_02_non_dfr_performance_metrics.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "esu",
+      "path": "esu",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_esu_activity.csv",
+          "path": "esu\\2026_01_esu_activity.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_esu_activity.csv",
+          "path": "esu\\2026_02_esu_activity.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "NIBRS",
+      "path": "NIBRS",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_nibrs_clearance_rate_13_month.csv",
+          "path": "NIBRS\\2026_01_nibrs_clearance_rate_13_month.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_clearance_crime_reporting_metrics.csv",
+          "path": "NIBRS\\2026_02_clearance_crime_reporting_metrics.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_nibrs_clearance_rate_13_month.csv",
+          "path": "NIBRS\\2026_02_nibrs_clearance_rate_13_month.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "Other",
+      "path": "Other",
+      "type": "directory",
+      "children": []
+    },
+    {
+      "name": "out_reach",
+      "path": "out_reach",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_engagement_initiatives_by_bureau.csv",
+          "path": "out_reach\\2026_01_engagement_initiatives_by_bureau.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_engagement_initiatives_by_bureau.csv",
+          "path": "out_reach\\2026_02_engagement_initiatives_by_bureau.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "Patrol",
+      "path": "Patrol",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2025_11_patrol_division_activity.csv",
+          "path": "Patrol\\2025_11_patrol_division_activity.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_patrol_division_activity.csv",
+          "path": "Patrol\\2026_01_patrol_division_activity.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_patrol_division_activity.csv",
+          "path": "Patrol\\2026_02_patrol_division_activity.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "policy_and_training_qual",
+      "path": "policy_and_training_qual",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2025_10_training_cost_by_delivery_method.csv",
+          "path": "policy_and_training_qual\\2025_10_training_cost_by_delivery_method.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2025_11_training_cost_by_delivery_method.csv",
+          "path": "policy_and_training_qual\\2025_11_training_cost_by_delivery_method.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_in_person_training.csv",
+          "path": "policy_and_training_qual\\2026_01_in_person_training.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_training_cost_by_delivery_method.csv",
+          "path": "policy_and_training_qual\\2026_01_training_cost_by_delivery_method.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_in_person_training.csv",
+          "path": "policy_and_training_qual\\2026_02_in_person_training.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_training_cost_by_delivery_method.csv",
+          "path": "policy_and_training_qual\\2026_02_training_cost_by_delivery_method.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "remu",
+      "path": "remu",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_records_evidence_unit.csv",
+          "path": "remu\\2026_01_records_evidence_unit.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_records_evidence_unit.csv",
+          "path": "remu\\2026_02_records_evidence_unit.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "response_time",
+      "path": "response_time",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_dispatch_processing_time.csv",
+          "path": "response_time\\2026_01_dispatch_processing_time.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_response_time_dispatch_to_onscene.csv",
+          "path": "response_time\\2026_01_response_time_dispatch_to_onscene.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_response_time_received_to_onscene.csv",
+          "path": "response_time\\2026_01_response_time_received_to_onscene.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_emergency_total_response.csv",
+          "path": "response_time\\2026_02_emergency_total_response.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_response_time_trends_by_priority.csv",
+          "path": "response_time\\2026_02_response_time_trends_by_priority.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_routine_total_response.csv",
+          "path": "response_time\\2026_02_routine_total_response.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_urgent_total_response.csv",
+          "path": "response_time\\2026_02_urgent_total_response.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "social_media",
+      "path": "social_media",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_social_media_posts.csv",
+          "path": "social_media\\2026_01_social_media_posts.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_social_media_posts.csv",
+          "path": "social_media\\2026_02_social_media_posts.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "social_media_and_time_report",
+      "path": "social_media_and_time_report",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2025_11_social_media_posts.csv",
+          "path": "social_media_and_time_report\\2025_11_social_media_posts.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_monthly_accrual_and_usage_summary.csv",
+          "path": "social_media_and_time_report\\2026_01_monthly_accrual_and_usage_summary.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_monthly_accrual_and_usage_summary.csv",
+          "path": "social_media_and_time_report\\2026_02_monthly_accrual_and_usage_summary.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "ssocc",
+      "path": "ssocc",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_ssocc_service_breakdown.csv",
+          "path": "ssocc\\2026_01_ssocc_service_breakdown.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_ssocc_service_breakdown.csv",
+          "path": "ssocc\\2026_02_ssocc_service_breakdown.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "stacp_pt1",
+      "path": "stacp_pt1",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_stacp_part_1.csv",
+          "path": "stacp_pt1\\2026_01_stacp_part_1.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_stacp_part_1.csv",
+          "path": "stacp_pt1\\2026_02_stacp_part_1.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "stacp_pt2",
+      "path": "stacp_pt2",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_stacp_part_2.csv",
+          "path": "stacp_pt2\\2026_01_stacp_part_2.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_stacp_part_2.csv",
+          "path": "stacp_pt2\\2026_02_stacp_part_2.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "Summons",
+      "path": "Summons",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2026_01_department_wide_summons.csv",
+          "path": "Summons\\2026_01_department_wide_summons.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_summons_moving_parking_all_bureaus.csv",
+          "path": "Summons\\2026_01_summons_moving_parking_all_bureaus.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_top_5_moving_violations.csv",
+          "path": "Summons\\2026_01_top_5_moving_violations.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_top_5_parking_violations.csv",
+          "path": "Summons\\2026_01_top_5_parking_violations.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_department_wide_summons.csv",
+          "path": "Summons\\2026_02_department_wide_summons.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_summons_moving_parking_all_bureaus.csv",
+          "path": "Summons\\2026_02_summons_moving_parking_all_bureaus.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_top_5_moving_violations.csv",
+          "path": "Summons\\2026_02_top_5_moving_violations.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_top_5_parking_violations.csv",
+          "path": "Summons\\2026_02_top_5_parking_violations.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "Traffic",
+      "path": "Traffic",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2025_01_traffic_bureau_activity.csv",
+          "path": "Traffic\\2025_01_traffic_bureau_activity.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_traffic_bureau_activity.csv",
+          "path": "Traffic\\2026_01_traffic_bureau_activity.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_traffic_bureau_activity.csv",
+          "path": "Traffic\\2026_02_traffic_bureau_activity.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    },
+    {
+      "name": "traffic_mva",
+      "path": "traffic_mva",
+      "type": "directory",
+      "children": [
+        {
+          "name": "2025_01_motor_vehicle_accidents_summary.csv",
+          "path": "traffic_mva\\2025_01_motor_vehicle_accidents_summary.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_01_motor_vehicle_accidents_summary.csv",
+          "path": "traffic_mva\\2026_01_motor_vehicle_accidents_summary.csv",
+          "type": "file",
+          "children": null
+        },
+        {
+          "name": "2026_02_motor_vehicle_accidents_summary.csv",
+          "path": "traffic_mva\\2026_02_motor_vehicle_accidents_summary.csv",
+          "type": "file",
+          "children": null
+        }
+      ]
+    }
+  ]
+}
