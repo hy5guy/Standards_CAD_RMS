@@ -35,6 +35,7 @@ Standards/
 │   ├── response_time/          # Response time data dictionaries
 │   ├── image/                  # Images and diagrams
 │   └── task_templates/         # Task management templates
+├── VERSION                     # Machine-readable version (3.0.0) for runtime checks
 ├── unified_data_dictionary/    # COMPATIBILITY SHIM ONLY (4 files for schemas.yaml)
 │   └── schemas/                # canonical_schema, cad/rms_fields_schema, transformation_spec
 └── archive/                    # All retired/archived content

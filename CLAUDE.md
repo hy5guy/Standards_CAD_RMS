@@ -6,49 +6,32 @@ Here's an improved version that combines Gemini's structure with the technical a
 
 # Claude.md — CAD/RMS Data Quality System AI Agent Protocol
 
-**Version:** 1.4.0  
-**Last Updated:** 2026-03-17  
+**Version:** 1.5.0  
+**Last Updated:** 2026-04-10  
 **Purpose:** Context and operational guidelines for AI agents working on this codebase
 
 ---
 
-## 🚨 CRITICAL UPDATE - 2026-02-04
+## Standards Audit — Phases 1, 2, 3 Complete (2026-04-09)
 
-### Emergency Status: Dashboard Data Quality Crisis
+All 9 gaps from the Phase 1 audit have been resolved. See `docs/ai_handoff/Phase1_Standards_Audit.md` for the full record.
 
-**IMMEDIATE PRIORITY:** Phase 1 - Dashboard Data Fix (2 hours)
-- **Problem:** Dashboard showing invalid HowReported values (`hackensack`, `ppp`, `u`, `Phone/911`, etc.)
-- **Root Cause:** CAD baseline was consolidated but NOT normalized (ESRI polishing step skipped)
-- **Solution:** Re-run `enhanced_esri_output_generator.py` with updated mappings
-- **Status:** ✅ Mappings added (HACKENSACK, PHONE/911), ready to execute
+**Key outcomes:**
+- Normalization mappings extracted from hardcoded Python dicts to standalone JSON in `CAD_RMS/mappings/`
+- `enhanced_esri_output_generator.py` now loads mappings from Standards JSON at runtime
+- Schema registry HowReported enum expanded 6→12 canonical values; Walk-in→Walk-In
+- `transformation_spec.json` field name discrepancies fixed (TimeOfCall, Hour_Calc, PDZone/Zone)
+- Shim sync script added (`scripts/sync_udd_shim.py`)
+- `${standards_root}` resolver added (`cad_rms_data_quality/shared/utils/schemas_loader.py`)
+- Version check added (`cad_rms_data_quality/shared/utils/version_check.py` + `Standards/VERSION`)
+- `CAD_Data_Cleaning_Engine/data/` archived (1.4 GB freed from active OneDrive sync)
 
-**SECONDARY PRIORITY:** Phase 2 - Repository Consolidation — **COMPLETE (2026-03-17)**
-- **Plan:** See `docs/ai_handoff/CURSOR_AI_CONSOLIDATION_GUIDE.md`
-- **Status:** ✅ Complete — CAD_RMS is single source of truth; UDD slimmed to shim; manifest at `docs/merge/RATIONALIZATION_MANIFEST_20260317.md`
+### Standing Decisions (Authority for AI Agents)
 
-### 4 Critical Decisions Made (Authority for AI Agents)
-
-1. **Which mapping format is authoritative?**
-   - **ANSWER: A (with additions) - CAD_RMS v2.0 (2025-12-30) + dashboard validation fixes**
-   - Rationale: Most recent, includes multi-column matching, comprehensive coverage
-   - Location: `enhanced_esri_output_generator.py` HOW_REPORTED_MAPPING (140 entries → 12 targets); mappings now extracted to `Standards/CAD_RMS/mappings/how_reported_normalization_map.json`
-
-2. **How to handle -PD_BCI_01 suffixed files?**
-   - **ANSWER: A - Archive all (scripts reference non-suffixed versions)**
-   - Rationale: Non-suffixed are actively maintained (v1.3.2), PD_BCI are frozen (v0.2.1)
-   - Action: Move to `archive/PD_BCI_01_versions/`
-
-3. **When to do comprehensive validation?**
-   - **ANSWER: B - Consolidate first, THEN comprehensive validation**
-   - Rationale: Need single dataset to validate; validation reveals gaps in normalization
-   - Workflow: Consolidate → Validate → Fix mappings → Re-polish → Validate again
-
-4. **How thorough should schema validation be?**
-   - **ANSWER: A - Quick review of critical fields only**
-   - Rationale: Dashboard is live with issues; fix critical fields (HowReported, Disposition, Incident) first
-   - Defer: Comprehensive vendor documentation review and stakeholder workshops
-
-**⚠️ DO NOT START PHASE 2 UNTIL PHASE 1 COMPLETE AND DASHBOARD VALIDATED**
+1. **Authoritative mapping format:** CAD_RMS v2.0 (2025-12-30) + normalization JSON files
+2. **-PD_BCI_01 suffixed files:** Archived to `archive/PD_BCI_01_versions/`
+3. **Validation order:** Consolidate first, THEN validate
+4. **Schema validation scope:** Critical fields first (HowReported, Disposition, Incident)
 
 ---
 
@@ -81,13 +64,16 @@ Here's an improved version that combines Gemini's structure with the technical a
 │   ├── consolidate_cad_2019_2026.py   # Production consolidation script
 │   ├── monthly_validation/scripts/    # CAD/RMS monthly validators
 │   └── shared/utils/                  # Shared utilities
+│       ├── schemas_loader.py          # load_schemas() — resolves ${standards_root}
+│       └── version_check.py           # check_standards_version() — drift warning
 │
 └── CAD_Data_Cleaning_Engine/          # CRITICAL - Normalization engine
     └── scripts/
         └── enhanced_esri_output_generator.py  # 🔥 AUTHORITATIVE normalization logic
             # HOW_REPORTED_MAPPING (140 entries → 12 targets)
             # DISPOSITION_MAPPING (55 entries → 20 targets)
-            # Mappings extracted to Standards/CAD_RMS/mappings/ as JSON (Phase 2)
+            # Loaded from Standards/CAD_RMS/mappings/ JSON at runtime (Phase 2)
+            # data/ directory archived to 02_ETL_Scripts/archive/ (Phase 3C)
 ```
 
 ### Canonical Standards Location (v3.0.0 - Rationalized 2026-03-17)
@@ -112,6 +98,7 @@ Here's an improved version that combines Gemini's structure with the technical a
 │   │   └── multi_column_matching_strategy.md
 │   └── mappings/                          # Field mapping rules, CSVs, policies
 │
+├── VERSION                                # Machine-readable version (3.0.0) for runtime checks
 ├── unified_data_dictionary/schemas/       # ⚠️ COMPATIBILITY SHIM ONLY
 │   # 4 files for schemas.yaml backward compatibility
 │   # Identical copies of CAD_RMS canonical versions
@@ -146,11 +133,10 @@ Here's an improved version that combines Gemini's structure with the technical a
 **Rationale:** v2.0 includes multi-column matching strategy and comprehensive edge case handling
 
 **Normalization Rules:**
-- ✅ **AUTHORITATIVE:** `CAD_Data_Cleaning_Engine/scripts/enhanced_esri_output_generator.py`
-  - `HOW_REPORTED_MAPPING`: 140 entries (12 canonical targets) — typos, abbreviations, concatenations
-  - `DISPOSITION_MAPPING`: 55 entries (20 canonical targets)
-  - Both mappings extracted to `Standards/CAD_RMS/mappings/` as standalone JSON files (Phase 2)
-  - Advanced normalization functions for unmapped values
+- ✅ **AUTHORITATIVE:** `Standards/CAD_RMS/mappings/` JSON files (loaded at runtime by `enhanced_esri_output_generator.py`)
+  - `how_reported_normalization_map.json`: 140 entries → 12 canonical targets
+  - `disposition_normalization_map.json`: 55 entries → 20 canonical targets
+  - Advanced normalization functions in script handle unmapped values via pattern matching
 
 **Python Package Versions:**
 - ✅ **AUTHORITATIVE:** `cad_rms_data_quality/pyproject.toml` (v1.3.2)
@@ -425,6 +411,7 @@ print(f"Unique values: {df['How Reported'].nunique()}")
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5.0 | 2026-04-10 | **ALL AUDIT GAPS CLOSED:** Phases 1-3 complete, emergency section retired, mapping counts corrected (140/55), JSON loading wiring documented, new utils (schemas_loader, version_check) noted, data/ archived |
 | 1.4.0 | 2026-03-17 | **RATIONALIZATION COMPLETE:** Updated architecture for v3.0.0, CAD_RMS is single source of truth, UDD slimmed to shim, consolidation status updated, deprecated paths removed |
 | 1.3.4 | 2026-02-04 | **EMERGENCY UPDATE:** Added dashboard crisis context, 4 critical decisions, Phase 1/2 priorities, updated mapping status |
 | 1.3.3 | 2026-02-04 | Added HowReported normalization crisis context, enhanced validation commands |
@@ -473,7 +460,7 @@ ArcGIS Pro Dashboard (Production)
 
 ---
 
-**Last Updated:** 2026-02-04  
+**Last Updated:** 2026-04-10  
 **Maintained By:** R. A. Carucci  
 **For AI Agents:** Treat this as your operational manual - when in doubt, refer here first.
 
