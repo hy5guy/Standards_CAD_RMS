@@ -1,32 +1,314 @@
-## Enhanced CLAUDE.md for AI Agents
+# CLAUDE.md -- Standards Repository AI Agent Protocol
 
-Here's an improved version that combines Gemini's structure with the technical accuracy from our deep dive:
-
----
-
-# Claude.md — CAD/RMS Data Quality System AI Agent Protocol
-
-**Version:** 1.5.0  
-**Last Updated:** 2026-04-10  
+**Version:** 2.0.0
+**Last Updated:** 2026-04-10
 **Purpose:** Context and operational guidelines for AI agents working on this codebase
 
 ---
 
-## Standards Audit — Phases 1, 2, 3 Complete (2026-04-09)
+## What This Repository Is
 
-All 9 gaps from the Phase 1 audit have been resolved. See `docs/ai_handoff/Phase1_Standards_Audit.md` for the full record.
+This is the **Standards** repository (`09_Reference/Standards/`) -- the central, authoritative source for CAD/RMS data standards, schemas, field mappings, and normalization rules used by the Hackensack Police Department's data quality infrastructure.
+
+- **GitHub:** `hy5guy/Standards_CAD_RMS`
+- **License:** MIT
+- **Standards Version:** 3.0.0 (see `VERSION` file)
+- **Maintainer:** R. A. Carucci
+
+This repo does **not** contain the ETL pipeline scripts themselves. Those live in sibling repositories under `02_ETL_Scripts/` (specifically `cad_rms_data_quality/` and `CAD_Data_Cleaning_Engine/`). This repo provides the schemas, mappings, and reference data those pipelines consume.
+
+---
+
+## High-Stakes Context
+
+- **Active Production System:** 724,794 CAD records (2019-2026) feeding a live ArcGIS Pro "Calls for Service" dashboard
+- **Zero Downtime Tolerance:** Schema or mapping changes here propagate to normalization scripts and dashboard output
+- **Geographic Impact:** Data drives police resource allocation decisions
+- **Compliance:** Case number format (YY-NNNNNN) must preserve leading zeros
+
+---
+
+## Repository Structure
+
+```
+Standards_CAD_RMS/                         # Root (= 09_Reference/Standards/)
+|
+|-- CAD_RMS/                               # SINGLE SOURCE OF TRUTH for cross-system schemas
+|   |-- DataDictionary/current/schema/     # All canonical schemas (9 files)
+|   |   |-- canonical_schema.json          #   Unified field dictionary (100+ fields)
+|   |   |-- cad_fields_schema_latest.json  #   CAD export field schema
+|   |   |-- rms_fields_schema_latest.json  #   RMS export field schema
+|   |   |-- transformation_spec.json       #   ETL transformation rules
+|   |   |-- cad_rms_schema_registry.yaml   #   Schema registry + domain values (v1.1.0)
+|   |   |-- cad_to_rms_field_map.json      #   v2.0 enhanced field mapping
+|   |   |-- rms_to_cad_field_map.json      #   v2.0 enhanced field mapping
+|   |   |-- multi_column_matching_strategy.md
+|   |   +-- README.md
+|   |-- DataDictionary/scripts/            # Schema bootstrap/init scripts
+|   +-- mappings/                          # Normalization maps + field mapping rules
+|       |-- how_reported_normalization_map.json   # 140 entries -> 12 targets
+|       |-- disposition_normalization_map.json    # 55 entries -> 20 targets
+|       |-- cad_field_map_latest.json
+|       |-- rms_field_map_latest.json
+|       |-- cad_to_rms_mapping.csv / rms_to_cad_mapping.csv
+|       |-- cad_rms_merge_policy_latest.json
+|       +-- mapping_rules.md
+|
+|-- CAD/                                   # CAD-specific standards
+|   |-- DataDictionary/current/schema/     #   cad_export_field_definitions.md
+|   |-- DataDictionary/archive/            #   Retired v1.0 field maps
+|   +-- SCRPA/                             #   Assignment_Master_V2.csv, cad_data_quality_report.md
+|
+|-- RMS/                                   # RMS-specific standards
+|   |-- DataDictionary/current/schema/     #   rms_export_field_definitions.md (29 fields, 8 groups)
+|   +-- SCRPA/                             #   SCRPA_7Day_Data_Dictionary.md, rms_data_quality_report.md
+|
+|-- Clery/                                 # Clery Act compliance standards
+|   +-- DataDictionary/current/
+|       |-- schema/                        #   clery_crime_definitions.json, clery_geography_definitions.json
+|       |-- mappings/                      #   nibrs_to_clery_map.json
+|       +-- institutions/                  #   institution_clery_geography_index.json
+|
+|-- NIBRS/                                 # NIBRS offense standards
+|   +-- DataDictionary/current/
+|       |-- schema/                        #   nibrs_offense_definitions.md, ucr_offense_classification.json
+|       +-- mappings/                      #   rms_to_nibrs_offense_map.json
+|
+|-- Personnel/                             # Personnel/Assignment Master schema
+|   |-- Assignment_Master_SCHEMA.md        #   Human-readable (25 columns)
+|   +-- assignment_master.schema.json      #   Machine-readable JSON Schema
+|
+|-- Processed_Exports/                     # Dashboard CSV outputs (regenerated monthly)
+|   |-- response_time/                     #   Monthly response time metrics
+|   |-- Drone/                             #   DFR activity/performance
+|   |-- detectives/                        #   Case dispositions, clearance rates
+|   |-- arrests/, Benchmark/, chief/, ...  #   20 unit-specific subdirectories
+|   +-- (99 CSV files total across all subdirs)
+|
+|-- mappings/                              # Call type classification system
+|   |-- call_type_category_mapping.json    #   Programmatic lookup (649 entries)
+|   +-- call_types_*.csv                   #   11 category-specific CSV files
+|
+|-- config/                                # ETL configuration
+|   +-- response_time_filters.json         #   Response Time ETL filtering rules
+|
+|-- scripts/                               # Utility scripts
+|   |-- sync_udd_shim.py                   #   Keep UDD shim in sync with CAD_RMS canonical
+|   |-- shim_sync_manifest.json            #   Manifest for sync script (4 file pairs)
+|   |-- extraction/
+|   |   +-- extract_narrative_fields.py    #   RMS narrative field extractor (462 lines)
+|   +-- validation/
+|       +-- validate_rms_export.py         #   RMS export validator (407 lines)
+|
+|-- unified_data_dictionary/               # COMPATIBILITY SHIM ONLY
+|   +-- schemas/                           #   4 files mirrored from CAD_RMS canonical
+|       |-- canonical_schema.json          #   (identical to CAD_RMS copy)
+|       |-- cad_fields_schema_latest.json
+|       |-- rms_fields_schema_latest.json
+|       +-- transformation_spec.json
+|
+|-- data/samples/rms/                      # Sample/test data
+|-- docs/                                  # All documentation (see Documentation section)
+|-- archive/                               # Retired content (637+ files, see Archive section)
+|
+|-- VERSION                                # Machine-readable: "3.0.0"
+|-- README.md                              # Repository overview and canonical file locations
+|-- CHANGELOG.md                           # Full version history since v0.3.0
+|-- CLAUDE.md                              # This file
+|-- SUMMARY.md                             # Current state summary
+|-- SCHEMA_FILES_SUMMARY.md                # Schema file inventory
+|-- CallType_Categories_latest.csv         # Latest call type reference (649 entries)
+|-- extract_narrative_fields.py            # Root copy of extraction script
+|-- validate_rms_export.py                 # Root copy of validation script
+|-- sample_rms_export.csv                  # Sample RMS data for testing
+|-- requirements.txt                       # Python deps (pandas, python-dateutil)
+|-- next_suggestions.yaml                  # Future improvement task backlog
+|-- Standards.code-workspace               # VS Code workspace config
+|-- LICENSE                                # MIT
++-- .gitignore                             # OS noise, Office temp, Python/Node/IDE artifacts
+```
+
+---
+
+## Key Concepts
+
+### Single Source of Truth
+
+`CAD_RMS/DataDictionary/current/schema/` is the authoritative location for all cross-system schemas. Everything else either derives from or points to files here.
+
+### Compatibility Shim
+
+`unified_data_dictionary/schemas/` contains 4 files that are identical copies of CAD_RMS originals. These exist for backward compatibility with `02_ETL_Scripts/cad_rms_data_quality/config/schemas.yaml`. **Never edit the shim directly** -- update the CAD_RMS canonical copy and run `python scripts/sync_udd_shim.py` to propagate changes.
+
+### Normalization Mappings
+
+Two JSON files in `CAD_RMS/mappings/` define how raw field values are normalized:
+- `how_reported_normalization_map.json`: 140 raw values -> 12 canonical targets (9-1-1, Phone, Walk-In, Self-Initiated, Radio, eMail, Mail, Other - See Notes, Fax, Teletype, Virtual Patrol, Canceled Call)
+- `disposition_normalization_map.json`: 55 raw values -> 20 canonical targets
+
+These are loaded at runtime by the external `enhanced_esri_output_generator.py` script.
+
+### Call Type Classification
+
+649 call types mapped to 11 ESRI standard categories with response types (Emergency, Urgent, Routine). Primary reference: `CallType_Categories_latest.csv`. Programmatic lookup: `mappings/call_type_category_mapping.json`.
+
+### Multi-Column Matching (v2.0)
+
+When primary key matching (`ReportNumberNew` <-> `Case Number`) fails, three alternative strategies are available:
+1. Temporal + Address Match (confidence >= 0.85)
+2. Officer + Temporal Match (confidence >= 0.80)
+3. Address + Zone + Approximate Date Match (confidence >= 0.75)
+
+Defined in `CAD_RMS/DataDictionary/current/schema/cad_to_rms_field_map.json` and `rms_to_cad_field_map.json`.
+
+---
+
+## Version Authority & Decision Rules
+
+### When Multiple Versions Exist
+
+| What | Authoritative Location | Do NOT Use |
+|------|----------------------|------------|
+| Cross-system schemas | `CAD_RMS/DataDictionary/current/schema/` | `unified_data_dictionary/schemas/` (shim only) |
+| Normalization maps | `CAD_RMS/mappings/*.json` | Hardcoded dicts in Python scripts |
+| Field mappings (v2.0) | `CAD_RMS/DataDictionary/current/schema/` | `archive/mappings_field_mappings_20260317/` |
+| Call type reference | `CallType_Categories_latest.csv` | Any backup/timestamped copy |
+| `-PD_BCI_01` suffixed files | **Ignore entirely** | `archive/PD_BCI_01_versions/` (frozen v0.2.1 artifacts) |
+
+### Path Resolution Priority
+
+1. Check canonical locations listed in the table above
+2. Use relative paths from repo root for portability
+3. Never hardcode absolute paths (breaks across machines)
+
+---
+
+## External Consumers
+
+This repo is consumed by scripts in sibling repositories. Understanding these relationships is essential:
+
+```
+This Repo (Standards)                    External Consumers
+========================                 ============================
+CAD_RMS/mappings/*.json          --->    CAD_Data_Cleaning_Engine/scripts/enhanced_esri_output_generator.py
+                                           (loads normalization maps at runtime)
+
+unified_data_dictionary/schemas/ --->    cad_rms_data_quality/config/schemas.yaml
+                                           (references shim paths via ${standards_root})
+
+config/response_time_filters.json --->   Response_Times/response_time_monthly_generator.py
+                                           (filtering rules for response time ETL)
+
+CallType_Categories_latest.csv   --->    Various ETL scripts for incident classification
+```
+
+### External Data Pipeline (for context)
+
+```
+Raw CAD Exports (Excel)
+    |
+    v
+consolidate_cad_2019_2026.py          # EXTERNAL: merges yearly + monthly files
+    |
+    v
+enhanced_esri_output_generator.py      # EXTERNAL: normalizes using THIS repo's mappings
+    |
+    v
+CAD_ESRI_POLISHED_[timestamp].xlsx     # EXTERNAL: 724K records, normalized
+    |
+    v
+ArcGIS Pro Dashboard (Production)
+```
+
+---
+
+## Scripts in This Repo
+
+### `scripts/sync_udd_shim.py`
+Keeps the 4 UDD shim files in sync with their CAD_RMS canonical sources. Uses SHA-256 hash comparison.
+```bash
+python scripts/sync_udd_shim.py            # sync
+python scripts/sync_udd_shim.py --dry-run  # report only
+```
+
+### `scripts/extraction/extract_narrative_fields.py` (also at root)
+Extracts structured data (suspect descriptions, vehicle info, property, M.O.) from RMS Narrative fields using regex pattern matching. 462 lines.
+```bash
+python extract_narrative_fields.py input.csv [output.csv]
+```
+
+### `scripts/validation/validate_rms_export.py` (also at root)
+Validates RMS export CSV files against field definitions. Generates HTML reports. 407 lines.
+```bash
+python validate_rms_export.py input.csv [report.html]
+```
+
+---
+
+## Documentation Map
+
+```
+docs/
+|-- ai_handoff/              # AI session handoff documents (11 files)
+|   |-- Phase1_Standards_Audit.md      # Full audit record for Phases 1-3
+|   |-- CURSOR_AI_CONSOLIDATION_GUIDE.md
+|   |-- OPUS_*.md                      # Claude/Opus session briefings
+|   +-- CONTEXT_SUMMARY_AI_HANDOFF.md
+|
+|-- data_quality/            # Data quality crisis documentation (6 files)
+|   |-- CRITICAL_DATA_QUALITY_ALERT.md
+|   |-- HOW_REPORTED_FIX_SUMMARY.md
+|   +-- EXECUTIVE_SUMMARY.md
+|
+|-- merge/                   # Repository merge/rationalization docs (24 files)
+|   |-- RATIONALIZATION_MANIFEST_20260317.md  # Full audit trail
+|   +-- STANDARDS_RATIONALIZATION_PROMPT_OPTIMIZED.md
+|
+|-- response_time/           # Response time data dictionaries
+|   |-- ResponseTime_AllMetrics_DataDictionary.json
+|   +-- ResponseTime_AllMetrics_DataDictionary.md
+|
+|-- chat_logs/               # Development session transcripts (14 topic dirs)
+|-- image/                   # Screenshots and diagrams
+|-- html/                    # Generated HTML reports
+|-- task_templates/          # Task management (kanban, audit CSVs)
++-- call_type_category_mapping.md  # Human-readable call type breakdown
+```
+
+---
+
+## Archive Structure
+
+The `archive/` directory (637+ files) contains retired content organized by date and category. **Never delete archive contents.** Key subdirectories:
+
+| Directory | Files | Contents |
+|-----------|-------|----------|
+| `PD_BCI_01_versions/` | 66 | Frozen v0.2.1 files from initial AI setup |
+| `unified_data_dictionary_20260317/` | 282 | UDD bulk content (docs, scripts, src, tests) |
+| `legacy_copies/` | 228 | Legacy file versions + UDD git backup |
+| `mappings_field_mappings_20260317/` | 12 | v1.0 field mappings (superseded by v2.0) |
+| `root_loose_files_20260317/` | 11 | Relocated root-level files |
+| `completed_planning/` | 7 | Finished merge/planning docs |
+| `directory_trees/` | 6 | Historical tree snapshots |
+| `schemas_udd_20260317/` | 6 | Older duplicate schemas |
+| `merged_residue/` | 14 | Merge artifacts |
+| `schema_drafts/` | 3 | Draft schemas |
+
+---
+
+## Audit Status
+
+### Standards Audit -- Phases 1, 2, 3 Complete (2026-04-09)
+
+All 9 gaps from the Phase 1 audit have been resolved. See `docs/ai_handoff/Phase1_Standards_Audit.md`.
 
 **Key outcomes:**
 - Normalization mappings extracted from hardcoded Python dicts to standalone JSON in `CAD_RMS/mappings/`
-- `enhanced_esri_output_generator.py` now loads mappings from Standards JSON at runtime
-- Schema registry HowReported enum expanded 6→12 canonical values; Walk-in→Walk-In
+- Schema registry HowReported enum expanded 6 -> 12 canonical values; Walk-in -> Walk-In
 - `transformation_spec.json` field name discrepancies fixed (TimeOfCall, Hour_Calc, PDZone/Zone)
 - Shim sync script added (`scripts/sync_udd_shim.py`)
-- `${standards_root}` resolver added (`cad_rms_data_quality/shared/utils/schemas_loader.py`)
-- Version check added (`cad_rms_data_quality/shared/utils/version_check.py` + `Standards/VERSION`)
-- `CAD_Data_Cleaning_Engine/data/` archived (1.4 GB freed from active OneDrive sync)
 
-### Standing Decisions (Authority for AI Agents)
+### Standing Decisions
 
 1. **Authoritative mapping format:** CAD_RMS v2.0 (2025-12-30) + normalization JSON files
 2. **-PD_BCI_01 suffixed files:** Archived to `archive/PD_BCI_01_versions/`
@@ -35,433 +317,87 @@ All 9 gaps from the Phase 1 audit have been resolved. See `docs/ai_handoff/Phase
 
 ---
 
-## 🎯 Mission & Critical Constraints
+## Common Pitfalls
 
-### Primary Objectives
-1. **Production Dashboard Integrity:** Support ArcGIS Pro "Calls for Service" dashboard with clean, normalized data
-2. **Data Quality:** Maintain 99.9% field completeness, 100% domain compliance in ESRI outputs
-3. **Single Source of Truth:** Consolidate fragmented standards into unified, maintainable structure
-
-### High-Stakes Context
-- **Active Production System:** 724,794 CAD records (2019-2026) feeding live dashboard
-- **Zero Downtime Tolerance:** Dashboard updates must not introduce bad data
-- **Geographic Impact:** Data drives police resource allocation decisions
-- **Compliance Requirements:** Case number format (YY-NNNNNN) must preserve leading zeros
-
----
-
-## 🏗️ Repository Architecture
-
-### Current Active Repositories (DO NOT ARCHIVE)
-
-```
-02_ETL_Scripts/
-├── cad_rms_data_quality/              # THIS REPO - Quality validation & consolidation
-│   ├── config/                        # Configuration files
-│   │   ├── schemas.yaml               # Points to 09_Reference/Standards
-│   │   ├── validation_rules.yaml      # Domain validation rules
-│   │   └── consolidation_sources.yaml # CAD/RMS source file registry
-│   ├── consolidate_cad_2019_2026.py   # Production consolidation script
-│   ├── monthly_validation/scripts/    # CAD/RMS monthly validators
-│   └── shared/utils/                  # Shared utilities
-│       ├── schemas_loader.py          # load_schemas() — resolves ${standards_root}
-│       └── version_check.py           # check_standards_version() — drift warning
-│
-└── CAD_Data_Cleaning_Engine/          # CRITICAL - Normalization engine
-    └── scripts/
-        └── enhanced_esri_output_generator.py  # 🔥 AUTHORITATIVE normalization logic
-            # HOW_REPORTED_MAPPING (140 entries → 12 targets)
-            # DISPOSITION_MAPPING (55 entries → 20 targets)
-            # Loaded from Standards/CAD_RMS/mappings/ JSON at runtime (Phase 2)
-            # data/ directory archived to 02_ETL_Scripts/archive/ (Phase 3C)
-```
-
-### Canonical Standards Location (v3.0.0 - Rationalized 2026-03-17)
-
-```
-09_Reference/Standards/                    # External authoritative schemas
-├── CAD/DataDictionary/current/schema/     # CAD-specific: cad_export_field_definitions.md
-├── RMS/DataDictionary/current/schema/     # RMS-specific: rms_export_field_definitions.md
-├── Clery/DataDictionary/current/          # Clery Act: crime definitions, geography
-├── NIBRS/DataDictionary/current/          # NIBRS: offense definitions, RMS-to-NIBRS map
-├── Personnel/                             # Assignment Master schema
-│
-├── CAD_RMS/                               # 🎯 SINGLE SOURCE OF TRUTH
-│   ├── DataDictionary/current/schema/     # ALL cross-system schemas:
-│   │   ├── canonical_schema.json          #   Unified field dictionary (100+ fields)
-│   │   ├── cad_fields_schema_latest.json  #   CAD export field schema
-│   │   ├── rms_fields_schema_latest.json  #   RMS export field schema
-│   │   ├── transformation_spec.json       #   ETL transformation rules
-│   │   ├── cad_rms_schema_registry.yaml   #   Schema registry + domain values
-│   │   ├── cad_to_rms_field_map.json      #   v2.0 (2025-12-30) - 280 lines
-│   │   ├── rms_to_cad_field_map.json      #   v2.0 (2025-12-30) - 258 lines
-│   │   └── multi_column_matching_strategy.md
-│   └── mappings/                          # Field mapping rules, CSVs, policies
-│
-├── VERSION                                # Machine-readable version (3.0.0) for runtime checks
-├── unified_data_dictionary/schemas/       # ⚠️ COMPATIBILITY SHIM ONLY
-│   # 4 files for schemas.yaml backward compatibility
-│   # Identical copies of CAD_RMS canonical versions
-│   # Do NOT modify — update CAD_RMS copy and re-sync
-│
-└── archive/                               # All retired content (preserve-first)
-```
-
-### Processed Data Location
-
-```
-13_PROCESSED_DATA/ESRI_Polished/
-├── base/
-│   └── CAD_ESRI_Polished_Baseline.xlsx         # Dashboard data source
-│       # 724,794 records | 559,202 unique cases
-│       # Date range: 2019-01-01 to 2026-01-30
-└── manifest.json                               # Latest file pointer
-```
-
----
-
-## ⚖️ Decision Logic & Version Authority
-
-### When Multiple Versions Exist
-
-**Field Mappings:**
-- ✅ **AUTHORITATIVE:** `CAD_RMS/DataDictionary/current/schema/` (v2.0, 2025-12-30)
-- ✅ **PROMOTED:** `CAD_RMS/mappings/` (mapping rules, field maps, CSVs — promoted from UDD)
-- ❌ **ARCHIVED:** `CAD/DataDictionary/archive/` (v1.0 maps, archived 2026-03-17)
-- ❌ **ARCHIVED:** `archive/mappings_field_mappings_20260317/` (v1.0 copies)
-
-**Rationale:** v2.0 includes multi-column matching strategy and comprehensive edge case handling
-
-**Normalization Rules:**
-- ✅ **AUTHORITATIVE:** `Standards/CAD_RMS/mappings/` JSON files (loaded at runtime by `enhanced_esri_output_generator.py`)
-  - `how_reported_normalization_map.json`: 140 entries → 12 canonical targets
-  - `disposition_normalization_map.json`: 55 entries → 20 canonical targets
-  - Advanced normalization functions in script handle unmapped values via pattern matching
-
-**Python Package Versions:**
-- ✅ **AUTHORITATIVE:** `cad_rms_data_quality/pyproject.toml` (v1.3.2)
-- ⚠️ **IGNORE:** Any `-PD_BCI_01` suffixed files (artifacts from initial AI setup session)
-
-### Path Resolution Priority
-
-1. **Check `config/schemas.yaml` first** - Contains canonical path mappings
-2. **Relative paths from project root** - Preferred for portability
-3. **Config.yaml variables** - For external Standards directory
-4. **Never hardcode absolute paths** - Breaks on different machines
-
----
-
-## 🔥 Critical Files & Their Purposes
-
-### Never Modify Without Understanding Impact
-
-| File | Purpose | Breaking This Affects |
-|------|---------|----------------------|
-| `CAD_Data_Cleaning_Engine/scripts/enhanced_esri_output_generator.py` | Field normalization for ESRI | Dashboard data quality |
-| `13_PROCESSED_DATA/ESRI_Polished/base/CAD_ESRI_Polished_Baseline.xlsx` | Dashboard data source | Live production dashboard |
-| `config/consolidation_sources.yaml` | Source file registry | Consolidation script execution |
-| `config/validation_rules.yaml` | Domain validation rules | Monthly validation scoring |
-| `09_Reference/Standards/CAD_RMS/DataDictionary/current/schemas/canonical_schema.json` | Master field definitions | Cross-system validation |
-
-### Workflow-Critical Scripts
-
-```python
-# Consolidation workflow
-consolidate_cad_2019_2026.py              # Step 1: Merge yearly + monthly files
-→ CAD_Data_Cleaning_Engine/scripts/enhanced_esri_output_generator.py  # Step 2: Normalize & polish
-→ scripts/copy_polished_to_processed_and_update_manifest.py           # Step 3: Deploy to 13_PROCESSED_DATA
-
-# Monthly validation workflow
-monthly_validation/scripts/validate_cad.py   # Validate new CAD exports
-monthly_validation/scripts/validate_rms.py   # Validate new RMS exports
-```
-
----
-
-## 🧪 Validation Commands & Smoke Tests
-
-### Pre-Deployment Validation
-
-```powershell
-# 1. Verify schema paths resolve
-cd "C:\Users\carucci_r\OneDrive - City of Hackensack\02_ETL_Scripts\cad_rms_data_quality"
-python -c "import yaml; print(yaml.safe_load(open('config/schemas.yaml')))"
-
-# 2. Test normalization mapping loads
-cd "..\CAD_Data_Cleaning_Engine"
-python -c "from scripts.enhanced_esri_output_generator import HOW_REPORTED_MAPPING; print(f'Loaded {len(HOW_REPORTED_MAPPING)} mappings')"
-# Expected output: Loaded 140 mappings
-
-# 3. Check for deprecated paths in codebase
-Get-ChildItem -Recurse -Include *.py,*.yaml,*.bat,*.ps1 | Select-String "unified_data_dictionary" | Where-Object {$_.Line -notmatch "^#"}
-# Should return ZERO results (or only comments)
-
-# 4. Validate baseline file integrity
-python scripts/verify_baseline.py
-# Expected: Record count = 724794, No NaN dates, HowReported has only valid values
-```
-
-### Data Quality Validation
-
-```python
-# Quick HowReported domain check (after polishing)
-import pandas as pd
-
-df = pd.read_excel('13_PROCESSED_DATA/ESRI_Polished/base/CAD_ESRI_Polished_Baseline.xlsx')
-
-valid_values = ['9-1-1', 'Phone', 'Walk-In', 'Self-Initiated', 'Radio', 
-                'eMail', 'Mail', 'Other - See Notes', 'Fax', 'Teletype',
-                'Virtual Patrol', 'Canceled Call']
-
-invalid = df[~df['How Reported'].isin(valid_values)]['How Reported'].unique()
-print(f"Invalid values: {len(invalid)}")
-if len(invalid) > 0:
-    print("❌ VALIDATION FAILED - Dashboard will show bad data")
-    print(invalid)
-else:
-    print("✅ All HowReported values normalized correctly")
-```
-
-### Critical Field Completeness Check
-
-```python
-# Dashboard-critical fields must be ≥99% complete
-critical_fields = ['ReportNumberNew', 'Incident', 'Time of Call', 
-                   'FullAddress2', 'PDZone', 'How Reported', 'Disposition']
-
-for field in critical_fields:
-    completeness = (df[field].notna().sum() / len(df)) * 100
-    status = "✅" if completeness >= 99.0 else "❌"
-    print(f"{status} {field}: {completeness:.2f}%")
-```
-
----
-
-## 🚨 Common Pitfalls & How to Avoid Them
-
-### Pitfall 1: Case Number Format Corruption
-
-**Problem:** Excel converts `26-000001` to `26000001` (numeric), losing format  
-**Solution:** Always force `ReportNumberNew` to string dtype on load:
+### Case Number Format Corruption
+Excel converts `26-000001` to `26000001`. Always force `ReportNumberNew` to string dtype on load:
 ```python
 df = pd.read_excel(file, dtype={'ReportNumberNew': str})
-# Then normalize: "26000001.0" → "26-000001"
 ```
 
-**Validation:** `validate_cad.py` and `validate_rms.py` do this automatically (v1.2.6+)
+### Editing the Shim Instead of Canonical
+Never edit `unified_data_dictionary/schemas/` directly. Edit the canonical copy in `CAD_RMS/DataDictionary/current/schema/` and run `python scripts/sync_udd_shim.py`.
 
-### Pitfall 2: Skipping Normalization
+### Mixing Schema Versions
+If any script references `unified_data_dictionary/schemas/` directly (instead of through the shim mechanism), update it to point to `CAD_RMS/DataDictionary/current/schema/`.
 
-**Problem:** Consolidation produces valid CSV, but ESRI baseline has raw typos  
-**Reality Check:** `consolidate_cad_2019_2026.py` does NOT normalize - it only merges files  
-**Solution:** Always run `enhanced_esri_output_generator.py` after consolidation
+### Stale Normalization Maps
+The JSON normalization maps in `CAD_RMS/mappings/` must stay in sync with the external `enhanced_esri_output_generator.py`. If you add a new HowReported value to the schema registry, also add it to `how_reported_normalization_map.json`.
 
-**Pipeline:**
+---
+
+## AI Agent Guidelines
+
+### DO
+
+- **Read before editing** -- understand the file's role before modifying it
+- **Create a git checkpoint** before major changes: `git add . && git commit -m "Checkpoint before [operation]"`
+- **Run the shim sync** after editing any of the 4 canonical schema files
+- **Validate assumptions with data** -- check field counts, unique values, null rates
+- **Prefer relative paths** from the repo root
+
+### DON'T
+
+- **Never modify files in `archive/`** -- they are frozen historical records
+- **Never edit shim files directly** -- always edit the CAD_RMS canonical copy
+- **Never hardcode absolute Windows paths** -- use relative paths or config variables
+- **Never delete files without archiving** -- this repo uses a preserve-first policy
+- **Never assume Excel preserves dtypes** -- always force string for case numbers
+
+### When Proposing Changes
+
+1. State the specific file and line number affected
+2. Show before/after snippets
+3. Explain impact on downstream consumers (dashboard, ETL scripts)
+4. Provide a validation step to verify the change worked
+5. Include rollback procedure
+
+---
+
+## Development Setup
+
+### Python Dependencies
+```bash
+pip install -r requirements.txt  # pandas>=2.0.0, python-dateutil>=2.8.2
 ```
-consolidate_cad_2019_2026.py          # Merges files → raw CSV
-↓
-enhanced_esri_output_generator.py     # Normalizes fields → polished Excel
-↓
-Dashboard consumes polished Excel     # Shows clean data
-```
 
-### Pitfall 3: Overwriting Baseline Accidentally
+### Quick Validation
+```bash
+# Verify shim sync status
+python scripts/sync_udd_shim.py --dry-run
 
-**Problem:** Running incremental mode can corrupt baseline if not configured correctly  
-**Safe Mode (Recommended):**
-```powershell
-python consolidate_cad_2019_2026.py --full  # Always rebuild from source
-```
-
-**Incremental Mode (Advanced - Use with caution):**
-```yaml
-# config/consolidation_sources.yaml
-incremental:
-  enabled: false  # Keep disabled unless you understand deduplication logic
-```
-
-### Pitfall 4: Mixing Schema Versions
-
-**Problem:** Script references `unified_data_dictionary/schemas/` but files moved to `CAD_RMS/`  
-**Detection:**
-```powershell
-# Find all references to deprecated paths
-Get-ChildItem -Recurse *.py,*.yaml | Select-String "unified_data_dictionary/schemas"
-```
-
-**Fix:** Update paths to point to new structure:
-```yaml
-# config/schemas.yaml
-schemas:
-  canonical: "${standards_root}/CAD_RMS/DataDictionary/current/schemas/canonical_schema.json"
-  cad: "${standards_root}/CAD/DataDictionary/current/schemas/cad_fields_schema_latest.json"
+# Validate an RMS export
+python validate_rms_export.py sample_rms_export.csv
 ```
 
 ---
 
-## 📋 Standards Repository Consolidation Status
+## Version History
 
-### Current State (As of 2026-03-17)
+| Version | Date | Key Changes |
+|---------|------|-------------|
+| 3.0.0 | 2026-03-17 | **RATIONALIZATION:** CAD_RMS is single source of truth, UDD slimmed to 4-file shim, 64 PD_BCI_01 files archived, root reduced to ~12 essential files |
+| 2.0.0 | 2026-01-15 | Repository restructuring, nested git removed, archive structure created |
+| 1.2.2 | 2026-01-14 | Response time filter configuration added |
+| 1.2.0 | 2026-01-08 | Standardized to 11 ESRI categories, added 9 unmatched call types |
+| 1.1.0 | 2026-01-08 | Call type mapping system with Incident_Norm column, 640 entries |
+| 1.0.0 | 2026-01-08 | Initial call type classification (516 entries, 11 categories) |
+| 0.3.0 | 2025-12-30 | RMS export field definitions (29 fields, 8 groups), v2.0 mappings |
 
-**Repository Rationalization:** COMPLETE
-- **v3.0.0** — Full rationalization executed 2026-03-17
-- All schemas promoted to `CAD_RMS/DataDictionary/current/schema/`
-- `unified_data_dictionary/` slimmed to 4-file compatibility shim
-- 64 `-PD_BCI_01` files archived to `archive/PD_BCI_01_versions/`
-- Duplicate schemas/mappings archived with date-stamped folders
-- Root clutter reduced from 50+ to ~12 essential files
-- `schemas.yaml` shim paths validated and functional
-
-**Archive Contents:**
-- `archive/PD_BCI_01_versions/` — 64 frozen v0.2.1 files
-- `archive/unified_data_dictionary_20260317/` — UDD bulk content
-- `archive/schemas_udd_20260317/` — Older duplicate schema copies
-- `archive/mappings_field_mappings_20260317/` — v1.0 field mappings
-- `archive/root_loose_files_20260317/` — Relocated root-level files
-- `archive/completed_planning/` — Finished planning docs
-- `archive/directory_trees/` — Historical tree snapshots
-
-**Related Documentation:**
-- 📄 `docs/merge/RATIONALIZATION_MANIFEST_20260317.md` — Full audit trail of rationalization
-- 📄 `docs/ai_handoff/CURSOR_AI_CONSOLIDATION_GUIDE.md` — Original consolidation instructions
-- 📄 `docs/merge/STANDARDS_RATIONALIZATION_PROMPT_OPTIMIZED.md` — Rationalization governing prompt
+See `CHANGELOG.md` for full details.
 
 ---
 
-## 🤖 AI Agent Behavioral Guidelines
-
-### DO: Production-Safe Practices
-
-✅ **Always create git checkpoint before major changes:**
-```powershell
-git add .
-git commit -m "Checkpoint before [operation]"
-```
-
-✅ **Test on sample data first:**
-```python
-# Test normalization on 1000 rows before processing 724K
-df_sample = df.head(1000)
-# Apply normalization
-# Validate results
-# Then process full dataset
-```
-
-✅ **Provide rollback instructions with every script:**
-```powershell
-# If this breaks, run:
-git reset --hard HEAD
-Copy-Item -Recurse "archive/backup_20260204" "restored_folder"
-```
-
-✅ **Validate assumptions with data:**
-```python
-# Don't assume - verify
-print(f"HowReported nulls: {df['How Reported'].isna().sum()}")
-print(f"Unique values: {df['How Reported'].nunique()}")
-```
-
-### DON'T: Dangerous Practices
-
-❌ **Never modify production baseline directly** - Always generate new version  
-❌ **Never skip validation after normalization** - Dashboard depends on clean data  
-❌ **Never hardcode absolute paths** - Breaks on different machines  
-❌ **Never assume Excel preserves dtypes** - Always force string for case numbers  
-❌ **Never merge without understanding deduplication** - Risk of data loss  
-
-### Communication Standards
-
-**When proposing changes:**
-1. State the **specific file and line number** affected
-2. Show **before/after** code snippets
-3. Explain **impact on dashboard** if relevant
-4. Provide **validation test** to verify change worked
-5. Include **rollback procedure**
-
-**When reporting issues:**
-1. Exact error message (full traceback)
-2. File path and line number
-3. Input data characteristics (row count, dtypes, sample values)
-4. Expected vs. actual behavior
-5. Steps to reproduce
-
----
-
-## 📚 Key Documentation References
-
-### Internal Documentation
-- `README.md` - Project overview, quick start, architecture
-- `CHANGELOG.md` - Version history with detailed change notes
-- `INCREMENTAL_RUN_GUIDE.md` - Baseline + incremental workflow
-- `BASELINE_QUICK_ANSWERS.md` - Common baseline questions
-- `outputs/consolidation/CAD_CONSOLIDATION_EXECUTION_GUIDE.txt` - Step-by-step consolidation
-
-### External Standards
-- `09_Reference/Standards/README.md` - Standards repository structure
-- `09_Reference/Standards/CAD_RMS/DataDictionary/SCHEMA_ENHANCEMENT_SUMMARY.md` - v2.0 improvements
-- `09_Reference/Standards/unified_data_dictionary/docs/` - Legacy documentation (being consolidated)
-
-### Quality Reports Reference
-- `monthly_validation/reports/latest.json` - Most recent validation metrics
-- `consolidation/reports/2026_02_02_baseline_only/` - Baseline validation results
-
----
-
-## 🔄 Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.5.0 | 2026-04-10 | **ALL AUDIT GAPS CLOSED:** Phases 1-3 complete, emergency section retired, mapping counts corrected (140/55), JSON loading wiring documented, new utils (schemas_loader, version_check) noted, data/ archived |
-| 1.4.0 | 2026-03-17 | **RATIONALIZATION COMPLETE:** Updated architecture for v3.0.0, CAD_RMS is single source of truth, UDD slimmed to shim, consolidation status updated, deprecated paths removed |
-| 1.3.4 | 2026-02-04 | **EMERGENCY UPDATE:** Added dashboard crisis context, 4 critical decisions, Phase 1/2 priorities, updated mapping status |
-| 1.3.3 | 2026-02-04 | Added HowReported normalization crisis context, enhanced validation commands |
-| 1.3.2 | 2026-02-03 | Baseline generation documentation, enhanced ESRI output workflow |
-| 1.2.6 | 2026-02-02 | Incremental run support, ReportNumberNew Excel artifact fix |
-| 1.1.0 | 2026-01-31 | Initial consolidation complete, ESRI output operational |
-
----
-
-## 🎓 Learning Resources for AI Agents
-
-### Understanding the Data Pipeline
-
-```
-Raw CAD Exports (Excel)
-    ↓
-consolidate_cad_2019_2026.py (Merge yearly + monthly)
-    ↓
-2019_to_2026_01_30_CAD.csv (714K+ records, raw data)
-    ↓
-enhanced_esri_output_generator.py (Normalize fields, RMS backfill)
-    ↓
-CAD_ESRI_POLISHED_[timestamp].xlsx (724K records, normalized)
-    ↓
-13_PROCESSED_DATA/ESRI_Polished/base/ (Deployment)
-    ↓
-ArcGIS Pro Dashboard (Production)
-```
-
-### Critical Normalization Concepts
-
-**Why Normalization Matters:**
-- Raw CAD data has 858 incident variants → Normalized to 557
-- HowReported has ~30+ typos/abbreviations → Normalized to 12 standard values
-- Disposition has 101 variants → Normalized to 20 standard values
-
-**How It Works:**
-1. **Direct Mapping:** `'911' → '9-1-1'` (case-insensitive, 140 HOW_REPORTED + 55 DISPOSITION entries)
-2. **Pattern Matching:** Unmapped values checked for patterns (`'91-1'` contains `'911'`)
-3. **Default Fallback:** Unknown values get sensible defaults (`'U' → 'Phone'`)
-
-**Success Metrics:**
-- 100% domain compliance (all values in valid set)
-- Zero NULL values in HowReported (default applied)
-- Dashboard dropdown shows only 12 canonical values
-
----
-
-**Last Updated:** 2026-04-10  
-**Maintained By:** R. A. Carucci  
-**For AI Agents:** Treat this as your operational manual - when in doubt, refer here first.
-
-# Path resolution rules are defined globally in ~/.claude/CLAUDE.md
+**Last Updated:** 2026-04-10
+**CLAUDE.md Version:** 2.0.0
+**For AI Agents:** Treat this as your operational manual. When in doubt, refer here first.
