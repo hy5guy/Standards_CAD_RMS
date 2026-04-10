@@ -1,0 +1,21 @@
+{
+  "description": "Maps canonical Standards files to their unified_data_dictionary shim copies. Used by sync_udd_shim.py to keep shims in sync.",
+  "pairs": [
+    {
+      "canonical": "CAD_RMS/DataDictionary/current/schema/canonical_schema.json",
+      "shim": "unified_data_dictionary/schemas/canonical_schema.json"
+    },
+    {
+      "canonical": "CAD_RMS/DataDictionary/current/schema/cad_fields_schema_latest.json",
+      "shim": "unified_data_dictionary/schemas/cad_fields_schema_latest.json"
+    },
+    {
+      "canonical": "CAD_RMS/DataDictionary/current/schema/rms_fields_schema_latest.json",
+      "shim": "unified_data_dictionary/schemas/rms_fields_schema_latest.json"
+    },
+    {
+      "canonical": "CAD_RMS/DataDictionary/current/schema/transformation_spec.json",
+      "shim": "unified_data_dictionary/schemas/transformation_spec.json"
+    }
+  ]
+}

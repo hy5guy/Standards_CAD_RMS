@@ -41,10 +41,11 @@
           "inputs": ["cad_raw_df", "rms_raw_df"],
           "outputs": ["validation_report"],
           "parameters": {
-            "expected_cad_cols": ["ReportNumberNew", "Incident", "FullAddress2", "TimeOfCall"],
+            "expected_cad_cols": ["ReportNumberNew", "Incident", "FullAddress2", "Time of Call"],
             "expected_rms_cols": ["CaseNumber", "FullAddress", "Zone", "IncidentType1"]
           },
-          "error_handling": "Log warning for missing columns; continue with available fields"
+          "error_handling": "Log warning for missing columns; continue with available fields",
+          "notes": "CAD exports use PDZone for police zone; RMS exports use Zone. Both map to the canonical zone field. See cad_rms_schema_registry.yaml zone.aliases for the full alias list."
         }
       ],
       "success_criteria": "Both files loaded successfully with >0 records",
@@ -66,7 +67,8 @@
             "cad_field_map": "cad_field_map.json",
             "rms_field_map": "rms_field_map.json"
           },
-          "error_handling": "Skip unmapped fields with warning"
+          "error_handling": "Skip unmapped fields with warning",
+          "notes": "The ESRI generator renames HourMinuetsCalc (vendor typo preserved from CAD export) to Hour_Calc. This rename is applied here via the cad_field_map but was previously undocumented. See cad_export_field_definitions.md for full field name mapping."
         },
         {
           "operation_id": "2.2",
@@ -456,7 +458,7 @@
           "outputs": ["validation_results"],
           "parameters": {
             "fields_to_check": {
-              "HowReported": ["9-1-1", "Phone", "Walk-in", "Self-Initiated", "Radio", "Other"],
+              "HowReported": ["9-1-1", "Canceled Call", "eMail", "Fax", "Mail", "Other - See Notes", "Phone", "Radio", "Self-Initiated", "Teletype", "Virtual Patrol", "Walk-In"],
               "Disposition": "ref/Disposition_Types.csv",
               "PDZone": ["Z1", "Z2", "Z3", "Z4", "UNK"]
             }
