@@ -322,3 +322,48 @@ Phase 2 wiring is **production-ready**. Safe to proceed with Gap #7 archive and 
 | cad_rms_data_quality | `shared/utils/version_check.py` | `check_standards_version()` — drift warning |
 
 **Archive:** `02_ETL_Scripts/archive/CAD_Data_Cleaning_Engine_data_20260409/` (1.4 GB freed from active sync)
+
+---
+
+## Documentation Sync (2026-04-10)
+
+**Goal:** Propagate all Phase 1–3 facts to every CLAUDE.md and README across all repos.
+**Status:** ✅ COMPLETE
+
+| # | File | Changes |
+|---|------|---------|
+| 1 | `Standards/CLAUDE.md` | Emergency crisis section retired → historical note; v1.4.0→v1.5.0; normalization rules reference JSON; VERSION/schemas_loader/version_check added to architecture |
+| 2 | `Standards/Clery/CLAUDE.md` | No changes needed — already current |
+| 3 | `Standards/README.md` | Added VERSION file to repository layout tree |
+| 4 | `Standards/CAD_RMS/DataDictionary/README.md` | Expanded to full inventory; normalization mappings table (140/55 entries, runtime loading noted) |
+| 5 | `cad_rms_data_quality/Claude.md` | v1.6.1 emergency section condensed; v1.7.0 section added (schemas_loader, version_check, data archive); version history updated |
+| 6 | `cad_rms_data_quality/docs/project_knowledge/Claude.md` | SUPERSEDED header added; original v1.6.0 preserved as snapshot |
+| 7 | `cad_rms_data_quality/docs/Plan_Review_Package_For_Claude/Claude.md` | SUPERSEDED header added; original v1.0.1 preserved — keep, do not archive |
+| 8 | `05_EXPORTS/_CAD/README.md` | 2026 monthly data coverage row added; post-consolidation policy note; v2.0.0→v2.1.0 |
+| 9 | `05_EXPORTS/_RMS/README.md` | 2026 monthly data coverage row added; post-consolidation policy note; v2.0.0→v2.1.0 |
+
+**Additional stale references fixed by Claude Code (not in original list):**
+- `Standards/CLAUDE.md` footer: Last Updated 2026-02-04 → 2026-04-10
+- `cad_rms_data_quality/Claude.md`: v1.6.1 was missing from version history table — added
+- `Plan_Review_Package/Claude.md` line 164: referenced Standards v2.3.0 — covered by SUPERSEDED header
+
+---
+
+## Pipeline Run — NEXT (2026-04-10)
+
+**Pre-flight fix required before running:**
+`cad_rms_data_quality/config/consolidation_sources.yaml` has stale entries:
+- Monthly section still lists `2025_10`, `2025_11`, `2025_12` CAD files — DELETED 2026-04-10
+- Missing `2026_03_CAD.xlsx` (March 2026) — added 2026-04-10
+- `metadata.standards_version`: `"v2.3.0"` → should be `"v3.0.0"`
+- `metadata.last_updated`: `"2026-02-02"` → should be `"2026-04-10"`
+
+**Pipeline sequence:**
+1. Fix `consolidation_sources.yaml` → commit
+2. `python consolidate_cad_2019_2026.py --full`
+3. `python scripts/enhanced_esri_output_generator.py --input [csv] --output-dir 13_PROCESSED_DATA/ESRI_Polished/base/`
+4. Validate: HOW_REPORTED 0 invalid, all 7 critical fields ≥99%, record count >724,794
+5. Deploy via `copy_polished_to_processed_and_update_manifest.py`
+6. Record results here
+
+**Expected record count after run:** ~760,000–785,000 (adds Jan/Feb/Mar 2026)
