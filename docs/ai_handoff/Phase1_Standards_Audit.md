@@ -189,6 +189,22 @@ These are **locked** — any modification requires re-audit:
 
 ---
 
+## Phase 3 — Validate & Close
+
+**Goal:** Confirm Phase 2 wiring is production-ready; close 3 remaining LOW-priority gaps.
+**Started:** 2026-04-10
+
+| Task | Description | Gap | Status |
+|------|-------------|-----|--------|
+| 3A | Smoke-test JSON loading in `enhanced_esri_output_generator.py` | — | ✅ PASS (2026-04-09) |
+| 3B | Add `${standards_root}` post-load resolver to `schemas.yaml` handling | #1 | ⏳ Pending |
+| 3C | Archive `CAD_Data_Cleaning_Engine/data/` artifacts (~1.4 GB) from OneDrive active sync | #7 | 🔄 In Progress (2026-04-10) |
+| 3D | Add `schemas.yaml` version metadata check stub in ETL startup sequence | #6 | ⏳ Pending |
+
+**Key constraint:** 3C is safe to run independently of 3A — `data/` contains input/output artifacts only. The script loads normalization mappings exclusively from `Standards/CAD_RMS/mappings/*.json`.
+
+---
+
 ## Phase 3A — Smoke Test (2026-04-09)
 
 **Purpose:** Validate Phase 2 wiring — `enhanced_esri_output_generator.py` loading normalization mappings from Standards JSON instead of hardcoded Python dicts.
@@ -224,3 +240,60 @@ Initial test expectations for `PHONE/911` (expected `9-1-1`) and `SELF INIT` (sp
 ### Phase 3A Verdict: PASS
 
 Phase 2 wiring is **production-ready**. Safe to proceed with Gap #7 archive and remaining Phase 3 tasks.
+
+---
+
+## Phase 3C — Data Archive (Gap #7)
+
+**Authorized:** 2026-04-10 — Phase 3A PASS confirms it is safe.
+**Why safe:** `enhanced_esri_output_generator.py` loads normalization mappings from `Standards/CAD_RMS/mappings/*.json` only. The `data/` subdirectories are intermediate input/output artifacts with no runtime dependency.
+
+**Action:** Move `CAD_Data_Cleaning_Engine/data/01_raw/` and `data/03_final/` (~1.4 GB of intermediate Excel/CSV artifacts) to:
+
+```
+02_ETL_Scripts/archive/CAD_Data_Cleaning_Engine_data_20260410/
+```
+
+`scripts/` folder remains in place and untouched.
+
+**Status:** 🔄 In Progress (2026-04-10) — Claude Code move in progress.
+
+---
+
+## Phase 3B & 3D — Remaining Open Gaps
+
+### 3B — `${standards_root}` Resolver (Gap #1, LOW, ~30 min)
+
+**Problem:** `schemas.yaml` uses `${standards_root}` variable syntax. Python's `yaml.safe_load()` does not expand it. No production script currently consumes the interpolated paths — this is a future-use risk, not an active break.
+
+**Fix:** Add a `load_schemas()` helper in `cad_rms_data_quality/shared/utils/schema_loader.py` that:
+1. Loads `schemas.yaml` with `yaml.safe_load()`
+2. Resolves `${standards_root}` using the same pattern as `enhanced_esri_output_generator.py`:
+   - Check `os.environ.get('STANDARDS_ROOT')` first
+   - Fall back to `C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards`
+3. Returns the resolved dict
+
+**Status:** ⏳ Pending
+
+### 3D — Version Metadata Check (Gap #6, LOW, ~1 hour)
+
+**Problem:** `schemas.yaml` declares `standards_version: "v3.0.0"` but there is no runtime check that the Standards repo actually matches this version. Schema drift could go undetected.
+
+**Fix:** Add `cad_rms_data_quality/shared/utils/version_check.py` that:
+1. Reads `standards_version` from `schemas.yaml`
+2. Compares against a `VERSION` file or latest git tag in the Standards repo
+3. Emits `logger.warning()` (not error) on mismatch — non-blocking, informational only
+4. Called at ETL startup before any processing begins
+
+**Status:** ⏳ Pending
+
+---
+
+## Phase 3 Open Items Tracker
+
+| Item | Gap | Priority | Blocked By | Status |
+|------|-----|----------|------------|--------|
+| 3A Smoke test | — | DONE | — | ✅ PASS |
+| 3C Data archive | #7 | LOW | 3A PASS | 🔄 In Progress |
+| 3B Schema loader | #1 | LOW | Nothing | ⏳ Pending |
+| 3D Version check | #6 | LOW | Nothing | ⏳ Pending |
