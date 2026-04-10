@@ -1,0 +1,415 @@
+The Phase 1 audit's "v2.0" label referred to the Standards rationalization wave, not this file's internal `version:` field. Bumping from 1.0.0 → 1.1.0 for an enum contract change is proper semantic versioning. Approve it. Send this:
+
+---
+
+```
+Stage B approved. The how_reported section looks correct. Version bump 1.0.0 → 1.1.0 is approved — your reasoning is sound. Proceed with Stage C. Reminders:
+- transformation_spec.json is unlocked for C1, C2, C3 only
+- C4 is text proposal only — no files written
+- Flag any other docs that reference the changed fields before we commit
+```
+
+---
+
+Short and unambiguous. Claude Code has everything it needs from the earlier Stage C instructions — no need to repeat the commit plan. ---
+
+**User**
+
+ All three edits validated. Now here's what I need to flag before we commit:
+
+  ---
+  Stage C status
+
+  ┌──────┬─────┬─────────────────────────────────────────────────────┬────────┐
+  │ Task │ Gap │                       Change                        │ Status │
+  ├──────┼─────┼─────────────────────────────────────────────────────┼────────┤
+  │ C1   │ #8  │ TimeOfCall → "Time of Call" in Stage 1.3            │ Done   │
+  ├──────┼─────┼─────────────────────────────────────────────────────┼────────┤
+  │ C2   │ #9  │ HourMinuetsCalc → Hour_Calc documented in Stage 2.1 │ Done   │
+  ├──────┼─────┼─────────────────────────────────────────────────────┼────────┤
+  │ C3   │ #5  │ PDZone vs Zone distinction documented in Stage 1.3  │ Done   │
+  └──────┴─────┴─────────────────────────────────────────────────────┴────────┘
+
+  Flagged issue: Stage 7.5 HowReported enum is stale
+
+  transformation_spec.json line 459 has:
+  "HowReported": ["9-1-1", "Phone", "Walk-in", "Self-Initiated", "Radio", "Other"]
+
+  This is the old 6-value enum with the wrong Walk-in case. It should match the 12 canonical targets we just set in cad_rms_schema_registry.yaml. This is outside my current unlock scope. Want me to fix it in the same
+   commit, or do you want to approve it separately? Other docs referencing the changed fields (no changes needed, for awareness)
+
+  Files that reference TimeOfCall, HourMinuetsCalc, PDZone — none require changes for these gaps:
+
+  ┌─────────────────────────────────────────────────────┬────────────────────────────────────────────────┬───────────────────────────────────────────────────┐
+  │                        File                         │               Fields Referenced                │                      Impact                       │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ canonical_schema.json (locked)                      │ TimeOfCall (internal name, 13 refs)            │ Post-rename internal name — correct as-is         │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ cad_fields_schema_latest.json (locked)              │ HourMinuetsCalc, PDZone                        │ Documents source field names — correct as-is      │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ cad_export_field_definitions.md (locked)            │ HourMinuetsCalc → Hour_Calc, PDZone → ZoneCalc │ Already documents both renames — no change needed │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ cad_field_map_latest.json                           │ HourMinuetsCalc as source field                │ Mapping file — correct as-is                      │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ cad_to_rms_field_map.json (locked)                  │ PDZone                                         │ Field map — correct as-is                         │
+  ├─────────────────────────────────────────────────────┼────────────────────────────────────────────────┼───────────────────────────────────────────────────┤
+  │ ETL scripts (backfill_january_incremental.py, etc.) │ Time of Call, TimeOfCall, PDZone               │ Runtime code — out of scope for Standards work    │
+  └─────────────────────────────────────────────────────┴────────────────────────────────────────────────┴───────────────────────────────────────────────────┘
+
+  No changes needed to any of these for the current gaps. ---
+  C4 proposal (shim sync — text only)
+
+  Problem: unified_data_dictionary/schemas/ has 4 shim files that must stay identical to their CAD_RMS/ canonical copies. Currently synced manually. Proposed mechanism: A Python script sync_udd_shim.py in 09_Reference/Standards/scripts/:
+
+  1. Reads a manifest listing the 4 shim pairs (canonical path → shim path)
+  2. For each pair: compares file hashes (SHA-256)
+  3. If mismatch: copies canonical → shim, logs the update
+  4. If match: skips with "in sync" message
+  5. Exits with non-zero if any copy failed
+
+  Invocation: Run manually after any Standards update, or wire into a pre-commit hook later. No automation until Phase 2 pipeline is validated. Manifest would be: a small JSON file (scripts/shim_sync_manifest.json) listing the 4 pairs, so adding/removing shim files doesn't require code changes. ---
+  Awaiting your decision on the Stage 7.5 enum issue before proceeding to Stage D.
+
+---
+
+**Cursor**
+
+Three decisions here. Here is how I'd call each one:
+
+**Stage 7.5 HowReported enum — fix it in the same commit. ** This is not a scope creep question, it is a consistency requirement. You just updated the registry to 12 canonical targets. Leaving the transformation_spec validator at 6 stale values means it would flag 6 valid output values as domain errors. The two files govern the same domain — they must agree. Unlock Stage 7.5 for this fix and fold it into the Stage C commit. It is one line change and clearly part of the same logical unit. **C4 shim sync — approve the design, authorize the script. ** The proposal is solid. Hash comparison + manifest-driven + manual invocation is exactly the right scope for now. Approve it and let Claude Code write it. This belongs in Commit 2 (Stage C) since it is a Standards infrastructure change, not a documentation change. **The doc scan table — no action needed, confirms the audit was right. ** The fact that `cad_export_field_definitions.md` already documents both renames (`HourMinuetsCalc → Hour_Calc`, `PDZone → ZoneCalc`) is good news — it means the field definitions doc was ahead of the transformation spec. No changes needed there. Send this:
+
+---
+
+```
+Stage 7.5 fix: approved. Unlock transformation_spec.json Stage 7.5 HowReported enum — update from 6 stale values to the 12 canonical targets matching cad_rms_schema_registry.yaml v1.1.0. Fix Walk-in → Walk-In in the same edit. Fold into the Stage C commit. C4 shim sync: approved. Write sync_udd_shim.py and shim_sync_manifest.json in 09_Reference/Standards/scripts/. Fold into the Stage C commit. Once Stage 7.5 and C4 are done, proceed to Stage D, then we commit. One note on the doc scan: cad_export_field_definitions.md already documents HourMinuetsCalc → Hour_Calc and PDZone → ZoneCalc — good catch, confirms those locked files are correct as-is. ```
+
+---
+
+After Stage D completes, the three commits should be:
+
+- **Commit 1 (A+B):** Two mapping JSONs + registry fix
+- **Commit 2 (C):** transformation_spec.json (C1/C2/C3 + Stage 7.5 fix) + sync_udd_shim.py + shim_sync_manifest.json
+- **Commit 3 (D):** CLAUDE.md correction + D2 note
+
+---
+
+**User**
+
+my racmc57 github account is flagged can the git be switched to https://github.com/hy5guy/standards.git 
+
+● Push failed — remote https://github.com/racmac57/standards.git returns "repository not found" (either renamed, private access issue, or auth expired). The three commits are safely in your local main:
+
+  6ed2533 Correct CLAUDE.md mapping counts to match runtime values
+  e476508 Fix transformation_spec.json field names; add shim sync tooling
+  03d3aed Extract normalization mappings to JSON; fix schema registry how_reported enum
+
+  You may need to:
+  - Verify the repo URL (renamed?) — ! gh repo list racmac57 --limit 10 would show your repos
+  - Re-authenticate — ! gh auth login
+  - Or update the remote if the URL changed — git remote set-url origin <new-url>
+
+  Phase 2 completion summary
+
+  ┌─────────┬────────┬─────────────────────────────────────────────────────────────────────────┬─────────┐
+  │  Stage  │ Gap(s) │                              Files Changed                              │ Commit  │
+  ├─────────┼────────┼─────────────────────────────────────────────────────────────────────────┼─────────┤
+  │ A       │ #2     │ how_reported_normalization_map.json, disposition_normalization_map.json │ 03d3aed │
+  ├─────────┼────────┼─────────────────────────────────────────────────────────────────────────┼─────────┤
+  │ B       │ #3     │ cad_rms_schema_registry.yaml (v1.0.0 → v1.1.0)                          │ 03d3aed │
+  ├─────────┼────────┼─────────────────────────────────────────────────────────────────────────┼─────────┤
+  │ C1      │ #8     │ transformation_spec.json Stage 1.3                                      │ e476508 │
+  ├─────────┼────────┼─────────────────────────────────────────────────────────────────────────┼─────────┤
+  │ C2      │ #9     │ transformation_spec.json Stage 2.1                                      │ e476508 │
+  ├─────────┼────────┼─────────────────────────────────────────────────────────────────────────┼─────────┤
+  │ C3      │ #5     │ transformation_spec.json Stage 1.3                                      │ e476508 │
+  ├─────────┼────────┼─────────────────────────────────────────────────────────────────────────┼─────────┤
+  │ C (7.5) │ #3 ext │ transformation_spec.json Stage 7.5                                      │ e476508 │
+  ├─────────┼────────┼─────────────────────────────────────────────────────────────────────────┼─────────┤
+  │ C4      │ #4     │ sync_udd_shim.py, shim_sync_manifest.json                               │ e476508 │
+  ├─────────┼────────┼─────────────────────────────────────────────────────────────────────────┼─────────┤
+  │ D1      │ —      │ CLAUDE.md (6 count corrections)                                         │ 6ed2533 │
+  ├─────────┼────────┼─────────────────────────────────────────────────────────────────────────┼─────────┤
+  │ D2      │ —      │ Saved to memory (audit locked)                                          │ —       │
+  └─────────┴────────┴─────────────────────────────────────────────────────────────────────────┴─────────┘
+
+  Remaining Phase 2 work:
+  - Modify enhanced_esri_output_generator.py to load from the new JSON files instead of hardcoded dicts (deferred per your instruction — separate decision point)
+  - Run sync_udd_shim.py (without --dry-run) to sync the transformation_spec.json shim after these changes
+  - Fix the remote push once auth/URL is resolved
+
+---
+
+**Cursor**
+
+Yes, the [hy5guy/standards](https://github.com/hy5guy/standards) repo exists and is reachable. Send this to Claude Code:
+
+---
+
+```
+Update the remote origin to https://github.com/hy5guy/standards.git and push the three commits. git remote set-url origin https://github.com/hy5guy/standards.git
+git remote -v
+git push origin main
+
+If push requires authentication, use gh auth login and follow the prompts. After a successful push, confirm the three commit SHAs are visible on the remote. ```
+
+---
+
+One thing to be aware of: the [hy5guy/standards](https://github.com/hy5guy/standards) repo currently shows only 5 commits and a directory structure that looks like `00_dev` content (scripts, docs, CHANGELOG, README, SUMMARY) — not the Standards repo structure you've been working in. Before Claude Code pushes, it's worth having it run a quick check:
+
+---
+
+```
+Before pushing, run:
+git log --oneline origin/main 2>/dev/null || echo "cannot read remote"
+
+If the remote already has unrelated content, do not force push. Show me what's there first. ```
+
+---
+
+This protects against accidentally overwriting existing content on that remote with a different repo's history. If the remote is empty or already has the right history, push proceeds normally. If it has the `00_dev` content, you will need to decide whether to use a different branch or a different repo entirely. ---
+
+**User**
+
+I though I cloned all repos from racmac so I can use Hy5Guy as the default remote git. I have the GitHub desktop app open with Hy5Guy signed in, can you access the desktop app using mcp or other means to check my repors to select the correct repo? ---
+
+**Cursor**
+
+I can't access GitHub Desktop directly, but I have two better options available — let me check the GitKraken MCP tools and also try the GitHub CLI, which is faster. The remote SHA on `hy5guy/standards` is not in your local history — those are two completely different repos. Pushing there would require a force push and would overwrite whatever is currently there. Do not do that. Let me check the other candidate. Neither `hy5guy/standards` nor `hy5guy/Data_Standards` shares commit history with this local repo. Both are completely different codebases — pushing to either without force would fail, and force pushing would overwrite whatever content is already there. The cleanest path is to create a fresh repo on hy5guy specifically for this Standards content. Send this to Claude Code:
+
+---
+
+```
+Neither hy5guy/standards nor hy5guy/Data_Standards shares commit history with this local repo — do not push to either. Create a new repository on hy5guy and push the three commits there. gh repo create hy5guy/Standards --public --description "CAD/RMS data standards, schemas, and normalization mappings" --source . --remote origin --push
+
+If that command fails, do it in two steps:
+gh repo create hy5guy/Standards --public --description "CAD/RMS data standards, schemas, and normalization mappings"
+git remote set-url origin https://github.com/hy5guy/Standards.git
+git push -u origin main
+
+Confirm the push succeeded and show the final remote -v output. ```
+
+---
+
+Note: I used `Standards` (capital S) to distinguish it clearly from the unrelated `hy5guy/standards` (lowercase) repo already on that account. If you want a different name (e.g., `CAD_RMS_Standards` or `09_Reference_Standards`) just say so before sending — repo names are easier to set right the first time than to rename later. ---
+
+**User**
+
+can you check the racmac repos if I log out as Hy5Guy and sign back in as racmac57? ---
+
+**Cursor**
+
+You don't need to log out of hy5guy to check racmac57's repos — the `gh` CLI can query public repos for any account without authentication. Let me check right now. Found it. `racmac57/standards` is your repo — description "Police data standards and schemas for Hackensack PD CAD, RMS, NIBRS, and Clery analytics", last commit 2026-03-17 (right before today's Phase 2 work). The push failure was not because the repo is gone — it is still there and public. The real issue is simpler: **the `gh` CLI is currently authenticated as `hy5guy`, so it has no write access to a `racmac57` repo. ** That is why it returned "repository not found" on push. You have two clean options:
+
+**Option A — Transfer the repo (recommended long-term)**
+On GitHub.com: go to `racmac57/standards` → Settings → Danger Zone → Transfer ownership → transfer to `hy5guy`. The URL automatically redirects, local remote stays working. Do this once and you are done. **Option B — Create a new hy5guy repo and push now (faster today)**
+Send this to Claude Code:
+
+```
+Create a new repo on hy5guy for the Standards content and push the three commits:
+
+gh repo create hy5guy/Standards --public --description "CAD/RMS data standards, schemas, and normalization mappings for Hackensack PD"
+git remote set-url origin https://github.com/hy5guy/Standards.git
+git push -u origin main
+
+Confirm push succeeded with git log --oneline origin/main. ```
+
+Option A is the better long-term move because `racmac57/standards` has the full commit history and you avoid duplicating repos. But it requires you to log into racmac57 on GitHub.com to initiate the transfer — no CLI needed, just the web UI. Which do you want to do? ---
+
+**User**
+
+I can't transfer see attached
+
+---
+
+**Cursor**
+
+Two blockers visible in that screenshot:
+
+1. **`hy5guy/standards` already exists** — the name conflict prevents the transfer
+2. **Repository transfers not available for this account** — the racmac57 account restriction blocks transfers entirely
+
+Since both transfer routes are blocked, Option B is the only path forward. The `hy5guy/standards` name conflict means you need a different repo name. Send this to Claude Code:
+
+---
+
+```
+Cannot transfer racmac57/standards to hy5guy — account restriction plus name conflict (hy5guy/standards already exists with unrelated content). Create a new repo with a distinct name and push the three commits:
+
+gh repo create hy5guy/Standards_CAD_RMS --public --description "CAD/RMS data standards, schemas, and normalization mappings for Hackensack PD"
+git remote set-url origin https://github.com/hy5guy/Standards_CAD_RMS.git
+git push -u origin main
+
+After push succeeds:
+1. Confirm with: git log --oneline origin/main
+2. Update .git/config to show the new remote permanently
+3. Show me: git remote -v
+```
+
+---
+
+One thing to do on your end after the push succeeds: go to `racmac57/standards` on GitHub and either archive it (Settings → Archive this repository) or add a notice in the README pointing to `hy5guy/Standards_CAD_RMS` as the active repo. That way if anyone has the old URL bookmarked it is clear where the work continued. ---
+
+**User**
+
+what do I do ● Auth is tied to racmac57, not hy5guy. You'll need to either re-auth as hy5guy or create the repo from that account. Can you run this interactively? ! gh auth login
+
+  Then select the hy5guy account. Once authenticated, I'll run the three commands. Alternatively, if you can create the repo from the GitHub web UI under hy5guy, I'll handle the remote switch and push from here. ---
+
+**Cursor**
+
+The easiest path is the GitHub web UI — no re-auth needed in the CLI. Do this:
+
+**Step 1 — Create the repo on GitHub.com (2 minutes)**
+1. Open a browser and go to [github.com/hy5guy](https://github.com/hy5guy) while signed in as hy5guy
+2. Click the **+** → **New repository**
+3. Set:
+   - Repository name: `Standards_CAD_RMS`
+   - Description: `CAD/RMS data standards, schemas, and normalization mappings for Hackensack PD`
+   - Visibility: **Public**
+   - **Do NOT** initialize with README, .gitignore, or license (leave everything unchecked — the local repo already has all of this)
+4. Click **Create repository**
+
+**Step 2 — Come back here and tell me "repo created"**
+
+I will then run the three commands in Claude Code for you:
+
+```
+git remote set-url origin https://github.com/hy5guy/Standards_CAD_RMS.git
+git push -u origin main
+git remote -v
+```
+
+The empty repo created from the web UI will accept a push from the existing local history with no conflicts. No re-auth required because the CLI token is already tied to hy5guy for pushes — the earlier failure was specifically because it was trying to push to a `racmac57` repo that hy5guy doesn't own. ---
+
+**User**
+
+https://github.com/hy5guy/Standards_CAD_RMS.git 
+
+---
+
+**Cursor**
+
+[hy5guy/Standards_CAD_RMS](https://github.com/hy5guy/Standards_CAD_RMS) is live and empty — perfect. Send this to Claude Code now:
+
+---
+
+```
+The empty repo is ready at https://github.com/hy5guy/Standards_CAD_RMS.git
+
+git remote set-url origin https://github.com/hy5guy/Standards_CAD_RMS.git
+git push -u origin main
+git remote -v
+git log --oneline origin/main
+```
+
+---
+
+That's it — four commands, no decisions needed. Come back with the output and we'll confirm the push landed cleanly. ---
+
+**User**
+
+● Push succeeded. All three Phase 2 commits are on origin/main at hy5guy/Standards_CAD_RMS. Remote is permanently updated in .git/config. ---
+
+**Cursor**
+
+Phase 2 is complete. Here's the full picture of what was accomplished:
+
+**Repository:** [hy5guy/Standards_CAD_RMS](https://github.com/hy5guy/Standards_CAD_RMS)
+
+| Commit | Stage | What changed |
+|--------|-------|-------------|
+| `03d3aed` | A+B | Extracted 140 HOW_REPORTED + 55 DISPOSITION entries to JSON; fixed schema registry enum 6→12 targets; fixed Walk-In case |
+| `e476508` | C | Fixed transformation_spec field names (3 gaps + Stage 7.5 enum); added shim sync script + manifest |
+| `6ed2533` | D | Corrected CLAUDE.md mapping counts |
+
+**Still deferred (known, not forgotten):**
+- Modify `enhanced_esri_output_generator.py` to load from the new JSON files instead of hardcoded dicts — separate decision point, requires touching the ETL scripts repo
+- Run `sync_udd_shim.py` to sync the transformation_spec shim after the Stage C changes
+- Phase 1 audit count correction (145/58 → 140/55) — flagged for next revision
+
+**Housekeeping to do on your own time:**
+- Go to `racmac57/standards` on GitHub → Settings → Archive this repository. It has the pre-Phase-2 history and should be marked inactive so nothing accidentally gets pushed there in the future. When you're ready to tackle the deferred `enhanced_esri_output_generator.py` wiring or Phase 3, bring the Phase 1 audit and this conversation summary and we'll pick up from here cleanly. ---
+
+**User**
+
+racmac57/standards was archived what's the next prompt for Claude Code
+
+---
+
+**Cursor**
+
+The deferred item with the clearest next step is running `sync_udd_shim.py` — the shim files are currently out of sync because Stage C updated `transformation_spec.json` but the shim copy hasn't been updated yet. That should be done before anything else touches the Standards repo. After that, the `enhanced_esri_output_generator.py` wiring is the remaining Phase 2 work. Send this to Claude Code:
+
+---
+
+```
+Two remaining Phase 2 tasks. Do them in order. Task 1 — Run the shim sync (no file edits, just execute the script):
+cd "C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards"
+python scripts/sync_udd_shim.py --dry-run
+
+Show me the dry-run output. If it shows the expected transformation_spec.json shim is out of sync and everything else is in sync, run it for real:
+python scripts/sync_udd_shim.py
+
+Then confirm with git status — if the shim file was updated, commit it:
+git add unified_data_dictionary/schemas/transformation_spec.json
+git commit -m "Sync transformation_spec.json shim after Stage C field name fixes"
+git push origin main
+
+Task 2 — Wire enhanced_esri_output_generator.py to load from JSON (Gap #2 deferred work):
+The two JSON files are now in Standards/CAD_RMS/mappings/:
+- how_reported_normalization_map.json (140 entries)
+- disposition_normalization_map.json (55 entries)
+
+The script is at:
+C:\Users\carucci_r\OneDrive - City of Hackensack\02_ETL_Scripts\CAD_Data_Cleaning_Engine\scripts\enhanced_esri_output_generator.py
+
+Before touching the script:
+1. Show me the current HOW_REPORTED_MAPPING and DISPOSITION_MAPPING dict definitions (just the opening lines and entry count confirmation)
+2. Propose the replacement code that loads from JSON instead of hardcoded dicts
+3. Wait for my approval before editing the file
+
+This touches the normalization engine — do not modify it until I explicitly approve the proposed change. ```
+
+---
+
+**User**
+
+help me answer the following:
+● Confirmed: DISPOSITION_MAPPING spans lines 64-134, HOW_REPORTED_MAPPING spans lines 137-300. Both match the extracted JSON counts (55/140). Proposed replacement
+
+  Replace the ~237 lines of hardcoded dicts (lines 64-300) with a JSON loader. Here's the proposed code:
+
+  # --- Normalization mappings (loaded from Standards JSON files) ---
+  # Source of truth: 09_Reference/Standards/CAD_RMS/mappings/
+  # Fallback: hardcoded paths relative to this script are NOT provided. # If the JSON files are missing, the script fails fast with a clear error. def _load_mapping(json_path: Path, mapping_name: str) -> Dict[str, str]:
+      """Load a normalization mapping from a Standards JSON file.""" if not json_path.exists():
+          raise FileNotFoundError(
+              f"{mapping_name}: expected JSON at {json_path}\n"
+              f"Run Phase 2 extraction or verify Standards/CAD_RMS/mappings/ is synced." )
+      import json
+      with open(json_path, 'r', encoding='utf-8') as f:
+          data = json.load(f)
+      mapping = data['mapping']
+      logger.info(f"Loaded {mapping_name}: {len(mapping)} entries from {json_path.name}")
+      return mapping
+
+  # Default path: assumes OneDrive layout. Override via environment variable
+  # STANDARDS_ROOT if running from a different location. import os
+  _STANDARDS_ROOT = Path(os.environ.get(
+      'STANDARDS_ROOT',
+      r'C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards'
+  ))
+  _MAPPINGS_DIR = _STANDARDS_ROOT / 'CAD_RMS' / 'mappings'
+
+  DISPOSITION_MAPPING = _load_mapping(
+      _MAPPINGS_DIR / 'disposition_normalization_map.json',
+      'DISPOSITION_MAPPING'
+  )
+  HOW_REPORTED_MAPPING = _load_mapping(
+      _MAPPINGS_DIR / 'how_reported_normalization_map.json',
+      'HOW_REPORTED_MAPPING'
+  )
+
+  Key design decisions:
+
+  1. Fail-fast: If the JSON files are missing, the script raises FileNotFoundError with a clear message.

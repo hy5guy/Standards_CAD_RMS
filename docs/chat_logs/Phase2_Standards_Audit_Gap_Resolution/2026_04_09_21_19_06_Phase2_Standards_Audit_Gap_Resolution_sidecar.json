@@ -1,0 +1,144 @@
+{
+  "source_file": "Phase2_Standards_Audit_Gap_Resolution.md",
+  "source_path": "C:\\_chunker\\02_data\\Phase2_Standards_Audit_Gap_Resolution.md",
+  "manifest_path": "C:\\Users\\carucci_r\\OneDrive - City of Hackensack\\KB_Shared\\04_output\\Phase2_Standards_Audit_Gap_Resolution\\2026_04_09_21_19_06_Phase2_Standards_Audit_Gap_Resolution.origin.json",
+  "created_at": "2026_04_09_21_19_06",
+  "tags": [
+    "ai",
+    "code",
+    "data",
+    "docs",
+    "excel",
+    "it-ops",
+    "json",
+    "markdown",
+    "police",
+    "powershell",
+    "python",
+    "sql"
+  ],
+  "metadata": {
+    "project_name": "02_data",
+    "source_type": "documentation",
+    "language": "multi",
+    "department": "admin",
+    "key_terms": [
+      "json",
+      "standards",
+      "git",
+      "phone",
+      "stage",
+      "lines"
+    ],
+    "enrichment_version": "1.0.0"
+  },
+  "summaries": {
+    "file_summary": "╭─── Claude Code v2.1.98 ────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                    │ Tips for getting started...",
+    "first_line": "╭─── Claude Code v2.1.98 ────────────────────────────────────────────────────────────────────────────────────────────────╮"
+  },
+  "chunks": [
+    {
+      "chunk_id": "2026-04-09T21:19:06+00:00_Phase2_Standards_Audit_Gap_Resolution_chunk1",
+      "chunk_index": 1,
+      "file": "chunk_00000.txt",
+      "tags": [
+        "ai",
+        "audit",
+        "canonical",
+        "code",
+        "data",
+        "docs",
+        "entries",
+        "excel",
+        "it-ops",
+        "json",
+        "markdown",
+        "police",
+        "powershell",
+        "python",
+        "sql",
+        "stage",
+        "targets"
+      ],
+      "key_terms": [
+        "json",
+        "stage",
+        "targets",
+        "audit",
+        "entries",
+        "canonical"
+      ],
+      "summary": "╭─── Claude Code v2.1.98 ────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                    │ Tips for getting started...",
+      "char_length": 22341,
+      "byte_length": 25116
+    },
+    {
+      "chunk_id": "2026-04-09T21:19:06+00:00_Phase2_Standards_Audit_Gap_Resolution_chunk2",
+      "chunk_index": 2,
+      "file": "chunk_00001.txt",
+      "tags": [
+        "ai",
+        "city",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "it-ops",
+        "json",
+        "markdown",
+        "onedrive",
+        "police",
+        "powershell",
+        "python",
+        "sql",
+        "stage",
+        "standards"
+      ],
+      "key_terms": [
+        "json",
+        "standards",
+        "git",
+        "stage",
+        "onedrive",
+        "city"
+      ],
+      "summary": "Before editing, let me find all other docs referencing the changed fields.",
+      "char_length": 30109,
+      "byte_length": 36696
+    },
+    {
+      "chunk_id": "2026-04-09T21:19:06+00:00_Phase2_Standards_Audit_Gap_Resolution_chunk3",
+      "chunk_index": 3,
+      "file": "chunk_00002.txt",
+      "tags": [
+        "ai",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "it-ops",
+        "json",
+        "markdown",
+        "notes",
+        "phone",
+        "police",
+        "powershell",
+        "python",
+        "radio",
+        "sql"
+      ],
+      "key_terms": [
+        "phone",
+        "see",
+        "json",
+        "radio",
+        "git",
+        "notes"
+      ],
+      "summary": "I'll commit them together since the script fix is part of the same tooling.",
+      "char_length": 22567,
+      "byte_length": 24635
+    }
+  ],
+  "enrichment_version": "1.0.0"
+}

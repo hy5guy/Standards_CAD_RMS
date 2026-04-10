@@ -1,0 +1,366 @@
+**Table tools** → **New measure** (or right‑click the table → **New measure**). 3. Paste the DAX and set the name to `RT Avg Total Response Time`. 4. Set the format to `m:ss`. 5. Confirm the measure appears under `___ResponseTime_AllMetrics` in the Fields pane. ---
+
+## 2. Use the Values / Y-axis well
+
+On a line chart, the measure goes in the **Values** (or **Y-axis**) well, not the X-axis. - **X-axis:** `MM-YY` (or `Date_Sort_Key`)
+- **Y-axis / Values:** `RT Avg Total Response Time`
+- **Legend:** `Metric_Label`
+- **Small multiples:** `Response_Type`
+
+---
+
+## 3. If it still won’t accept the measure
+
+`TIME()` returns a datetime, and some line chart configurations can be picky about that. **Option A – Decimal with “min” format**
+
+Use a measure that returns the decimal and format it as minutes:
+
+```dax
+RT Avg Minutes = AVERAGE('___ResponseTime_AllMetrics'[Average_Response_Time])
+```
+
+Set the format to `0.0 "min"` so values show as `5.3 min` instead of plain `5.3`. **Option B – Keep the column for the chart**
+
+Leave `Average_Response_Time` on the Y-axis for plotting, and set its format to `0.0 "min"` so labels show `5.3 min` instead of raw decimals. ---
+
+## 4. Check the chart type
+
+If you’re using a combo chart (line + stacked column), the wells may be split (e.g. “Line values” vs “Column values”). Put the measure in the **Line values** well. ---
+
+**User**
+
+option A allowed me to add the field into the well but the values still have 10.8 or 12.8 which does not make sense at a glance. provide a prompt for claude to fix via mcp
+
+---
+
+**Cursor**
+
+
+Drafting a Claude MCP prompt to fix the Total Response time formatting:
+
+
+
+Created the prompt file. Summary:
+
+---
+
+## Prompt file
+
+**Path:** [`docs/PROMPT_Claude_MCP_Response_Time_Line_Chart_Time_Format.md`](docs/PROMPT_Claude_MCP_Response_Time_Line_Chart_Time_Format.md)
+
+---
+
+## How to use it
+
+1. Open Claude Desktop with the Power BI MCP connected. 2. Open the monthly report .pbix and connect to the model. 3. Copy everything between **PROMPT START** and **PROMPT END** from that file. 4. Paste into Claude Desktop. ---
+
+## What the prompt does
+
+- Asks Claude MCP to fix the line chart so values show as **M:SS** (e.g., 10:48, 12:48) instead of decimals (10.8, 12.8). - Suggests two DAX measures:
+  - **Option 1:** `AvgMinutes / 1440` with format `m:ss` (fraction of day). - **Option 2:** `TIME(0, INT(...), ROUND(...))` with format `m:ss`. - Includes steps to create the measure and wire it to the Y-axis. - Includes troubleshooting if the measure cannot be dragged into the well. ---
+
+## Quick manual test
+
+You can try Option 1 directly:
+
+1. Create measure `RT Avg Formatted = AVERAGE('___ResponseTime_AllMetrics'[Average_Response_Time]) / 1440`
+2. Set format to `m:ss`
+3. Use it in the Y-axis well instead of the current field
+
+---
+
+**User**
+
+claude crashed on me but I think I got the visual fixed please read C:\Users\carucci_r\OneDrive - City of Hackensack\Master_Automation\docs\chatlogs\Claude-Reading_and_acting_on_attached_prompts and Update all project documentation files so they accurately reflect the latest code and configuration changes in this repo. Then automatically run the necessary git commands to:
+1.stage only the updated documentation files,
+2.create a single, clear commit for these doc updates with an appropriate versioned message, and
+3.push to the current remote branch. Do not ask for confirmation; run the commands directly, and then summarize what you changed and the git commands you executed. ---
+
+**Cursor**
+
+
+Summary of what was done:
+
+## Documentation updates committed
+
+**Files in the commit (12 files, +1114 / -7 lines):**
+
+| File | Change |
+|------|--------|
+| `CHANGELOG.md` | v1.18.10 entry: Response Time window, DFR en-US, RT line chart M:SS, new prompts |
+| `SUMMARY.md` | Version and status updated |
+| `CLAUDE.md` | Version 1.18.10, Response Time section, new prompt references |
+| `docs/MCP_Session_Summary_TODAY_Cleanup.md` | **New** – TODAY() cleanup session summary |
+| `docs/PROMPT_Claude_MCP_Response_Time_Line_Chart_Time_Format.md` | **New** – MCP prompt for M:SS formatting |
+| `docs/Visual_Build_Guide_2026_02_v2.md` | **New** – Build guide (TODAY backlog removed) |
+| `docs/chatlogs/Claude-Reading_and_acting_on_attached_prompts/` | **New** – 7 chatlog files from the MCP session |
+
+## Git commands run
+
+```powershell
+git add CLAUDE.md
+git commit -m "docs: v1.18.10 - Response Time visuals, DFR en-US, TODAY() cleanup, RT line chart M:SS"
+git push
+```
+
+**Branch:** `docs/update-20260114-1447`  
+**Commit:** `25eff25`  
+**Remote:** `origin/docs/update-20260114-1447`
+
+## Chatlog summary
+
+The `Claude-Reading_and_acting_on_attached_prompts` chatlog shows the MCP session:
+
+- Verified `___ResponseTime_AllMetrics` (108 rows, 12 months)
+- Set `RT Trend Total Response` format to `"0.0 min"`
+- Added DFR Summons measures (Count, Total Fines, Title, Subtitle)
+- Set `Metric_Label` to sort by `Metric_Sort`
+- Added universal CF measures for all `Metric_Label` values
+- Created `Visual_Build_Guide_2026_02.md` with manual build steps
+
+The docs now reflect the Response Time visual fixes (including M:SS), DFR en-US parsing, and the TODAY() cleanup. ---
+
+**User**
+
+what visual are we making for the dfr summons
+
+---
+
+**Cursor**
+
+
+Here’s what the docs specify for the **DFR Summons** visual:
+
+## DFR Directed Patrol Summons visual
+
+**Location:** Drone page  
+**Source:** `DFR_Summons` table (from `dfr_directed_patrol_enforcement.xlsx` via M code)
+
+**Two layout options:**
+
+### Option A: Detail table
+- **Type:** Table
+- **Columns:** Date, Violation_Type, Location, Description, Statute, Fine_Amount, Issuing_Officer, DFR_Operator
+- **Title:** “DFR Directed Patrol Summons” (or `DFR Summons Title` measure)
+- **Format:** Navy headers (#1a2744), 9pt font, alternating rows, Fine_Amount as currency
+
+### Option B: Summary matrix
+- **Type:** Matrix
+- **Rows:** Violation_Type
+- **Columns:** YearMonthKey
+- **Values:** `DFR Summons Count`
+- **Title:** “DFR Directed Patrol Summons by Type”
+- **Subtotals:** ON for rows and columns
+
+**Shared requirements:**
+- **Visual name:** `dfr_summons` or `dfr_directed_patrol_summons` (for export mapping)
+- **Measures:** `DFR Summons Count`, `DFR Summons Total Fines`, `DFR Summons Title`, `DFR Summons Subtitle`
+
+**Data:** 13‑month rolling window (Feb 2025–Feb 2026 for `pReportMonth` = Feb 2026), excluding Dismiss/Void in Summons Recall. ---
+
+**User**
+
+The violation type is not the correct fit I am using Description but I need the values to be standarized please make them all caps. Also The Yearmonthkey is not correct I need a col in the m code for date sortkey and I need a col showing the date as MM-YY
+
+---
+
+**Cursor**
+
+
+Updating DFR_Summons.m to:
+1. Standardize Description to uppercase
+2. Add Date_Sort_Key (for sorting)
+3. Add MM-YY (display format)
+4. Remove YearMonthKey
+
+
+
+Updating the header comment and the Visual Build Guide to use Description and MM-YY. Here’s what was changed:
+
+## 1. `m_code/drone/DFR_Summons.m`
+
+- **Description → ALL CAPS**  
+  `Table.TransformColumns` now uppercases `Description` (null/empty left as-is). - **`Date_Sort_Key` added**  
+  `Date.StartOfMonth([Date])` for chronological sorting. - **`MM-YY` added**  
+  `Date.ToText([Date], "MM-yy")` for display (e.g. `"02-25"`, `"03-25"`). - **`YearMonthKey` removed**  
+  Replaced by `Date_Sort_Key` and `MM-YY`. ## 2. `docs/Visual_Build_Guide_2026_02.md`
+
+- **Option A (detail table):** Uses `Description` (ALL CAPS), `Violation_Type` removed from the column list. - **Option B (matrix):** Rows = `Description`, columns = `MM-YY` (sorted by `Date_Sort_Key`), title set to "by Description". ## 3. `docs/PROMPT_Claude_MCP_Create_Missing_Visuals_For_Monthly_Report.md`
+
+- DFR visual description updated to use `MM-YY` (sorted by `Date_Sort_Key`) and `Description` (ALL CAPS). ## 4. `docs/PROMPT_Claude_In_Excel_DFR_Directed_Patrol_Summons_MCode.md`
+
+- Checklist updated to mention setting `MM-YY` to sort by `Date_Sort_Key`. ---
+
+**Power BI setup:** In the model, select the `MM-YY` column → **Column tools** → **Sort by column** → choose `Date_Sort_Key` so month columns sort correctly (e.g. 02-25, 03-25, …, 02-26). ---
+
+**User**
+
+Also we should reduce the the length of the description "Parking or stopping in designated fire lane/fire zone" I want to display as FIRE LANE/FIRE ZONE
+
+---
+
+**Cursor**
+
+
+I've added the description shortening logic. ## Changes
+
+### `m_code/drone/DFR_Summons.m`
+
+- **Shortening rule:** Descriptions that start with `"Parking or stopping in designated "` are replaced with the part after that prefix, in uppercase. - **Example:** `"Parking or stopping in designated fire lane/fire zone"` → `"FIRE LANE/FIRE ZONE"`
+- **Other descriptions:** Still converted to ALL CAPS as before. ### `docs/Visual_Build_Guide_2026_02.md`
+
+- Updated the Description notes to mention this shortening. ---
+
+If you have more long descriptions to shorten, we can add similar rules (e.g. another prefix or a lookup table). ---
+
+**User**
+
+the new m code broke the visual , when I clicked on "Fix this" the title date changed to 1999 the total fine vales were at the correct value of 800 now they are at 2K
+
+---
+
+**Cursor**
+
+
+Adding `YearMonthKey` back to the M code so visuals and measures that reference it continue to work. We'll keep `Date_Sort_Key` and `MM-YY` for display. I’ve restored `YearMonthKey` in the M code so the visual can load again. The query now includes all three columns:
+
+- **YearMonthKey** – numeric (e.g. 202502) for existing visuals/measures  
+- **Date_Sort_Key** – date for sorting  
+- **MM-YY** – display format (e.g. "02-25")
+
+## What to do in Power BI
+
+1. **Refresh the DFR_Summons query**  
+   Power Query → right‑click `DFR_Summons` → **Refresh** (or **Close & Apply** if you’re in the editor). 2. **Undo the “Fix this” changes**  
+   Power BI may have replaced the missing field with something else. If the visual still shows 1999 or 2K:
+   - Use **Ctrl+Z** to undo, or  
+   - Remove the field that was auto‑substituted and re-add the correct one. 3. **Check the DFR Summons Subtitle measure**  
+   If it uses `YearMonthKey` for the date, it may have been changed by “Fix this”. In the model, open the measure and confirm it still uses `YearMonthKey` (or the correct date logic). 4. **Optional: switch to MM-YY**  
+   When the visual is stable, you can change the column axis from `YearMonthKey` to `MM-YY` and set `MM-YY` to sort by `Date_Sort_Key` for the desired display. ---
+
+**User**
+
+Claude in Excel made the following updates to the source file of the dfr summons:
+All done. Here's a summary of everything that was changed:
+
+✅ Description — ALL CAPS
+Updated all 28 source descriptions in 
+ViolationData
+B2:B29
+ to uppercase
+Wrapped the DFR Summons Log formula in UPPER() so any future entries are guaranteed all-caps regardless of source data casing
+Example: 
+DFR Summons Log
+G2
+ → PARKING OR STOPPING IN DESIGNATED FIRE LANE/FIRE ZONE
+✅ Violation Type — P/M/C Codes
+Updated 
+ViolationData
+E2:E29
+ with single-letter codes:
+
+Code	Covers	Count
+P	Parking, Registration, Equipment, Fire Prevention	27 violations
+M	Moving (reserved for future use)	—
+C	Complaint (Parks & Rec)	1 violation
+
+DFR Summons Log
+J2
+ now shows P (was "Fire Prevention")
+
+DFR Summons Log
+J14
+ now shows C (was "Parks & Recreation")
+✅ M Code Reference Updated
+In 
+M Code Reference
+:
+
+DateSortKey — YYYYMMDD integer (e.g., 20260316) for reliable sorting
+DateFormatted — MM-YY text (e.g., 03-26) for display
+P/M/C mapping documented in inline comments (rows 101-104)
+Both new columns included in the final column select
+Change log and last-updated date updated
+I update the m code as per claude in excel advised@m_code/drone/DFR_Summons.m 
+
+---
+
+**Cursor**
+
+
+Fixing the M code: correcting the FilePath, restoring the 13-month window, and adding the missing filters and transformations. DFR_Summons.m is updated to match the Claude in Excel changes and fix the earlier issues. Summary:
+
+## Updates
+
+### 1. **File path**
+- Fixed the broken concatenation so the full path is correct. ### 2. **13‑month window**
+- `ReportMonth = Date.From(pReportMonth)`
+- `EndDate = Date.EndOfMonth(ReportMonth)` (full report month)
+- `StartDate = Date.StartOfMonth(Date.AddMonths(ReportMonth, -12))`
+
+### 3. **Columns from Excel**
+
+| Column | Purpose |
+|--------|---------|
+| **DateSortKey** | YYYYMMDD integer (e.g., 20260316) for sorting |
+| **DateFormatted** | MM-YY text (e.g., "03-26") for display |
+| **YearMonthKey** | YYYYMM (e.g., 202603) for grouping and sort-by-column |
+
+### 4. **Restored logic**
+- **Summons Recall filter** – excludes Dismiss/Void
+- **en-US culture** – for text parsing of Date/Fine_Amount
+- **Description shortening** – "Parking...designated fire lane/fire zone" → "FIRE LANE/FIRE ZONE" (works with Excel’s ALL CAPS)
+
+### 5. **Violation_Type**
+- P = Parking (includes Title 39 parking, registration, equipment, fire lane)
+- M = Moving (reserved)
+- C = Complaint (e.g., Parks & Rec)
+
+### 6. **Docs**
+- `Visual_Build_Guide_2026_02.md` – uses `DateFormatted` (sorted by `YearMonthKey`)
+- `PROMPT_Claude_MCP_Create_Missing_Visuals_For_Monthly_Report.md` – updated for DateFormatted/YearMonthKey/Violation_Type
+- `PROMPT_Claude_In_Excel_DFR_Directed_Patrol_Summons_MCode.md` – updated sort-by-column note
+
+Power BI: set `DateFormatted` to sort by `YearMonthKey` so month columns sort correctly. ---
+
+**User**
+
+provide a short description I can pass to claude in excel to provide wioth the updated m code to make it aware of the changes so it has future context
+
+---
+
+**Cursor**
+
+
+Use this with Claude in Excel:
+
+---
+
+**DFR_Summons M code context (2026-03-18)**
+
+The Power BI query `DFR_Summons` loads from `dfr_directed_patrol_enforcement.xlsx` and uses this structure:
+
+- **13‑month window:** `pReportMonth` drives the range. `EndDate = Date.EndOfMonth(pReportMonth)`, `StartDate = Date.StartOfMonth(Date.AddMonths(pReportMonth, -12))`. - **Columns added in M:** `DateSortKey` (YYYYMMDD integer, e.g. 20260316), `DateFormatted` (MM‑YY text, e.g. "03-26"), `YearMonthKey` (YYYYMM, e.g. 202603). `DateFormatted` is sorted by `YearMonthKey` in the model. - **Description:** Shorten "Parking or stopping in designated X" to "X" (uppercase). Source is already ALL CAPS from Excel. - **Violation_Type:** P = Parking/Reg/Equipment/Fire, M = Moving (reserved), C = Complaint (Parks & Rec). - **Filter:** Exclude rows where `Summons_Recall` contains "Dismiss" or "Void". - **Types:** Use `"en-US"` in `Table.TransformColumnTypes` for text Date/Fine_Amount parsing. ---
+
+---
+
+**User**
+
+Done! The 
+M Code Reference
+ sheet has been fully updated with the Cursor AI version. Here's what changed from the previous version:
+
+Section	Previous	Updated
+Date window	Date.From(ReportMonth) raw	Date.EndOfMonth / Date.StartOfMonth — full calendar month boundaries
+Type mapping	No locale	"en-US" locale in Table.TransformColumnTypes
+Dismiss/Void filter	(none)	New FilteredRecalls step — schema-resilient, excludes rows where Summons_Recall contains "Dismiss" or "Void"
+Description shortening	Passed through as-is	New ShortenedDescription step — strips "Parking or stopping in designated " prefix → just the zone (e.g., FIRE LANE/FIRE ZONE)
+Step chain	FilteredData → AddedDateSortKey	FilteredData → ShortenedDescription → AddedDateSortKey → AddedDateFormatted → AddedYearMonthKey
+Header comments	Basic	Full documentation of all features, P/M/C mapping, and shortening logic
+The code is 169 lines with comment lines in green and code in dark gray, ready to copy-paste into Power BI Advanced Editor. Updated 
+Claude Log
+ (Turn 29)
+
+this is the claude log from the source file:
+Turn #	Date	User Request	Action Taken	Details	Outcome
+1	03/13/2026	Build DFR summons tracking workbook from uploaded violation source files (Title39, CityOrdinances, MVB Schedule). Full system with dropdowns, auto-lookup, fine mapping, and Power BI readiness. Parsed all 3 source files. Built ViolationData sheet (1,244 violations merged from MVB + Title 39 categories). Created DFR Summons Log with 14 columns, XLOOKUP formulas, data validation dropdowns, auto-generated Summons IDs. Loaded initial 40 violations to ViolationData. Columns: Summons ID (auto), Date, Time, Location, Violation (dropdown), Violation Code (XLOOKUP), Fine Amount (XLOOKUP), Source Type (XLOOKUP), Violation Type (XLOOKUP), DFR Operator, Issuing Officer, Summons Status (dropdown), DFR Unit ID, Notes. Full 1,244-violation ViolationData_Template.xlsx exported separately. Workbook structure complete. Sample entry demonstrates working formulas. ViolationData has initial 40 rows loaded — full 1,244-row dataset available in exported file for user to paste into ViolationData sheet. 2	03/13/2026	Change Time column to military time HHMM format. Updated number format for C2:C501 from 'hh:mm AM/PM' to 'HHmm' (military/24-hour without colon). Format applied: HHmm. Sample row 2 now displays 1400 instead of 2:00 PM. Users should enter time as HH:MM (e.g., 14:00) and it will display as 1400. Time column now shows military time. User had entered raw value '2' in C3 which displays as 0000 — may need correction. 3	03/13/2026	Typing '1427' into Time column displayed as 0000. User wants to type military time directly. Changed Time column (C2:C501) from HHmm time format to text format (@). Converted existing entries: C2 from time decimal 0.583333 to text '1400', C3 from number 1427 to text '1427'. Root cause: HHmm format requires an Excel time decimal (0-1), not a plain number. Switching to text format lets users type '1427' directly and it stores/displays as-is. Trade-off: Power BI will need to parse text times, but this is trivial with a calculated column. Time column now accepts direct military time entry (e.g., type 1427, see 1427). Both existing rows corrected. 4	03/13/2026	User reported 88-6D(2) Fire Lanes violation missing from ViolationData. This is a city ordinance used frequently for DFR summonses, $100 fine. Added 88-6D(2) Fire Lanes to ViolationData row 42 with $100.00 fine, Source Type 'City Ordinance', Violation Type 'Parking'. Set E3 to the new violation and verified XLOOKUP auto-populated F3:I3. New row in ViolationData!A42:G42. Violation not found in any of the 3 source files (Title39, MVB Schedule, CityOrdinances) — manually added per user input. Complete. Row 3 now shows: Code=88-6D(2), Fine=$100.00, Source=City Ordinance, Type=Parking. All XLOOKUP formulas verified working. 5	03/13/2026	User clarified that 88-6D(2) is from Hackensack City Code Chapter 88 (Fire Prevention), not a generic city ordinance. Found on eCode360 under City of Hackensack. Updated ViolationData row 42: Description → 'Parking or stopping in designated fire lane/fire zone', SourceType → 'Hackensack City Code', ViolationType → 'Fire Prevention', Category → 'Ch. 88 - Fire Prevention'. Refined metadata to accurately reflect ordinance source. XLOOKUP formulas on DFR Summons Log row 3 auto-updated to show new values.

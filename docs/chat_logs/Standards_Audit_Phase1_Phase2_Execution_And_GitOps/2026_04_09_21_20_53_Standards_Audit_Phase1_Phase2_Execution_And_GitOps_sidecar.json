@@ -1,0 +1,174 @@
+{
+  "source_file": "Standards_Audit_Phase1_Phase2_Execution_And_GitOps.md",
+  "source_path": "C:\\_chunker\\02_data\\Standards_Audit_Phase1_Phase2_Execution_And_GitOps.md",
+  "manifest_path": "C:\\Users\\carucci_r\\OneDrive - City of Hackensack\\KB_Shared\\04_output\\Standards_Audit_Phase1_Phase2_Execution_And_GitOps\\2026_04_09_21_20_53_Standards_Audit_Phase1_Phase2_Execution_And_GitOps.origin.json",
+  "created_at": "2026_04_09_21_20_53",
+  "tags": [
+    "ai",
+    "code",
+    "data",
+    "docs",
+    "excel",
+    "it-ops",
+    "json",
+    "markdown",
+    "police",
+    "python",
+    "sql"
+  ],
+  "metadata": {
+    "project_name": "02_data",
+    "source_type": "documentation",
+    "language": "multi",
+    "department": "admin",
+    "key_terms": [
+      "json",
+      "phase",
+      "standards",
+      "claude",
+      "stage",
+      "hy5guy"
+    ],
+    "enrichment_version": "1.0.0"
+  },
+  "summaries": {
+    "file_summary": "# Phase 1 deliverable gaps and recommendations\n_Exported on 4/9/2026 at 21:20:31 EDT from Cursor (3.0.13)_\n\n---\n\n**User**\n\nI am starting a plan with Claude Code and Claude found the below gaps please investigate and provide feedback for...",
+    "first_line": "# Phase 1 deliverable gaps and recommendations"
+  },
+  "chunks": [
+    {
+      "chunk_id": "2026-04-09T21:20:53+00:00_Standards_Audit_Phase1_Phase2_Execution_And_GitOps_chunk1",
+      "chunk_index": 1,
+      "file": "chunk_00000.txt",
+      "tags": [
+        "ai",
+        "claude",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "it-ops",
+        "json",
+        "markdown",
+        "phase",
+        "police",
+        "python",
+        "schemas",
+        "script",
+        "sql",
+        "yaml"
+      ],
+      "key_terms": [
+        "yaml",
+        "claude",
+        "phase",
+        "schemas",
+        "code",
+        "script"
+      ],
+      "summary": "# Phase 1 deliverable gaps and recommendations\n_Exported on 4/9/2026 at 21:20:31 EDT from Cursor (3.0.13)_\n\n---\n\n**User**\n\nI am starting a plan with Claude Code and Claude found the below gaps please investigate and provide feedback for...",
+      "char_length": 17678,
+      "byte_length": 18069
+    },
+    {
+      "chunk_id": "2026-04-09T21:20:53+00:00_Standards_Audit_Phase1_Phase2_Execution_And_GitOps_chunk2",
+      "chunk_index": 2,
+      "file": "chunk_00001.txt",
+      "tags": [
+        "ai",
+        "claude",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "it-ops",
+        "json",
+        "markdown",
+        "phase",
+        "police",
+        "python",
+        "sql",
+        "stage"
+      ],
+      "key_terms": [
+        "stage",
+        "json",
+        "claude",
+        "you",
+        "phase",
+        "code"
+      ],
+      "summary": "DISPOSITION_MAPPING has 58 entries mapping to 20 canonical targets — NOT \"100+\".",
+      "char_length": 19455,
+      "byte_length": 21447
+    },
+    {
+      "chunk_id": "2026-04-09T21:20:53+00:00_Standards_Audit_Phase1_Phase2_Execution_And_GitOps_chunk3",
+      "chunk_index": 3,
+      "file": "chunk_00002.txt",
+      "tags": [
+        "ai",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "hy5guy",
+        "it-ops",
+        "json",
+        "markdown",
+        "police",
+        "python",
+        "repo",
+        "sql",
+        "stage",
+        "standards"
+      ],
+      "key_terms": [
+        "hy5guy",
+        "standards",
+        "json",
+        "git",
+        "repo",
+        "stage"
+      ],
+      "summary": "The Phase 1 audit's \"v2.0\" label referred to the Standards rationalization wave, not this file's internal `version:` field.",
+      "char_length": 25428,
+      "byte_length": 31758
+    },
+    {
+      "chunk_id": "2026-04-09T21:20:53+00:00_Standards_Audit_Phase1_Phase2_Execution_And_GitOps_chunk4",
+      "chunk_index": 4,
+      "file": "chunk_00003.txt",
+      "tags": [
+        "ai",
+        "cad_data_cleaning_engine",
+        "claude",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "hy5guy",
+        "it-ops",
+        "json",
+        "markdown",
+        "phase",
+        "police",
+        "python",
+        "repo",
+        "sql"
+      ],
+      "key_terms": [
+        "phase",
+        "cad_data_cleaning_engine",
+        "hy5guy",
+        "claude",
+        "json",
+        "repo"
+      ],
+      "summary": "No silent fallback to empty dicts.",
+      "char_length": 13861,
+      "byte_length": 14645
+    }
+  ],
+  "enrichment_version": "1.0.0"
+}

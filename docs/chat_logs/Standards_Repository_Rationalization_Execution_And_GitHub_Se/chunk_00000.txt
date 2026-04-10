@@ -1,0 +1,595 @@
+# Standards directory optimization for Claude Code
+_Exported on 3/16/2026 at 20:11:03 EDT from Cursor (2.6.19)_
+
+---
+
+**User**
+
+review the below prompt  as you have access to the files in the director please optimize the prompt so I may pass it to Claude Code so it can carry out the actions requested in the prompt. Role
+
+You are a Senior Repository Rationalization Architect and Data Governance Engineer working inside Claude Code. You specialize in cleaning large technical reference repositories, reducing duplication, consolidating schema assets, and restructuring mixed documentation/code folders into a clear, maintainable standards library. Context & Task
+
+I need you to inspect and rationalize the full contents of this standards directory:
+
+C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards
+
+My concern is that the standards library has become disjointed and partially duplicated. Known problem areas:
+
+C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\unified_data_dictionary
+
+C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\CAD
+
+C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\schemas\udd
+
+Examples of likely overlap:
+
+schemas\udd appears to contain files that also exist in unified_data_dictionary\schemas
+
+unified_data_dictionary\schemas appears to include duplicate or near-duplicate schema assets
+
+CAD\DataDictionary\current\schema contains CAD-related schema and mapping files that may belong in a more unified standards structure
+
+I want the repository streamlined, enhanced, and merged where appropriate, with a clean source-of-truth structure for standards, schemas, mappings, templates, archive material, and project-specific files
+
+Your job is to:
+
+Preview and assess the entire directory. Identify duplication, overlap, stale copies, and misplaced assets. Recommend a cleaner target structure. Define what should be merged, moved, archived, renamed, or kept. Prefer a single source of truth for each schema, map, and standards artifact. Distinguish clearly between:
+
+canonical schemas
+
+CAD-specific reference material
+
+templates
+
+generated outputs
+
+chatlogs / working notes
+
+archive / legacy copies
+
+Produce an execution-ready cleanup plan for Claude Code. Where safe, generate the commands or scripts needed to carry out the reorganization in a reversible way. Rules & Constraints
+
+Use <thinking> tags to reason through the directory structure before producing the final answer. Do not guess file purpose from file names alone. Inspect file contents where needed before deciding whether files are duplicates, variants, or true source files. Treat archive, backup, legacy, and historical folders as preserve-first zones. Do not delete them in the first pass. Move or reclassify only when the intent is clear. Do not make destructive changes silently. Every proposed move, merge, rename, or archive action must appear in an explicit action map with old path, new path, and reason. If two files look similar, verify whether they are exact duplicates, versioned variants, environment-specific copies, or conflicting standards before recommending consolidation. Favor a practical standards layout that supports long-term maintenance by a police data/analytics workflow, with clean separation between canonical reference assets and project working material. Keep naming conventions stable where possible. Only rename when the current name is vague, duplicated, misleading, or inconsistent with the target structure. If you generate scripts, make them reversible and conservative. Include a rollback note. Input Data
+
+<source_material>
+Primary root to inspect:
+C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards
+
+Focus areas:
+C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\unified_data_dictionary
+C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\CAD
+C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\schemas\udd
+
+Observed concerns:
+
+unified_data_dictionary feels disjointed
+
+schemas under unified_data_dictionary and schemas\udd appear to overlap
+
+CAD-related schema files are split across multiple locations
+
+the standards library likely mixes source-of-truth files with project artifacts, working files, and archive material
+
+Examples already noted:
+
+schemas\udd may duplicate schema files in unified_data_dictionary\schemas
+
+CAD\DataDictionary\current\schema may hold files that should be reconciled with the broader standards structure
+</source_material>
+
+Output Format
+
+Return your response in the exact structure below. 1. Repository Assessment
+
+Provide a concise summary of the current state of the standards directory. Call out the main structural problems. 2. Duplication and Overlap Matrix
+
+Provide a table with these columns:
+
+Status
+
+File or Folder
+
+Current Path
+
+Related Path
+
+Relationship Type
+
+Recommended Action
+
+Reason
+
+Use relationship types such as:
+
+exact duplicate
+
+near duplicate
+
+versioned variant
+
+misplaced
+
+canonical
+
+archive only
+
+generated artifact
+
+project-specific support file
+
+3. Proposed Target Structure
+
+Provide a cleaned target directory tree for the standards repository. Make the structure practical and maintainable. 4. Source of Truth Decisions
+
+List each important schema family, mapping file, standards doc, and template set. For each, state:
+
+source of truth location
+
+supporting locations if any
+
+files to archive or deprecate
+
+rationale
+
+5. Action Plan
+
+Provide a phased plan:
+
+Phase 1: Safe audit and classification
+
+Phase 2: Non-destructive consolidation
+
+Phase 3: Archive and cleanup
+
+Phase 4: Final validation
+
+6. Action Map
+
+Provide a path-by-path move / merge / rename map in a table with:
+
+Current Path
+
+Proposed Path
+
+Action Type
+
+Safe to Automate? Yes/No
+
+Reason
+
+7. Validation Checklist
+
+Provide a checklist to confirm the reorganization did not break the standards library. Include checks for:
+
+duplicate files removed or reclassified
+
+canonical schemas preserved
+
+references still valid
+
+archive material retained
+
+CAD and UDD standards logically aligned
+
+8. Claude Code Execution Block
+
+Provide a conservative execution block for Claude Code. Include:
+
+exact files/folders to inspect first
+
+any scripts or shell commands you recommend generating
+
+any Markdown audit files to create, such as:
+
+Standards_Audit.md
+
+Standards_Reorg_Plan.md
+
+Standards_Action_Map.csv
+
+9. Final Recommendation
+
+End with:
+
+the best target architecture
+
+the highest-risk conflict areas
+
+the first 10 actions you would take
+
+Do not give a vague summary. Give a concrete, execution-ready reorganization plan grounded in the actual directory contents. ---
+
+**Cursor**
+
+
+Exploring the Standards directory to map its structure and contents so we can optimize the prompt. Creating an optimized prompt that incorporates the directory structure, existing decisions, and external dependencies. Created an optimized prompt at `docs/merge/STANDARDS_RATIONALIZATION_PROMPT_OPTIMIZED.md`. Summary of changes:
+
+## Optimizations
+
+### 1. **Pre-loaded context**
+- Points to `CLAUDE.md` and `CURSOR_AI_CONSOLIDATION_GUIDE.md` for existing decisions
+- Includes the 4 decisions (PD_BCI archive, CAD_RMS v2.0 authority, etc.) - Notes Phase 2 should wait until Phase 1 (dashboard fix) is done
+
+### 2. **External dependencies**
+- Adds `cad_rms_data_quality/config/schemas.yaml` and its exact paths
+- States that path changes must update `schemas.yaml` or break validation
+- Includes the validation checklist item for `schemas.yaml`
+
+### 3. **Concrete file locations**
+- Table of schema duplication candidates with paths
+- Notes on `-PD_BCI_01` files and archive decision
+- Canonical layout (CAD_RMS uses `schema/` not `schemas/`)
+
+### 4. **Execution hints**
+- Ordered steps: read docs → verify schema identity → check external refs → create audit files → git checkpoint
+- Suggests `fc` or `Compare-Object` for schema comparison
+- Suggests `Select-String` to find references to `unified_data_dictionary` and `schemas/udd`
+
+### 5. **Stricter output format**
+- Keeps your original structure but tightens wording
+- Adds a table for the duplication matrix
+- Adds a validation checklist item for `schemas.yaml`
+
+### 6. **Path corrections**
+- Uses `CAD_RMS/DataDictionary/current/schema/` (singular) to match the real layout
+- Clarifies that `canonical_schema.json` lives in `unified_data_dictionary/schemas/`, not CAD_RMS
+
+### 7. **Reference to directory tree**
+- Uses `2026_03_16_Standards_directory_tree.md` (full tree in repo root)
+
+---
+
+**How to use**
+
+1. Open `docs/merge/STANDARDS_RATIONALIZATION_PROMPT_OPTIMIZED.md`. 2. Copy the full contents. 3. Paste into Claude Code and run. The prompt is written so Claude Code follows it step by step and produces an actionable plan. ---
+
+**User**
+
+also add for Claude Code to create a Claude.md file and to update the readme, summary and changelog
+
+---
+
+**Cursor**
+
+
+Updates are in place. Summary of changes:
+
+## Additions
+
+### 1. **Your Job** (item 6)
+- Added: create or update `CLAUDE.md` and update `README.md`, `SUMMARY.md`, and `CHANGELOG.md` to match the new structure, canonical paths, and consolidation status. ### 2. **Action Plan** (Phase 5)
+- **Phase 5: Documentation** — Create or update `CLAUDE.md`; update `README.md`, `SUMMARY.md`, and `CHANGELOG.md` with the new structure, canonical paths, and consolidation status. ### 3. **Validation Checklist**
+- `CLAUDE.md` created or updated for AI agents. - `README.md`, `SUMMARY.md`, and `CHANGELOG.md` updated with the new structure and consolidation status. ### 4. **Claude Code Execution Block**
+- **Documentation deliverables (required):**
+  - **`CLAUDE.md`** — Create or update with canonical schema/mapping locations, path resolution rules, critical decisions, and AI agent guidelines. - **`README.md`** — Update with new directory structure, source-of-truth locations, and quick-start paths. - **`SUMMARY.md`** — Update with consolidation status, key schema families, and where to find each standard. - **`CHANGELOG.md`** — Add rationalization entry: date, summary of changes, paths moved/archived, and any breaking changes for consumers. ### 5. **Execution Hints**
+- Added hint #6: After consolidation, create or update `CLAUDE.md`, `README.md`, `SUMMARY.md`, and `CHANGELOG.md`; ensure `CLAUDE.md` documents the final canonical paths for AI agents. ### 6. **Final Recommendation**
+- First 10 actions should include creating/updating `CLAUDE.md`, `README.md`, `SUMMARY.md`, and `CHANGELOG.md` in the action sequence. ---
+
+**User**
+
+review Claude Code summary and advise me what option (1/2/3/4) to select for Claude Code to continue. ● Critical findings confirmed:
+
+  1. schemas.yaml references unified_data_dictionary/schemas/ for 4 schema files AND mappings/field_mappings/mapping_rules.md — that's a 5th
+   external dependency I need to account for
+  2. transformation_spec.json versions differ exactly as expected (lines 45 and 231)
+  3. CAD_RMS/schema/ currently has only 4 files — needs 5 schemas promoted into it
+  4. Scripts DO exist in scripts/extraction/ and scripts/validation/ — root copies confirmed duplicates
+
+  Now let me write the comprehensive plan file. ● Updated plan
+  ⎿  /plan to preview
+
+● The plan is complete. Here's what it covers:
+
+  9 sections as requested by the governing prompt:
+
+  1. Repository Assessment — 8 structural problems identified
+  2. Duplication Matrix — 10 duplicate/variant groups catalogued with verified relationships (byte-identical, version conflicts, sync
+  artifacts)
+  3. Proposed Target Structure — Clean tree with 6 domain dirs + 3 support dirs, ~12 root files (down from 50+)
+  4. Source of Truth Decisions — Every schema/mapping with canonical location, shim, and archive path
+  5. 5-Phase Action Plan — Audit → Consolidate → Archive → Validate → Document
+  6. Action Map — 63 explicit operations (copy/move/delete/rmdir) with automation safety flags
+  7. Validation Checklist — 15 verification items including schemas.yaml path resolution
+  8. Execution Block — Exact sequence, audit files, documentation deliverables
+  9. Final Recommendation — Architecture, 4 risk areas, first 10 actions
+
+  Key discovery during verification: schemas.yaml has a 5th dependency on mappings/field_mappings/mapping_rules.md that the original prompt
+  didn't list. The plan accounts for this — copy to CAD_RMS/mappings/ before archiving, then update schemas.yaml. ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Ready to code? Here is Claude's plan:
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+ Standards Repository Rationalization Plan
+
+ Date: 2026-03-16
+ Repository: C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards
+ Governing Prompt: docs/merge/STANDARDS_RATIONALIZATION_PROMPT_OPTIMIZED.md
+
+ ---
+ Context
+
+ The Standards repository has grown organically through multiple AI-assisted sessions and manual work, producing significant fragmentation:
+  ~26 top-level directories, 50+ loose root files, ~60 frozen -PD_BCI_01 artifacts, and 3+ copies of every core schema/mapping file. A
+ production ArcGIS dashboard (724K+ CAD records) depends on this repository via an external schemas.yaml config. The goal is to consolidate
+  into a clean, maintainable structure without breaking production references. Four critical decisions were already made (documented in CLAUDE.md):
+ 1. CAD_RMS v2.0 mappings are AUTHORITATIVE
+ 2. All -PD_BCI_01 files: archive
+ 3. Consolidate first, then validate
+ 4. Quick review of critical fields only
+
+ ---
+ 1. Repository Assessment
+
+ Current state: 26 top-level directories, 50+ root-level loose files, triple-copy schemas, v1.0/v2.0 mapping conflicts, 60+ frozen
+ PD_BCI_01 artifacts, misplaced task-tracking docs, OneDrive sync artifacts, and empty placeholder directories. Main structural problems:
+
+ ┌─────┬──────────────────────────────────────────────────────────────────────────────────────────────────────┬────────────────────────┐
+ │  #  │                                               Problem                                                │         Impact         │
+ ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+ │     │ Triple-copy schemas — canonical_schema.json and rms_fields_schema_latest.json exist byte-identical   │ Wrong version could    │
+ │ 1   │ in schemas/udd/ and unified_data_dictionary/schemas/; transformation_spec.json has OLDER INCORRECT   │ break RMS field        │
+ │     │ version in schemas/udd/ (uses "Location" instead of "FullAddress")                                   │ resolution             │
+ ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+ │ 2   │ Mapping version conflict — CAD_RMS has authoritative v2.0 (280 lines), while                         │ Confusion about which  │
+ │     │ mappings/field_mappings/ and unified_data_dictionary/mappings/ both hold obsolete v1.0 (18 lines)    │ mapping to use         │
+ ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+ │     │ External consumer dependency — schemas.yaml references 4 paths in unified_data_dictionary/schemas/,  │ Moving files without   │
+ │ 3   │ 1 path in mappings/field_mappings/, and 2 paths in CAD_RMS/                                          │ updating breaks ETL    │
+ │     │                                                                                                      │ pipeline               │
+ ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+ │ 4   │ ~60 frozen -PD_BCI_01 files scattered through unified_data_dictionary/                               │ Clutter, confusion     │
+ │     │                                                                                                      │ with active versions   │
+ ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+ │ 5   │ 50+ root-level loose files — AI handoff docs, data dictionaries, tree snapshots, completed planning  │ Hard to find canonical │
+ │     │ docs                                                                                                 │  files                 │
+ ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+ │ 6   │ Misplaced task-tracking docs in CAD/DataDictionary/current/ (6 crisis/fix docs)                      │ Pollutes schema        │
+ │     │                                                                                                      │ directory              │
+ ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+ │ 7   │ OneDrive sync artifacts — 4 "(1)" suffixed files in RMS/DataDictionary/ and RMS/SCRPA/               │ False duplicates       │
+ ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼────────────────────────┤
+ │ 8   │ Empty placeholders — FBI_UCR/, StateReporting/, tools/                                               │ Dead directories       │
+ └─────┴──────────────────────────────────────────────────────────────────────────────────────────────────────┴────────────────────────┘
+
+ ---
+ 2. Duplication and Overlap Matrix
+
+ Status: EXACT DUP
+ File/Folder: canonical_schema.json
+ Current Path: schemas/udd/
+ Related Path: unified_data_dictionary/schemas/
+ Relationship: Byte-identical v1.0.0
+ Action: Archive schemas/udd/ copy; promote UDD to CAD_RMS
+ Reason: UDD is referenced by schemas.yaml
+ ────────────────────────────────────────
+ Status: EXACT DUP
+ File/Folder: rms_fields_schema_latest.json
+ Current Path: schemas/udd/
+ Related Path: unified_data_dictionary/schemas/
+ Relationship: Byte-identical v1.0
+ Action: Archive schemas/udd/ copy; promote UDD to CAD_RMS
+ Reason: UDD is referenced by schemas.yaml
+ ────────────────────────────────────────
+ Status: VARIANT
+ File/Folder: transformation_spec.json
+ Current Path: schemas/udd/ (Jan 17, "Location")
+ Related Path: unified_data_dictionary/schemas/ (Feb 2, "FullAddress")
+ Relationship: UDD is NEWER/CORRECT
+ Action: Archive schemas/udd/ version; promote UDD to CAD_RMS
+ Reason: schemas/udd uses wrong field names
+ ────────────────────────────────────────
+ Status: NEAR DUP
+ File/Folder: cad_rms_schema_registry.yaml
+ Current Path: schemas/udd/ (Jan 17, 393 lines)
+ Related Path: unified_data_dictionary/schemas/ (Feb 3, 400 lines)
+ Relationship: UDD is NEWER with corrected domains
+ Action: Archive schemas/udd/; promote UDD to CAD_RMS
+ Reason: UDD has canonical HowReported values
+ ────────────────────────────────────────
+ Status: VERSION
+ File/Folder: cad_to_rms_field_map.json
+ Current Path: CAD_RMS/.../schema/ (v2.0, 138 lines)
+ Related Path: mappings/field_mappings/ + unified_data_dictionary/mappings/ (v1.0, 18 lines) + CAD/.../schema/ (v1.0)
+ Relationship: CAD_RMS is AUTHORITATIVE
+ Action: Archive all v1.0 copies
+ Reason: Per CLAUDE.md decision #1
+ ────────────────────────────────────────
+ Status: VERSION
+ File/Folder: rms_to_cad_field_map.json
+ Current Path: CAD_RMS/.../schema/ (v2.0)
+ Related Path: Same pattern as above
+ Relationship: CAD_RMS is AUTHORITATIVE
+ Action: Archive all v1.0 copies
+ Reason: Per CLAUDE.md decision #1
+ ────────────────────────────────────────
+ Status: NEAR DUP
+ File/Folder: rms_field_map_latest.json
+ Current Path: mappings/field_mappings/ (Dec 16)
+ Related Path: unified_data_dictionary/mappings/ (Feb 2, corrected docs)
+ Relationship: UDD is NEWER
+ Action: Keep UDD; archive field_mappings copy
+ Reason: UDD has corrected RMS header comment
+ ────────────────────────────────────────
+ Status: FROZEN SET
+ File/Folder: ~60 -PD_BCI_01 files
+ Current Path: unified_data_dictionary/ (various subdirs)
+ Related Path: Non-suffixed active versions
+ Relationship: Frozen v0.2.1 vs active v1.3.2
+ Action: Archive all to archive/PD_BCI_01_versions/
+ Reason: Per CLAUDE.md decision #2
+ ────────────────────────────────────────
+ Status: SYNC ARTIFACT
+ File/Folder: CHANGELOG (1).md, README (1).md, SUMMARY (1).md, rms_data_quality_report (1).md
+ Current Path: RMS/DataDictionary/, RMS/SCRPA/
+ Related Path: Non-"(1)" originals
+ Relationship: OneDrive duplicates
+ Action: Delete
+ Reason: Sync artifacts
+ ────────────────────────────────────────
+ Status: MISPLACED
+ File/Folder: 6 crisis/task docs
+ Current Path: CAD/DataDictionary/current/
+ Related Path: N/A
+ Relationship: Task-tracking, not schema
+ Action: Move to docs/data_quality/
+ Reason: Pollutes canonical schema dir
+
+ ---
+ 3. Proposed Target Structure
+
+ Standards/
+ ├── CAD/                              # CAD-specific standards
+ │   ├── DataDictionary/
+ │   │   ├── current/schema/           # cad_export_field_definitions.md ONLY
+ │   │   ├── archive/                  # Retired v1.0 field maps
+ │   │   └── scripts/
+ │   └── SCRPA/
+ │
+ ├── CAD_RMS/                          # CANONICAL unified standards
+ │   ├── DataDictionary/
+ │   │   ├── current/schema/           # ALL cross-system schemas + mappings
+ │   │   │   ├── canonical_schema.json           # PROMOTED from UDD
+ │   │   │   ├── cad_fields_schema_latest.json   # PROMOTED from UDD
+ │   │   │   ├── rms_fields_schema_latest.json   # PROMOTED from UDD
+ │   │   │   ├── transformation_spec.json        # PROMOTED from UDD (Feb 2 CORRECT)
+ │   │   │   ├── cad_rms_schema_registry.yaml    # PROMOTED from UDD (Feb 3)
+ │   │   │   ├── cad_to_rms_field_map.json       # EXISTING v2.0 (untouched)
+ │   │   │   ├── rms_to_cad_field_map.json       # EXISTING v2.0 (untouched)
+ │   │   │   ├── multi_column_matching_strategy.md
+ │   │   │   └── README.md
+ │   │   └── scripts/
+ │   └── mappings/                     # PROMOTED from UDD (non-PD_BCI)
+ │       ├── cad_field_map_latest.json
+ │       ├── rms_field_map_latest.json
+ │       ├── mapping_rules.md
+ │       └── ... (other non-suffixed mapping files)
+ │
+ ├── RMS/                              # RMS-specific standards (cleaned)
+ ├── Clery/                            # Clery Act (KEEP AS-IS)
+ ├── NIBRS/                            # NIBRS (KEEP AS-IS)
+ ├── Personnel/                        # Personnel (KEEP AS-IS)
+ ├── Processed_Exports/                # Dashboard CSVs (KEEP AS-IS)
+ │
+ ├── config/                           # Configuration
+ ├── data/                             # Sample/test data
+ ├── mappings/                         # Call-type CSVs ONLY (field_mappings/ removed)
+ │   ├── call_type_category_mapping.json
+ │   └── call_types_*.csv
+ ├── scripts/                          # Utility scripts
+ │   ├── extraction/extract_narrative_fields.py
+ │   └── validation/validate_rms_export.py
+ │
+ ├── docs/                             # ALL documentation
+ │   ├── ai_handoff/                   # OPUS_*, CURSOR_*, CONTEXT_* docs
+ │   ├── chat_logs/                    # Existing (KEEP)
+ │   ├── data_quality/                 # Crisis/fix docs from CAD/current/
+ │   ├── merge/                        # Existing merge docs (KEEP)
+ │   ├── response_time/                # ResponseTime docs
+ │   ├── image/                        # Moved from root image/
+ │   └── task_templates/               # Moved from root
+ │
+ ├── unified_data_dictionary/          # COMPATIBILITY SHIM ONLY
+ │   └── schemas/                      # 4 files required by schemas.yaml
+ │       ├── canonical_schema.json
+ │       ├── cad_fields_schema_latest.json
+ │       ├── rms_fields_schema_latest.json
+ │       └── transformation_spec.json
+ │
+ ├── archive/                          # All retired content
+ │   ├── PD_BCI_01_versions/           # NEW: All ~60 frozen files
+ │   ├── schemas_udd_20260317/         # NEW: Older schema copies
+ │   ├── mappings_field_mappings_20260317/ # NEW: v1.0 field mappings
+ │   ├── unified_data_dictionary_20260317/ # NEW: UDD bulk (minus shim)
+ │   ├── root_loose_files_20260317/    # NEW: Relocated root files
+ │   ├── completed_planning/           # NEW: Finished merge/planning docs
+ │   ├── directory_trees/              # NEW: Historical tree snapshots
+ │   ├── legacy_copies/                # EXISTING (preserve)
+ │   ├── merged_residue/               # EXISTING (preserve)
+ │   └── schema_drafts/                # EXISTING (preserve)
+ │
+ ├── CLAUDE.md                         # AI agent protocol (UPDATE)
+ ├── README.md                         # Repository overview (UPDATE)
+ ├── CHANGELOG.md                      # Version history (UPDATE)
+ ├── SUMMARY.md                        # Executive summary (UPDATE)
+ ├── SCHEMA_FILES_SUMMARY.md           # Schema inventory (UPDATE)
+ ├── LICENSE
+ ├── Standards.code-workspace
+ ├── requirements.txt
+ ├── CallType_Categories_latest.csv
+ ├── next_suggestions.yaml
+ └── tree_report_error.log
+
+ Removed from top level: FBI_UCR/ (empty), StateReporting/ (empty), tools/ (empty), templates/ (empty), schemas/ (archived), image/ (moved
+ to docs/), task_templates/ (moved to docs/)
+
+ ---
+ 4. Source of Truth Decisions
+
+ Schemas
+
+ Schema: canonical_schema.json
+ Source of Truth: CAD_RMS/DataDictionary/current/schema/
+ Compatibility Shim: unified_data_dictionary/schemas/
+ Archive: archive/schemas_udd_20260317/
+ Rationale: Canonical home for unified schema
+ ────────────────────────────────────────
+ Schema: cad_fields_schema_latest.json
+ Source of Truth: CAD_RMS/DataDictionary/current/schema/
+ Compatibility Shim: unified_data_dictionary/schemas/
+ Archive: N/A (only in UDD)
+ Rationale: CAD field definitions belong in CAD_RMS
+ ────────────────────────────────────────
+ Schema: rms_fields_schema_latest.json
+ Source of Truth: CAD_RMS/DataDictionary/current/schema/
+ Compatibility Shim: unified_data_dictionary/schemas/
+ Archive: archive/schemas_udd_20260317/
+ Rationale: RMS field definitions belong in CAD_RMS
+ ────────────────────────────────────────
+ Schema: transformation_spec.json
+ Source of Truth: CAD_RMS/DataDictionary/current/schema/ (Feb 2 version, "FullAddress")
+ Compatibility Shim: unified_data_dictionary/schemas/
+ Archive: archive/schemas_udd_20260317/ (Jan 17, "Location" — INCORRECT)
+ Rationale: Only the Feb 2 version uses correct RMS field names
+ ────────────────────────────────────────
+ Schema: cad_rms_schema_registry.yaml
+ Source of Truth: CAD_RMS/DataDictionary/current/schema/ (Feb 3 version)
+ Compatibility Shim: None needed
+ Archive: archive/schemas_udd_20260317/ (Jan 17)
+ Rationale: Feb 3 has corrected HowReported domains
+
+ Mappings
+
+ ┌───────────────────────────┬────────────────────────────────────────┬────────────────────────────────────────────┬──────────────────┐
+ │          Mapping          │            Source of Truth             │                  Archive                   │    Rationale     │
+ ├───────────────────────────┼────────────────────────────────────────┼────────────────────────────────────────────┼──────────────────┤
+ │ cad_to_rms_field_map.json │ CAD_RMS/DataDictionary/current/schema/ │ v1.0 copies in                             │ CLAUDE.md        │
+ │                           │  (v2.0)                                │ archive/mappings_field_mappings_20260317/  │ decision #1      │
+ ├───────────────────────────┼────────────────────────────────────────┼────────────────────────────────────────────┼──────────────────┤
+ │ rms_to_cad_field_map.json │ CAD_RMS/DataDictionary/current/schema/ │ v1.0 copies in same                        │ CLAUDE.md        │
+ │                           │  (v2.0)                                │                                            │ decision #1      │
+ ├───────────────────────────┼────────────────────────────────────────┼────────────────────────────────────────────┼──────────────────┤
+ │                           │                                        │                                            │ Referenced by    │
+ │ mapping_rules.md          │ CAD_RMS/mappings/ (promoted from UDD)  │ archive/mappings_field_mappings_20260317/  │ schemas.yaml —   │
+ │                           │                                        │                                            │ see note below   │
+ ├───────────────────────────┼────────────────────────────────────────┼────────────────────────────────────────────┼──────────────────┤
+ │                           │                                        │                                            │ Unique reference │
+ │ Call type CSVs            │ mappings/call_types_*.csv              │ N/A                                        │  data, no        │
+ │                           │                                        │                                            │ duplicates       │
+ └───────────────────────────┴────────────────────────────────────────┴────────────────────────────────────────────┴──────────────────┘
+
+ CRITICAL NOTE: schemas.yaml also references mappings/field_mappings/mapping_rules.md. This path must either be preserved or schemas.yaml
+ updated. ---
+ 5. Action Plan
+
+ Phase 1: Audit & Verification (read-only, ~30 min)
+
+ 1. Git checkpoint: git add . && git commit -m "Checkpoint before Standards rationalization 2026-03-17"
+ 2. Verify schemas.yaml at 02_ETL_Scripts/cad_rms_data_quality/config/schemas.yaml — confirmed 7 paths:
+   - 4 in unified_data_dictionary/schemas/ (canonical, cad, rms, transformation)
+   - 2 in CAD_RMS/DataDictionary/current/schema/ (cad_to_rms, rms_to_cad)
+   - 1 in mappings/field_mappings/mapping_rules.md
+   - 1 in mappings/call_types_*.csv
+   - 1 in CAD_RMS/.../multi_column_matching_strategy.md
+   - 1 in config/response_time_filters.json
+ 3. Confirm transformation_spec.json diff (line 45: "Location" vs "FullAddress")
+ 4. Generate full -PD_BCI_01 file manifest
+ 5. Search 02_ETL_Scripts/ for any other Standards path references
+ 6.

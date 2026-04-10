@@ -1,0 +1,257 @@
+DISPOSITION_MAPPING has 58 entries mapping to 20 canonical targets — NOT "100+". 3. The consolidation script and the ESRI generator are decoupled manual pipeline steps — the consolidation script does NOT call the generator. Phase 2 must wire them together explicitly. 4. ${standards_root} in schemas.yaml is LOW risk — no production script currently consumes those paths. 5. All 10 files referenced in schemas.yaml exist on disk. **Actual CAD export column headers (verified against 2026_01_CAD.xlsx):**
+ReportNumberNew, Incident, How Reported, FullAddress2, PDZone, Grid, Time of Call, cYear, cMonth, HourMinuetsCalc, DayofWeek, Time Dispatched, Time Out, Time In, Time Spent, Time Response, Officer, Disposition, Response Type, CADNotes
+
+Note: the vendor field is spelled "HourMinuetsCalc" (typo preserved from source system). The ESRI generator internally renames this to "Hour_Calc". This rename is undocumented in transformation_spec.json. ## Phase 2 work items (derived from Phase 1 gaps)
+
+The Phase 1 audit identified 9 gaps (0 blockers, 2 high, 4 medium, 3 low). The two HIGH gaps are Phase 2 prerequisites:
+
+**Gap #2 (HIGH):** Extract HOW_REPORTED_MAPPING (145 entries) and DISPOSITION_MAPPING (58 entries) from enhanced_esri_output_generator.py into standalone JSON files:
+- Target: Standards/CAD_RMS/mappings/how_reported_normalization_map.json
+- Target: Standards/CAD_RMS/mappings/disposition_normalization_map.json
+The Python script should then load these from disk rather than use hardcoded dicts. **Gap #3 (HIGH):** Update cad_rms_schema_registry.yaml how_reported enum from 6 values to the correct 12 canonical targets, and fix Walk-in → Walk-In. Add a header note clarifying that the enum represents POST-normalization valid output values, not raw input variants. **Medium gaps to address in Phase 2:**
+- Gap #4: Shim sync (unified_data_dictionary → CAD_RMS) is manual — design a sync mechanism
+- Gap #5: Document PDZone (CAD) vs Zone (RMS) distinction in transformation_spec.json
+- Gap #8: Fix TimeOfCall → "Time of Call" in transformation_spec.json Stage 1.3 expected_cad_cols
+- Gap #9: Document HourMinuetsCalc → Hour_Calc rename in transformation_spec.json Stage 2.1
+- Line 141 of the audit: clarify config/schemas.yaml in the locked-files list to read "cad_rms_data_quality/config/schemas.yaml (ETL scripts repo — not in Standards)"
+
+**Also when touching CLAUDE.md:** correct the "280 HOW_REPORTED entries" claim to "145 HOW_REPORTED entries (12 targets), 58 DISPOSITION entries (20 targets)." ## What I want from you now
+
+1. Confirm you've read Phase1_Standards_Audit.md
+2. Propose a sequenced Phase 2 plan with discrete tasks in dependency order
+3. Flag any assumptions you're making before you touch any files
+4. Do not modify any locked files (§6 of the audit) without explicit approval
+```
+
+---
+
+A few notes on what this prompt does:
+
+- **Hands off Phase 1 conclusions as facts**, not as things to re-derive. This prevents Claude Code from wasting turns re-examining the codebase. - **Pre-loads the verified CAD column headers** so it doesn't read an Excel file to confirm what you already confirmed. - **Separates the two repos** clearly — Claude Code needs to know which files live where before it starts writing. - **Ends with a planning ask, not an execution ask** — this gets you a sequenced plan you can review before anything is touched, which is exactly what you want for a session that will be modifying Standards files. ---
+
+**User**
+
+do I need to enable /plan first then feed the prompt you provided? ---
+
+**Cursor**
+
+No, the prompt I wrote already does the planning gate for you — the last section explicitly asks Claude Code to propose a plan and flag assumptions before touching anything. Using `/plan` mode in Claude Code would be redundant here because:
+
+1. The prompt ends with "propose a sequenced Phase 2 plan... Do not modify any locked files without explicit approval" — that instruction acts as the gate. 2. `/plan` mode in Claude Code is most useful when you don't have a structured prompt and want to prevent accidental file writes. Your prompt is specific enough that Claude Code won't go rogue. **Recommended flow:**
+
+1. Start a fresh Claude Code session
+2. Paste the prompt as-is
+3. Read the plan it proposes back to me here if you want a second set of eyes before approving execution
+4. Then tell Claude Code to proceed
+
+The one thing you may want to add to the prompt if you're concerned about it touching files before you approve: append `Do not write, create, or modify any files until I explicitly say "proceed. "` That is belt-and-suspenders insurance if you want a hard stop before any execution. ---
+
+**User**
+
+these are the responses from Claude Code. Based on the second response should I prompt: 
+
+1. Proceed with Stage B
+2. Note the count correction — update the Phase 1 audit's references from "145/58" to "140/55 (effective runtime entries)" next time it's revised. Don't touch it now since it's locked, but flag it for D2. Claude Code response is below, please tell me how to proceed. ● Phase 1 audit read in full (162 lines, Rev 2). Confirmed: 9 gaps, 0 blockers, 2 HIGH, 4 MEDIUM, 3 LOW. All locked files noted. Phase 2 Plan — Proposed Sequence
+  Stage A: Extract mappings from Python → Standards JSON (Gap #2, HIGH)
+  A1. Read enhanced_esri_output_generator.py and extract the two hardcoded dicts:
+  - HOW_REPORTED_MAPPING (145 → 12) → Standards/CAD_RMS/mappings/how_reported_normalization_map.json
+  - DISPOSITION_MAPPING (58 → 20) → Standards/CAD_RMS/mappings/disposition_normalization_map.json
+  A2. Validate extraction: confirm entry counts match (145 / 58) and canonical target sets match (12 / 20). Stage B: Fix schema registry enum (Gap #3, HIGH)
+  Depends on A1 — needs the 12 canonical targets confirmed. B1. Update cad_rms_schema_registry.yaml how_reported enum: 6 values → 12 canonical targets, fix Walk-in → Walk-In. B2. Add header comment: "Enum values represent POST-normalization canonical targets, not raw input variants." Stage C: Medium gaps (independent of each other, depend on A/B being done)
+  C1. (Gap #8) Fix transformation_spec.json Stage 1.3 expected_cad_cols: TimeOfCall → "Time of Call". C2. (Gap #9) Document HourMinuetsCalc → Hour_Calc rename in transformation_spec.json Stage 2.1. C3. (Gap #5) Document PDZone (CAD) vs Zone (RMS) distinction in transformation_spec.json. C4. (Gap #4) Design shim sync mechanism (unified_data_dictionary ← CAD_RMS). Propose script, get approval before writing. Stage D: Documentation fixes
+  D1. Correct CLAUDE.md: "280 HOW_REPORTED entries" → "145 HOW_REPORTED entries (12 targets), 58 DISPOSITION entries (20 targets)." D2. Clarify line 141 of Phase 1 audit locked-files list: config/schemas.yaml is in cad_rms_data_quality/config/, not Standards. (This is a note for the audit doc — I won't touch the locked audit itself unless you
+  say so.) ---
+  Assumptions I'm making
+  1. Target path for mapping JSONs: Your prompt says Standards/CAD_RMS/mappings/ but the Phase 1 audit §4 says CAD_RMS/DataDictionary/current/schema/. I'll use CAD_RMS/mappings/ per your prompt (consistent with the
+  existing 12 mapping files there). Confirm? 2. Locked file modifications: Gaps B1, C1, C2, C3 all touch locked files (cad_rms_schema_registry.yaml, transformation_spec.json). I will not edit them until you explicitly unlock each one for the specific change. 3. enhanced_esri_output_generator.py modification (loading from JSON instead of hardcoded dicts): This is listed as part of Gap #2 but touches the normalization engine, which is a separate repo. I'll extract the
+  JSONs first (Stage A), then propose the Python changes for your review before editing. 4. Shim sync (Gap #4): I'll design the mechanism and present it — no files written until approved. 5. I will not touch the Phase 1 audit file — it's locked and completed. ---
+  Ready to execute on your go. Do you want me to proceed with Stage A (extract mappings), or do you want to adjust the plan first? ● Stage A complete. Both JSON files are byte-for-byte equivalent to the Python runtime dicts. Stage A Summary
+
+  ┌─────────────────────────────────────┬─────────────────────────────┬─────────┬─────────┐
+  │                File                 │          Location           │ Entries │ Targets │
+  ├─────────────────────────────────────┼─────────────────────────────┼─────────┼─────────┤
+  │ how_reported_normalization_map.json │ Standards/CAD_RMS/mappings/ │ 140     │ 12      │
+  ├─────────────────────────────────────┼─────────────────────────────┼─────────┼─────────┤
+  │ disposition_normalization_map.json  │ Standards/CAD_RMS/mappings/ │ 55      │ 20      │
+  └─────────────────────────────────────┴─────────────────────────────┴─────────┴─────────┘
+
+  Count correction for the record: The audit's "145 / 58" counted raw source lines including duplicate Python dict keys. The effective runtime mappings (what Python actually uses, and what the JSONs now contain) are
+  140 / 55. The canonical target counts (12 / 20) are unchanged. Ready for Stage B
+
+  Next up: update cad_rms_schema_registry.yaml — expand how_reported enum from 6 to 12 canonical targets, fix Walk-in → Walk-In, add post-normalization header note. Shall I proceed? ---
+
+**Cursor**
+
+Both of your proposed prompts are right — combine them into one and also explicitly unlock `cad_rms_schema_registry.yaml` for Stage B, since Claude Code flagged it as a locked file and is waiting for that green light. Send this:
+
+---
+
+```
+Proceed with Stage B. cad_rms_schema_registry.yaml is explicitly unlocked for changes B1 and B2 only — expand how_reported enum to 12 canonical targets, fix Walk-in → Walk-In, add the post-normalization header note. On the count correction: the 140/55 effective runtime counts are correct. The 145/58 figures in the Phase 1 audit were inflated by duplicate Python dict keys (silently overwritten at runtime). The canonical target counts (12/20) are unchanged, which is what matters operationally. Do not touch the locked Phase 1 audit. Instead:
+- Add a note to Stage D2: "Phase 1 audit references 145/58 — correct to 140/55 (effective runtime entries, duplicates removed) when the audit is next revised." - When you reach Stage D1 (CLAUDE.md correction), use the corrected numbers: "140 HOW_REPORTED entries (12 targets), 55 DISPOSITION entries (20 targets)." ```
+
+---
+
+One additional thing worth knowing before Stage B executes: the duplicate keys in the original Python DISPOSITION_MAPPING appear to be copy-paste accidents (e.g., `'SEE OCA# (IN NOTES)'` appears three times, `'GOA/UNFOUNDED'` appears twice). The JSON Claude Code produced is actually cleaner than the source — the duplicates were noise, not intentional overrides. No action needed, but worth understanding why the counts changed. ---
+
+**User**
+
+should I be telling Claude Code to update all docs to reflect recient changes and push and commit to local and remote git? ---
+
+**Cursor**
+
+Yes, but not all at once. Here is the right sequencing:
+
+**Do not commit yet. ** Claude Code is mid-flight — Stage B just ran, Stages C and D are still pending. Committing now would create a partial state where the schema registry is updated but `transformation_spec.json`, `CLAUDE.md`, and the shim sync design are not. If you ever need to roll back, a partial commit is harder to reason about than a clean one. **Recommended approach — one commit per logical unit:**
+
+**Commit 1 — after Stage A+B complete** (mappings extracted + registry fixed):
+```
+git add CAD_RMS/mappings/how_reported_normalization_map.json
+git add CAD_RMS/mappings/disposition_normalization_map.json
+git add CAD_RMS/DataDictionary/current/schema/cad_rms_schema_registry.yaml
+git commit -m "Phase 2A-B: Extract normalization mappings to JSON; fix schema registry enum"
+```
+
+**Commit 2 — after Stage C complete** (transformation_spec fixes):
+```
+git add CAD_RMS/DataDictionary/current/schema/transformation_spec.json
+git commit -m "Phase 2C: Fix transformation_spec field name mismatches (gaps 5, 8, 9)"
+```
+
+**Commit 3 — after Stage D complete** (CLAUDE.md + D2 note):
+```
+git add CLAUDE.md
+git commit -m "Phase 2D: Correct CLAUDE.md mapping counts; flag audit count correction"
+```
+
+**Push to remote after all three commits**, not after each one — unless you want the remote to reflect in-progress work. **On documentation:** Claude Code should update any doc that references the changed artifacts. Specifically:
+- `CLAUDE.md` — already in Stage D
+- `CAD_RMS/DataDictionary/current/schema/` changelog or README if one exists
+- The `mappings/` directory README if one exists
+
+Tell Claude Code this when you're ready to start Stage C:
+
+---
+
+```
+Proceed with Stage C. When all of Stage C is complete, do not commit yet — wait until Stage D is also done. After Stage D, I want three atomic commits (A+B together, C alone, D alone) followed by a push to remote. For each commit, identify any other documentation files that reference the changed artifacts and flag them for update before committing. ```
+
+---
+
+This keeps your git history clean and makes each commit a coherent, reviewable unit. ---
+
+**User**
+
+should the prompt "Proceed with Stage B...." have the git and doc update instructions appended? ---
+
+**Cursor**
+
+No. Keep them separate. The "Proceed with Stage B" prompt you already sent is clean and focused — Stage B is a single targeted operation (registry fix). Adding git and doc instructions to it would mix execution with commit strategy mid-stage, which gives Claude Code two things to juggle when it should only be thinking about one. The git/commit instructions belong at the **Stage C kickoff**, because that is the natural handoff point — B is done, C is the last substantive work block, and telling Claude Code the commit plan at the start of C gives it the full picture before it finishes anything. It will know to flag docs as it goes through C and D rather than discovering that requirement at the end. The sequence that works cleanest:
+
+| Prompt | Content |
+|--------|---------|
+| ✅ Already sent | "Proceed with Stage B… unlock registry… note count correction…" |
+| Next (after B confirms done) | "Proceed with Stage C…" + git/commit instructions |
+| After C+D done | Approve commits and push |
+
+When Stage B comes back confirmed, just send the Stage C prompt I drafted above as-is. ---
+
+**User**
+
+Claude Code response: ● Stage B complete. All three changes confirmed:
+
+  ┌────────────────────────────────────────────┬───────────┐
+
+  │                   Change                   │  Status   │
+
+  ├────────────────────────────────────────────┼───────────┤
+
+  │ B1: Enum expanded 6 → 12 canonical targets │ Done      │
+
+  ├────────────────────────────────────────────┼───────────┤
+
+  │ B2: Walk-in → Walk-In case fix             │ Done      │
+
+  ├────────────────────────────────────────────┼───────────┤
+
+  │ B2: Post-normalization header note added   │ Done      │
+
+  ├────────────────────────────────────────────┼───────────┤
+
+  │ Version bumped 1.0.0 → 1.1.0               │ Done      │
+
+  ├────────────────────────────────────────────┼───────────┤
+
+  │ YAML parses clean                          │ Validated │
+
+  └────────────────────────────────────────────┴───────────┘
+
+  Notes for Stage D (deferred):
+
+  - D1: CLAUDE.md correction will use "140 HOW_REPORTED entries (12 targets), 55 DISPOSITION entries (20 targets)"
+
+  - D2: Phase 1 audit note — "references 145/58; correct to 140/55 (effective runtime entries, duplicates removed) when audit is next revised"
+
+  Ready for Stage C (medium gaps — transformation_spec.json fixes for Gaps #5, #8, #9). Shall I proceed? ---
+
+**Cursor**
+
+Stage B is clean. One thing to verify before Stage C — Claude Code bumped `cad_rms_schema_registry.yaml` from v1.0.0 to v1.1.0 on its own initiative. That file is on the locked list in §6 of the Phase 1 audit, and the version bump is a change beyond what was explicitly authorized (B1 and B2 only). It is almost certainly the right thing to do, but you should confirm the updated file looks correct before unlocking `transformation_spec.json` for Stage C.
+
+Send this:
+
+---
+
+```
+Before Stage C — show me the updated how_reported section of cad_rms_schema_registry.yaml so I can confirm B1 and B2 look correct. Also confirm: was the version bump from 1.0.0 → 1.1.0 your decision or was it already in the file? Once I approve, proceed with Stage C.
+
+Stage C instructions:
+- transformation_spec.json is explicitly unlocked for changes C1, C2, and C3 only (Gaps #8, #9, #5). - C4 (shim sync design): propose the mechanism in text only — no files written until I approve. - As you work through C, flag any other documentation files that reference transformation_spec.json or the fields being changed (PDZone, Zone, TimeOfCall, HourMinuetsCalc, Hour_Calc). I want that list before we commit. After Stage D is complete, I want three atomic commits:
+  Commit 1: Stage A+B — mapping JSONs + registry fix
+  Commit 2: Stage C — transformation_spec.json changes
+  Commit 3: Stage D — CLAUDE.md correction + D2 note
+Then push all three to remote. ```
+
+---
+
+The version confirmation question is worth asking once now rather than discovering a discrepancy during the git diff review later. ---
+
+**User**
+
+● Here's the updated how_reported section (lines 198-229):
+
+    how_reported:
+      aliases:
+        - "HowReported" # CAD
+        - "CallSource" # Legacy
+        - "How Reported" # CAD export header
+      type: "string"
+      required: false
+      # NOTE: These are POST-normalization canonical targets — the valid OUTPUT
+      # values after the ESRI generator applies how_reported_normalization_map.json. # Raw CAD input has 140+ variants (typos, abbreviations, concatenations)
+      # that normalize down to these 12 values. enum:
+        - "9-1-1"
+        - "Canceled Call"
+        - "eMail"
+        - "Fax"
+        - "Mail"
+        - "Other - See Notes"
+        - "Phone"
+        - "Radio"
+        - "Self-Initiated"
+        - "Teletype"
+        - "Virtual Patrol"
+        - "Walk-In"
+      description: "How incident was reported (method of contact)"
+      example: "9-1-1"
+      group: "classification"
+      notes: |
+        Enum lists all 12 post-normalization canonical targets. Raw input variants (140 entries) are mapped via
+        Standards/CAD_RMS/mappings/how_reported_normalization_map.json. IMPORTANT: 9-1-1 must be stored as TEXT to prevent Excel date conversion. On the version bump: My decision. The file was at version: "1.0.0" / updated: "2025-10-16". I bumped to 1.1.0 / 2026-04-09 because we changed the enum contract (6 → 12 values) and added a version history entry
+  documenting the change. The Phase 1 audit's locked-files list calls it "v2.0" but that appears to refer to the broader Standards rationalization version, not this file's internal version field. Awaiting your approval to proceed with Stage C.
+
+---
+
+**Cursor**
+
+The B1/B2 output is correct. All 12 canonical targets are present, `Walk-In` is properly capitalized, and the post-normalization note is accurate. The `notes:` field now correctly references `how_reported_normalization_map.json` as the source of truth for input variants — that replaces the old notes text which incorrectly called `Fax`, `eMail`, `Mail`, `Virtual Patrol`, `Canceled Call`, and `Teletype` "legacy values to be mapped away." Those are valid canonical outputs, not legacy inputs, so the rewrite is an improvement. On the version bump: Claude Code's reasoning is correct.

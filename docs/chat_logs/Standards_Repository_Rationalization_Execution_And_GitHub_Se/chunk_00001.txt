@@ -1,0 +1,455 @@
+Create audit report at docs/merge/RATIONALIZATION_MANIFEST_20260317.md
+
+ Phase 2: Non-Destructive Consolidation (~45 min)
+
+ 2a. Promote schemas to CAD_RMS (copy, not move):
+ - Copy 5 schema files from unified_data_dictionary/schemas/ to CAD_RMS/DataDictionary/current/schema/
+ - These are: canonical_schema.json, cad_fields_schema_latest.json, rms_fields_schema_latest.json, transformation_spec.json,
+ cad_rms_schema_registry.yaml
+
+ 2b. Promote mappings to CAD_RMS (copy non-PD_BCI):
+ - Create CAD_RMS/mappings/
+ - Copy non-suffixed mapping files from unified_data_dictionary/mappings/
+
+ 2c. Organize docs (move):
+ - Create docs/ai_handoff/, docs/data_quality/, docs/response_time/
+ - Move 10 AI handoff docs from root → docs/ai_handoff/
+ - Move 6 crisis docs from CAD/DataDictionary/current/ → docs/data_quality/
+ - Move 2 ResponseTime files from root → docs/response_time/
+
+ 2d. Git commit
+
+ Phase 3: Archive & Cleanup (~45 min)
+
+ 3a. Archive -PD_BCI_01 files:
+ - Create archive/PD_BCI_01_versions/
+ - Move all ~60 -PD_BCI_01 files preserving subdirectory structure
+
+ 3b. Archive duplicate schemas:
+ - Move schemas/udd/* → archive/schemas_udd_20260317/
+ - Remove empty schemas/ directory
+
+ 3c. Archive v1.0 field_mappings:
+ - Move mappings/field_mappings/* → archive/mappings_field_mappings_20260317/
+ - Remove empty mappings/field_mappings/ directory
+ - BUT: mapping_rules.md is referenced by schemas.yaml → copy it to CAD_RMS/mappings/mapping_rules.md first
+
+ 3d. Archive v1.0 maps from CAD/:
+ - Move cad_to_rms_field_map.json and rms_to_cad_field_map.json from CAD/DataDictionary/current/schema/ → CAD/DataDictionary/archive/
+
+ 3e. Archive root-level loose files:
+ - 10 data dict/reference files → archive/root_loose_files_20260317/
+ - 7 completed planning docs → archive/completed_planning/
+ - 6 directory tree snapshots → archive/directory_trees/
+
+ 3f. Delete sync artifacts:
+ - RMS/DataDictionary/CHANGELOG (1).md
+ - RMS/DataDictionary/README (1).md
+ - RMS/DataDictionary/SUMMARY (1).md
+ - RMS/SCRPA/rms_data_quality_report (1).md
+
+ 3g. Remove empty placeholders: FBI_UCR/, StateReporting/, tools/
+
+ 3h. Move misc: image/ → docs/image/, task_templates/ → docs/task_templates/, templates/ → archive then delete
+
+ 3i. Slim down unified_data_dictionary/ to compatibility shim:
+ - Move everything EXCEPT schemas/ (with its 4 referenced files) → archive/unified_data_dictionary_20260317/
+ - Remove -PD_BCI_01 copies from shim schemas/ (already archived in 3a)
+ - Keep only: canonical_schema.json, cad_fields_schema_latest.json, rms_fields_schema_latest.json, transformation_spec.json
+
+ 3j. Git commit
+
+ Phase 4: Validation (~20 min)
+
+ 1. Verify all 7+ schemas.yaml paths resolve to valid files
+ 2. Verify no -PD_BCI_01 files exist outside archive/
+ 3. Verify no "(1)" files exist anywhere
+ 4. Verify all JSON/YAML files in CAD_RMS parse cleanly
+ 5. Verify transformation_spec.json in both locations uses "FullAddress" (not "Location")
+ 6. Verify shim files in unified_data_dictionary/schemas/ are byte-identical to CAD_RMS/.../schema/ copies
+ 7. Count files before/after (expect significant reduction)
+ 8. Search for broken path references in active code
+
+ Phase 5: Documentation (~30 min)
+
+ 5a. Update CLAUDE.md:
+ - New Repository Architecture section with target structure
+ - Update path resolution rules: CAD_RMS/DataDictionary/current/schema/ is primary
+ - Note unified_data_dictionary/schemas/ is compatibility shim only
+ - Update consolidation status to "Complete (2026-03-17)"
+ - Remove emergency crisis sections (archived)
+
+ 5b. Update README.md:
+ - New directory structure diagram
+ - Updated "where to find" table
+ - Archive directory explanation
+
+ 5c. Update SUMMARY.md:
+ - Reflect new file counts and structure
+
+ 5d. Update CHANGELOG.md:
+ - Add v3.0.0 entry: rationalization date, files moved/archived, new canonical paths, schemas.yaml impact
+
+ 5e. Update SCHEMA_FILES_SUMMARY.md:
+ - Canonical locations now in CAD_RMS/DataDictionary/current/schema/
+ - Mark deprecated paths
+ - Document compatibility shim
+
+ 5f. Update schemas.yaml (in 02_ETL_Scripts/cad_rms_data_quality/config/):
+ - Update field_rules path from mappings/field_mappings/mapping_rules.md → CAD_RMS/mappings/mapping_rules.md
+ - Optionally: update schema paths to point to CAD_RMS/ (but shim makes this non-urgent)
+
+ 5g. Git commit
+
+ ---
+ 6. Action Map (60 operations)
+
+ Phase 2: Promotions (copy)
+
+ ┌─────┬─────────────────────────────────────────────────────┬──────────────────────────────────────────────────────────┬───────┬──────┐
+ │  #  │                    Current Path                     │                      Proposed Path                       │ Actio │ Auto │
+ │     │                                                     │                                                          │   n   │  ? │
+ ├─────┼─────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼───────┼──────┤
+ │ 1   │ unified_data_dictionary/schemas/canonical_schema.js │ CAD_RMS/DataDictionary/current/schema/canonical_schema.j │ COPY  │ Yes  │
+ │     │ on                                                  │ son                                                      │       │      │
+ ├─────┼─────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼───────┼──────┤
+ │ 2   │ unified_data_dictionary/schemas/cad_fields_schema_l │ CAD_RMS/DataDictionary/current/schema/cad_fields_schema_ │ COPY  │ Yes  │
+ │     │ atest.json                                          │ latest.json                                              │       │      │
+ ├─────┼─────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼───────┼──────┤
+ │ 3   │ unified_data_dictionary/schemas/rms_fields_schema_l │ CAD_RMS/DataDictionary/current/schema/rms_fields_schema_ │ COPY  │ Yes  │
+ │     │ atest.json                                          │ latest.json                                              │       │      │
+ ├─────┼─────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼───────┼──────┤
+ │ 4   │ unified_data_dictionary/schemas/transformation_spec │ CAD_RMS/DataDictionary/current/schema/transformation_spe │ COPY  │ Yes  │
+ │     │ .json                                               │ c.json                                                   │       │      │
+ ├─────┼─────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼───────┼──────┤
+ │ 5   │ unified_data_dictionary/schemas/cad_rms_schema_regi │ CAD_RMS/DataDictionary/current/schema/cad_rms_schema_reg │ COPY  │ Yes  │
+ │     │ stry.yaml                                           │ istry.yaml                                               │       │      │
+ ├─────┼─────────────────────────────────────────────────────┼──────────────────────────────────────────────────────────┼───────┼──────┤
+ │ 6   │ unified_data_dictionary/mappings/ (non-PD_BCI)      │ CAD_RMS/mappings/                                        │ COPY  │ Yes  │
+ └─────┴─────────────────────────────────────────────────────┴──────────────────────────────────────────────────────────┴───────┴──────┘
+
+ Phase 2: Doc Relocations (move)
+
+ ┌───────┬───────────────────────────────────────────────────────────────────────────────────────┬─────────────────────┬────────┬───────┐
+ │   #   │                                     Current Path                                      │    Proposed Path    │ Action │ Auto? │
+ ├───────┼───────────────────────────────────────────────────────────────────────────────────────┼─────────────────────┼────────┼───────┤
+ │ 7-16  │ OPUS_*.md, CONTEXT_SUMMARY_AI_HANDOFF.md, CURSOR_AI_CONSOLIDATION_GUIDE.md,           │ docs/ai_handoff/    │ MOVE   │ Yes   │
+ │       │ ENHANCED_ESRI_GENERATOR_README.md, TIMEREPORT_ANALYSIS_FOR_CLAUDE.md (10 files)       │                     │        │       │
+ ├───────┼───────────────────────────────────────────────────────────────────────────────────────┼─────────────────────┼────────┼───────┤
+ │       │ CAD/DataDictionary/current/CRITICAL_DATA_QUALITY_ALERT.md, EXECUTIVE_SUMMARY.md,      │                     │        │       │
+ │ 17-22 │ FIX_CHECKLIST.md, HOW_REPORTED_FIX_SUMMARY.md, HOW_REPORTED_REFERENCE.md,             │ docs/data_quality/  │ MOVE   │ Yes   │
+ │       │ QUICK_START.md                                                                        │                     │        │       │
+ ├───────┼───────────────────────────────────────────────────────────────────────────────────────┼─────────────────────┼────────┼───────┤
+ │ 23-24 │ ResponseTime_AllMetrics_DataDictionary.json, .md                                      │ docs/response_time/ │ MOVE   │ Yes   │
+ └───────┴───────────────────────────────────────────────────────────────────────────────────────┴─────────────────────┴────────┴───────┘
+
+ Phase 3: Archives (move)
+
+ ┌───────┬───────────────────────────────────────────────────────┬──────────────────────────────────────────────┬────────┬────────────┐
+ │   #   │                     Current Path                      │                Proposed Path                 │ Action │   Auto? │
+ ├───────┼───────────────────────────────────────────────────────┼──────────────────────────────────────────────┼────────┼────────────┤
+ │ 25    │ All ~60 -PD_BCI_01 files                              │ archive/PD_BCI_01_versions/ (preserving      │ MOVE   │ Yes        │
+ │       │                                                       │ subdirs)                                     │        │ (script)   │
+ ├───────┼───────────────────────────────────────────────────────┼──────────────────────────────────────────────┼────────┼────────────┤
+ │ 26    │ schemas/udd/* (6 files)                               │ archive/schemas_udd_20260317/                │ MOVE   │ Yes        │
+ ├───────┼───────────────────────────────────────────────────────┼──────────────────────────────────────────────┼────────┼────────────┤
+ │ 27    │ mappings/field_mappings/* (12 files)                  │ archive/mappings_field_mappings_20260317/    │ MOVE   │ Yes        │
+ ├───────┼───────────────────────────────────────────────────────┼──────────────────────────────────────────────┼────────┼────────────┤
+ │ 28-29 │ CAD/.../schema/cad_to_rms_field_map.json,             │ CAD/DataDictionary/archive/                  │ MOVE   │ Yes        │
+ │       │ rms_to_cad_field_map.json                             │                                              │        │            │
+ ├───────┼───────────────────────────────────────────────────────┼──────────────────────────────────────────────┼────────┼────────────┤
+ │ 30-39 │ Root data dict files (10)                             │ archive/root_loose_files_20260317/           │ MOVE   │ Yes        │
+ ├───────┼───────────────────────────────────────────────────────┼──────────────────────────────────────────────┼────────┼────────────┤
+ │ 40-46 │ Root completed planning docs (7)                      │ archive/completed_planning/                  │ MOVE   │ Yes        │
+ ├───────┼───────────────────────────────────────────────────────┼──────────────────────────────────────────────┼────────┼────────────┤
+ │ 47-52 │ Directory tree snapshots (6)                          │ archive/directory_trees/                     │ MOVE   │ Yes        │
+ ├───────┼───────────────────────────────────────────────────────┼──────────────────────────────────────────────┼────────┼────────────┤
+ │ 53    │ UDD bulk (everything except schemas/ shim)            │ archive/unified_data_dictionary_20260317/    │ MOVE   │ Yes        │
+ │       │                                                       │                                              │        │ (careful)  │
+ └───────┴───────────────────────────────────────────────────────┴──────────────────────────────────────────────┴────────┴────────────┘
+
+ Phase 3: Deletes
+
+ ┌─────┬──────────────────────────────────────────┬────────┬───────┬────────────────────────┐
+ │  #  │                   Path                   │ Action │ Auto? │         Reason         │
+ ├─────┼──────────────────────────────────────────┼────────┼───────┼────────────────────────┤
+ │ 54  │ RMS/DataDictionary/CHANGELOG (1).md      │ DELETE │ Yes   │ OneDrive sync artifact │
+ ├─────┼──────────────────────────────────────────┼────────┼───────┼────────────────────────┤
+ │ 55  │ RMS/DataDictionary/README (1).md         │ DELETE │ Yes   │ OneDrive sync artifact │
+ ├─────┼──────────────────────────────────────────┼────────┼───────┼────────────────────────┤
+ │ 56  │ RMS/DataDictionary/SUMMARY (1).md        │ DELETE │ Yes   │ OneDrive sync artifact │
+ ├─────┼──────────────────────────────────────────┼────────┼───────┼────────────────────────┤
+ │ 57  │ RMS/SCRPA/rms_data_quality_report (1).md │ DELETE │ Yes   │ OneDrive sync artifact │
+ ├─────┼──────────────────────────────────────────┼────────┼───────┼────────────────────────┤
+ │ 58  │ FBI_UCR/                                 │ RMDIR  │ Yes   │ Empty placeholder      │
+ ├─────┼──────────────────────────────────────────┼────────┼───────┼────────────────────────┤
+ │ 59  │ StateReporting/                          │ RMDIR  │ Yes   │ Empty placeholder      │
+ ├─────┼──────────────────────────────────────────┼────────┼───────┼────────────────────────┤
+ │ 60  │ tools/                                   │ RMDIR  │ Yes   │ Empty placeholder      │
+ └─────┴──────────────────────────────────────────┴────────┴───────┴────────────────────────┘
+
+ Phase 3: Misc Moves
+
+ ┌─────┬─────────────────┬──────────────────────┬────────────┬───────┐
+ │  #  │  Current Path   │    Proposed Path     │   Action   │ Auto? │
+ ├─────┼─────────────────┼──────────────────────┼────────────┼───────┤
+ │ 61  │ image/          │ docs/image/          │ MOVE       │ Yes   │
+ ├─────┼─────────────────┼──────────────────────┼────────────┼───────┤
+ │ 62  │ task_templates/ │ docs/task_templates/ │ MOVE       │ Yes   │
+ ├─────┼─────────────────┼──────────────────────┼────────────┼───────┤
+ │ 63  │ templates/      │ Archive then RMDIR   │ MOVE+RMDIR │ Yes   │
+ └─────┴─────────────────┴──────────────────────┴────────────┴───────┘
+
+ ---
+ 7. Validation Checklist
+
+ - Git checkpoint commit exists before any changes
+ - All schemas.yaml paths resolve (4 UDD shim + 2 CAD_RMS + mapping_rules + call_types + multi_column + config)
+ - canonical_schema.json exists in BOTH CAD_RMS/.../schema/ AND unified_data_dictionary/schemas/
+ - transformation_spec.json uses "FullAddress"/"Zone" in BOTH locations (not "Location")
+ - Shim files byte-identical to CAD_RMS canonical copies
+ - No -PD_BCI_01 files outside archive/
+ - No "(1)" sync artifact files anywhere
+ - All JSON/YAML files in CAD_RMS parse without errors
+ - mappings/field_mappings/mapping_rules.md archived but copy exists at CAD_RMS/mappings/mapping_rules.md
+ - Empty dirs removed: FBI_UCR, StateReporting, tools
+ - Root file count reduced from 50+ to ~12 essential files
+ - CLAUDE.md updated with new architecture
+ - README.md updated with new directory structure
+ - CHANGELOG.md has v3.0.0 rationalization entry
+ - schemas.yaml field_rules path updated to CAD_RMS/mappings/mapping_rules.md
+
+ ---
+ 8. Claude Code Execution Block
+
+ Files to Inspect Before Execution
+
+ 1. C:\Users\carucci_r\OneDrive - City of Hackensack\02_ETL_Scripts\cad_rms_data_quality\config\schemas.yaml — VERIFIED: 7+ path references
+ 2. unified_data_dictionary/schemas/transformation_spec.json line 45 — VERIFIED: uses "FullAddress" (correct)
+ 3. schemas/udd/transformation_spec.json line 45 — VERIFIED: uses "Location" (incorrect)
+
+ Execution Sequence
+
+ Phase 1: git add . && git commit -m "Checkpoint before rationalization"
+ Phase 2: mkdir + copy operations (promotions)
+ Phase 2: mv operations (doc relocations)
+ Phase 3: mkdir + mv operations (archives)
+ Phase 3: rm operations (sync artifacts, empty dirs)
+ Phase 3: UDD slim-down
+ Phase 4: validation script
+ Phase 5: edit CLAUDE.md, README.md, CHANGELOG.md, SUMMARY.md, SCHEMA_FILES_SUMMARY.md
+ Phase 5: edit schemas.yaml (field_rules path)
+ Phase 5: git add . && git commit -m "Complete Standards rationalization v3.0.0"
+
+ Audit Files to Create (in docs/merge/)
+
+ - RATIONALIZATION_MANIFEST_20260317.md — every file moved/copied/archived/deleted with before/after
+ - RATIONALIZATION_VALIDATION_REPORT.md — validation checklist results
+
+ Documentation Deliverables
+
+ 1. CLAUDE.md — Update Repository Architecture, path resolution, consolidation status
+ 2. README.md — New directory structure diagram, canonical location table
+ 3. CHANGELOG.md — v3.0.0 entry with rationalization details
+ 4. SUMMARY.md — Updated file counts and structure
+ 5. SCHEMA_FILES_SUMMARY.md — New canonical paths, deprecated path notes
+ 6. schemas.yaml — Update field_rules path (external file in 02_ETL_Scripts/)
+
+ ---
+ 9. Final Recommendation
+
+ Best Target Architecture
+
+ Consolidate around 6 active domain directories (CAD/, CAD_RMS/, RMS/, Clery/, NIBRS/, Personnel/) with
+ CAD_RMS/DataDictionary/current/schema/ as the single source of truth for all cross-system schemas and mappings. A minimal 4-file
+ unified_data_dictionary/schemas/ compatibility shim maintains backward compatibility until schemas.yaml is fully migrated. Highest-Risk Areas
+
+ 1. schemas.yaml dependency — 7+ paths reference Standards files. The UDD shim protects 4 of them. The mapping_rules.md path MUST be
+ updated or preserved. Mitigation: Copy mapping_rules.md to CAD_RMS/mappings/ AND update schemas.yaml. 2. transformation_spec.json version — Two versions with different field names exist. Promoting the wrong one breaks RMS field resolution. Mitigation: VERIFIED the UDD version (Feb 2) is correct. 3. OneDrive sync — Moving files on synced directory can create conflicts. Mitigation: Consider pausing sync during execution. 4. UDD nested .git — unified_data_dictionary/.git/ may confuse git. Mitigation: Move entire UDD (except shim) to archive. First 10 Actions
+
+ 1. git add . && git commit -m "Checkpoint before Standards rationalization 2026-03-17"
+ 2. Create docs/merge/RATIONALIZATION_MANIFEST_20260317.md audit file
+ 3. Copy 5 schema files from UDD/schemas/ → CAD_RMS/DataDictionary/current/schema/
+ 4. Create CAD_RMS/mappings/ and copy non-PD_BCI mapping files from UDD
+ 5. Create docs/ai_handoff/ and move 10 AI handoff docs from root
+ 6. Create docs/data_quality/ and move 6 crisis docs from CAD/DataDictionary/current/
+ 7. Create archive/PD_BCI_01_versions/ and move all ~60 -PD_BCI_01 files
+ 8. Move schemas/udd/* → archive/schemas_udd_20260317/ and remove empty dir
+ 9. Move mappings/field_mappings/* → archive/mappings_field_mappings_20260317/
+ 10. Delete 4 OneDrive "(1)" sync artifacts from RMS/
+
+ ---
+ Agent Mode Execution Plan
+
+ When plan mode is exited and execution is authorized, the implementation should proceed in this exact order:
+
+ 1. Git checkpoint (Phase 1)
+ 2. Schema promotions (Phase 2a) — copy 5 files to CAD_RMS
+ 3. Mapping promotions (Phase 2b) — create CAD_RMS/mappings/, copy files
+ 4. Doc relocations (Phase 2c) — create 3 docs subdirs, move files
+ 5. Git commit Phase 2
+ 6. PD_BCI_01 archive (Phase 3a) — bulk move with script
+ 7. Duplicate archive (Phase 3b-3d) — schemas/udd, field_mappings, CAD v1.0 maps
+ 8. Root-level archive (Phase 3e) — loose files, planning docs, tree snapshots
+ 9. Sync artifact cleanup (Phase 3f) — delete 4 "(1)" files
+ 10. Empty dir cleanup (Phase 3g) — remove FBI_UCR, StateReporting, tools
+ 11. Misc moves (Phase 3h) — image/, task_templates/, templates/
+ 12. UDD slim-down (Phase 3i) — move bulk to archive, keep shim
+ 13. Git commit Phase 3
+ 14. Validation (Phase 4) — run all checklist items
+ 15. Documentation (Phase 5) — update CLAUDE.md, README.md, CHANGELOG.md, SUMMARY.md, SCHEMA_FILES_SUMMARY.md
+ 16. External config — update schemas.yaml field_rules path
+ 17. Final git commit Phase 5
+╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
+
+ Claude has written up a plan and is ready to execute. Would you like to proceed? ❯ 1. Yes, clear context (38% used) and auto-accept edits
+   2. Yes, auto-accept edits
+   3. Yes, manually approve edits
+   4. Type here to tell Claude what to change
+
+ ctrl-g to edit in Notepad · ~\.claude\plans\ancient-wondering-finch.md
+
+
+---
+
+**Cursor**
+
+
+## Recommendation: **Option 3 — Yes, manually approve edits**
+
+### Why Option 3
+
+1. **Production impact**  
+   `schemas.yaml` in `cad_rms_data_quality` points to these paths. A bad move or delete can break the ETL pipeline and dashboard. 2. **High‑risk steps**  
+   - Deleting 4 OneDrive `"(1)"` files  
+   - Removing empty dirs (`FBI_UCR`, `StateReporting`, `tools`)  
+   - Slimming down `unified_data_dictionary/` (marked “careful”)  
+   - Editing `schemas.yaml` outside the Standards repo  
+
+   You want to review these before they run. 3. **Batch approval**  
+   Many setups let you approve by phase or by file, so you can approve Phase 2 as a whole, then Phase 3, etc., instead of 63 individual edits. 4. **OneDrive**  
+   The plan suggests pausing OneDrive sync during moves. With manual approval you can pause sync before approving Phase 3. ---
+
+### Avoid Option 1 (clear context)
+
+Clearing context can cause the agent to lose important details (e.g., which `transformation_spec.json` is correct, or that the UDD shim must stay). ---
+
+### If you want more automation: Option 2
+
+If you’ve reviewed the plan and are comfortable with it, **Option 2** (auto-accept, keep context) is acceptable. The plan is structured and uses copy-before-move for schemas. ---
+
+### Suggested execution flow
+
+1. **Before approving anything**  
+   - Pause OneDrive sync (or at least for the Standards folder). - Confirm you have a recent backup or can restore from git. 2. **Phase 2**  
+   Approve as a batch. These are copies and moves into new folders; low risk. 3. **Phase 3**  
+   Approve in smaller batches:  
+   - PD_BCI archive  
+   - Schema/mapping archives  
+   - UDD slim-down (review this one closely)
+
+4. **Phase 5**  
+   Review the `schemas.yaml` change before approving, since it’s outside the Standards repo. ---
+
+**Bottom line:** Use **Option 3** unless you’re comfortable with full automation, in which case use **Option 2**. Avoid **Option 1**. ---
+
+**User**
+
+Claude Code asked the following   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && git add . && git commit -m "$(cat <<'EOF'
+   Phase 2: Promote schemas/mappings to CAD_RMS, organize documentation
+
+   - Copy 5 schema files from unified_data_dictionary/schemas/ to CAD_RMS/DataDictionary/current/schema/
+     (canonical_schema.json, cad_fields_schema_latest.json, rms_fields_schema_latest.json,
+      transformation_spec.json, cad_rms_schema_registry.yaml)
+   - Create CAD_RMS/mappings/ with 12 non-PD_BCI mapping files from UDD
+   - Move 10 AI handoff docs (OPUS_*, CURSOR_*, CONTEXT_*) to docs/ai_handoff/
+   - Move 6 crisis/task docs from CAD/DataDictionary/current/ to docs/data_quality/
+   - Move ResponseTime data dictionary files to docs/response_time/
+
+   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+   EOF
+   )"
+   Commit Phase 2 changes
+
+ Compound commands with cd and git require approval to prevent bare repository attacks
+
+ Do you want to proceed? ❯ 1. Yes
+   2. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 2 of the rationalization plan:
+
+- **Path:** Correct Standards repo path
+- **Operations:** Copies and moves only (no deletes)
+- **Commit message:** Clear and descriptive
+
+The “bare repository attack” prompt is a general safety check for `cd` + `git` commands. Here the path is your known Standards repo and the command is the planned Phase 2 commit. Phase 2 is low risk: schema copies into CAD_RMS and doc moves. Proceed with **Yes**. ---
+
+**User**
+
+next question:
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && mkdir -p archive/PD_BCI_01_versions
+   archive/schemas_udd_20260317 archive/mappings_field_mappings_20260317 archive/root_loose_files_20260317 archive/completed_planning
+   archive/directory_trees archive/unified_data_dictionary_20260317
+   Create archive subdirectories
+
+ Compound command contains cd with write operation - manual approval required to prevent path resolution bypass
+
+ Do you want to proceed? ❯ 1. Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+ Esc to cancel · Tab to amend · ctrl+e to explain
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3 of the plan: creating the archive directories before moving files into them. - **Path:** Correct Standards repo path  
+- **Action:** Only creates directories (no moves or deletes)  
+- **Directories:** Same 7 archive folders from the plan
+
+**Option 2 (“don’t ask again for cd:*”)** would stop all future prompts for `cd` + write commands. That’s broad; better to keep approving each one for this run. Choose **1. Yes**. ---
+
+**User**
+
+next question:
+  cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && find . -name "*-PD_BCI_01*" -not -path "./archive/*"
+   -not -path "./.git/*" | while read f; do dest="archive/PD_BCI_01_versions/$(dirname "$f" | sed 's|^\./||')/$(basename "$f")"; mkdir -p
+    "$(dirname "$dest")"; mv "$f" "$dest" && echo "Archived: $f"; done
+   Move all PD_BCI_01 files to archive preserving structure
+
+ Do you want to proceed? ❯ 1. Yes
+   2. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3a of the plan: archiving all `-PD_BCI_01` files into `archive/PD_BCI_01_versions/` while keeping their directory structure. - **Path:** Correct Standards repo path  
+- **Target:** Only files matching `*-PD_BCI_01*`  
+- **Exclusions:** Skips `./archive/*` and `./.git/*`  
+- **Action:** Moves files, does not delete them  
+- **Alignment:** Matches CLAUDE.md decision #2 to archive PD_BCI_01 files  
+
+**Note:** This uses Unix-style commands (`find`, `while read`, `sed`, `mkdir -p`, `mv`). It will work in Git Bash or WSL. In plain PowerShell it will fail; if that happens, you’d need a PowerShell equivalent. Choose **1. Yes**. ---
+
+**User**
+
+next question:    cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && mv schemas/udd/* archive/schemas_udd_20260317/ && echo
+    "Archived schemas/udd/" && rmdir schemas/udd && rmdir schemas && echo "Removed empty schemas/"
+   Archive schemas/udd/ and remove empty directory
+
+ Do you want to proceed? ❯ 1.

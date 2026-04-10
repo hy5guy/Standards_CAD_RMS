@@ -1,0 +1,26 @@
+**Processed exports (Power BI / reports)**
+
+**Target path:**
+```
+C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\Processed_Exports\
+```
+
+Contains CSVs by category (arrests, traffic, summons, etc.). ---
+
+Which of these are you configuring (ESRI, Clery, or Processed_Exports)? ---
+
+**User**
+
+I'm preparing to export this chat. Please generate a descriptive filename that summarizes the main topic or task of this conversation. Requirements:
+• 4-8 words
+• Title Case (capitalize major words)
+• Replace spaces with underscores
+• Include .md extension
+• No dates or special characters
+
+Output only the filename, with the suffix .md and nothing else. ---
+
+**Cursor**
+
+
+Standards_Repository_Rationalization_Execution_And_GitHub_Setup.md

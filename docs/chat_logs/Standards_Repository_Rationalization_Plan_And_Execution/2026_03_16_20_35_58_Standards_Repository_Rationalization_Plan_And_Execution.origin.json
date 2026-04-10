@@ -1,0 +1,39 @@
+{
+  "tags": [
+    "ai",
+    "code",
+    "conversation",
+    "data",
+    "docs",
+    "json",
+    "markdown",
+    "police",
+    "powershell",
+    "python",
+    "sql"
+  ],
+  "metadata_enrichment": {
+    "metadata": {
+      "project_name": "02_data",
+      "source_type": "documentation",
+      "language": "multi",
+      "department": "admin",
+      "key_terms": [
+        "json",
+        "schemas",
+        "schema",
+        "cad_rms",
+        "current",
+        "datadictionary"
+      ],
+      "enrichment_version": "1.0.0"
+    },
+    "summaries": {
+      "file_summary": "▐▛███▜▌   Claude Code v2.1.76\n▝▜█████▛▘  Opus 4.6 with medium effort · Claude Pro\n  ▘▘ ▝▝    ~\\OneDrive - City of Hackensack\\09_Reference\\Standards\n\n● Excellent. All three exploration agents have returned comprehensive results.",
+      "first_line": "▐▛███▜▌   Claude Code v2.1.76"
+    },
+    "enrichment_version": "1.0.0"
+  },
+  "last_processed_at": "2026-03-16T20:35:58.098554",
+  "department": "admin"
+}

@@ -1,0 +1,177 @@
+{
+  "source_file": "Standards_Repository_Rationalization_Plan_And_Execution.md",
+  "source_path": "C:\\_chunker\\02_data\\Standards_Repository_Rationalization_Plan_And_Execution.md",
+  "manifest_path": "C:\\Users\\carucci_r\\OneDrive - City of Hackensack\\KB_Shared\\04_output\\Standards_Repository_Rationalization_Plan_And_Execution\\2026_03_18_16_48_15_Standards_Repository_Rationalization_Plan_And_Execution.origin.json",
+  "created_at": "2026_03_18_16_48_15",
+  "tags": [
+    "ai",
+    "code",
+    "conversation",
+    "data",
+    "docs",
+    "json",
+    "markdown",
+    "police",
+    "powershell",
+    "python",
+    "sql"
+  ],
+  "metadata": {
+    "project_name": "02_data",
+    "source_type": "documentation",
+    "language": "multi",
+    "department": "admin",
+    "key_terms": [
+      "json",
+      "schemas",
+      "schema",
+      "cad_rms",
+      "current",
+      "datadictionary"
+    ],
+    "enrichment_version": "1.0.0"
+  },
+  "summaries": {
+    "file_summary": "▐▛███▜▌   Claude Code v2.1.76\n▝▜█████▛▘  Opus 4.6 with medium effort · Claude Pro\n  ▘▘ ▝▝    ~\\OneDrive - City of Hackensack\\09_Reference\\Standards\n\n● Good — I have comprehensive findings from all agents. Let me verify a few critical det...",
+    "first_line": "▐▛███▜▌   Claude Code v2.1.76"
+  },
+  "chunks": [
+    {
+      "chunk_id": "2026-03-18T16:48:15+00:00_Standards_Repository_Rationalization_Plan_And_Execution_chunk1",
+      "chunk_index": 1,
+      "file": "chunk_00000.txt",
+      "tags": [
+        "ai",
+        "archive",
+        "cad_rms",
+        "code",
+        "conversation",
+        "current",
+        "data",
+        "docs",
+        "json",
+        "markdown",
+        "police",
+        "powershell",
+        "python",
+        "schema",
+        "schemas",
+        "sql"
+      ],
+      "key_terms": [
+        "schemas",
+        "json",
+        "cad_rms",
+        "archive",
+        "schema",
+        "current"
+      ],
+      "summary": "▐▛███▜▌   Claude Code v2.1.76\n▝▜█████▛▘  Opus 4.6 with medium effort · Claude Pro\n  ▘▘ ▝▝    ~\\OneDrive - City of Hackensack\\09_Reference\\Standards\n\n● Good — I have comprehensive findings from all agents.",
+      "char_length": 28927,
+      "byte_length": 38336
+    },
+    {
+      "chunk_id": "2026-03-18T16:48:15+00:00_Standards_Repository_Rationalization_Plan_And_Execution_chunk2",
+      "chunk_index": 2,
+      "file": "chunk_00001.txt",
+      "tags": [
+        "ai",
+        "archive",
+        "code",
+        "conversation",
+        "data",
+        "docs",
+        "json",
+        "markdown",
+        "onedrive",
+        "phase",
+        "police",
+        "powershell",
+        "python",
+        "schemas",
+        "sql",
+        "standards"
+      ],
+      "key_terms": [
+        "phase",
+        "json",
+        "onedrive",
+        "standards",
+        "archive",
+        "schemas"
+      ],
+      "summary": "│\n     ├───────┼───────────────────────────────────────────────────────────────────────────────────────┼─────────────────────┼────────┼───────\n     ┤\n     │ 7-16  │ OPUS_*.md, CONTEXT_SUMMARY_AI_HANDOFF.md, CURSOR_AI_CONSOLIDATION_GUIDE....",
+      "char_length": 24487,
+      "byte_length": 31722
+    },
+    {
+      "chunk_id": "2026-03-18T16:48:15+00:00_Standards_Repository_Rationalization_Plan_And_Execution_chunk3",
+      "chunk_index": 3,
+      "file": "chunk_00002.txt",
+      "tags": [
+        "ai",
+        "cad_rms",
+        "code",
+        "conversation",
+        "current",
+        "data",
+        "datadictionary",
+        "docs",
+        "json",
+        "markdown",
+        "police",
+        "powershell",
+        "python",
+        "schema",
+        "sql"
+      ],
+      "key_terms": [
+        "schema",
+        "datadictionary",
+        "current",
+        "json",
+        "cad_rms",
+        "cad"
+      ],
+      "summary": "4\n       5 -## Repository Layout\n       5 +## Repository Layout (v3.0.0 - Rationalized 2026-03-17)\n       6\n       7  ```\n       8  Standards/\n       9 -├── archive/                    # Archived files (packages, legacy, duplicates)...",
+      "char_length": 28948,
+      "byte_length": 30167
+    },
+    {
+      "chunk_id": "2026-03-18T16:48:15+00:00_Standards_Repository_Rationalization_Plan_And_Execution_chunk4",
+      "chunk_index": 4,
+      "file": "chunk_00003.txt",
+      "tags": [
+        "ai",
+        "archive",
+        "cad_rms",
+        "code",
+        "conversation",
+        "data",
+        "docs",
+        "files",
+        "json",
+        "mappings",
+        "markdown",
+        "phase",
+        "police",
+        "powershell",
+        "python",
+        "schemas",
+        "sql"
+      ],
+      "key_terms": [
+        "mappings",
+        "schemas",
+        "files",
+        "archive",
+        "cad_rms",
+        "phase"
+      ],
+      "summary": "● Update(CLAUDE.md)\n  ⎿  Added 21 lines, removed 22 lines\n      312\n      313  ## 📋 Standards Repository Consolidation Status\n      314\n      315 -### Current State (As of 2026-02-04)\n      315 +### Current State (As of 2026-03-17)...",
+      "char_length": 13140,
+      "byte_length": 15526
+    }
+  ],
+  "enrichment_version": "1.0.0"
+}

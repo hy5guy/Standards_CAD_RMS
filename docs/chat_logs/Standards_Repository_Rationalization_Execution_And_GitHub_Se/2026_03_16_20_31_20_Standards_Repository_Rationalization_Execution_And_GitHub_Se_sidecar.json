@@ -1,0 +1,211 @@
+{
+  "source_file": "Standards_Repository_Rationalization_Execution_And_GitHub_Setup.md",
+  "source_path": "C:\\_chunker\\02_data\\Standards_Repository_Rationalization_Execution_And_GitHub_Setup.md",
+  "manifest_path": "C:\\Users\\carucci_r\\OneDrive - City of Hackensack\\KB_Shared\\04_output\\Standards_Repository_Rationalization_Execution_And_GitHub_Se\\2026_03_16_20_31_20_Standards_Repository_Rationalization_Execution_And_GitHub_Se.origin.json",
+  "created_at": "2026_03_16_20_31_20",
+  "tags": [
+    "ai",
+    "code",
+    "data",
+    "docs",
+    "excel",
+    "json",
+    "legal",
+    "markdown",
+    "police",
+    "python",
+    "sql"
+  ],
+  "metadata": {
+    "project_name": "02_data",
+    "source_type": "documentation",
+    "language": "multi",
+    "department": "admin",
+    "key_terms": [
+      "schemas",
+      "archive",
+      "files",
+      "yes",
+      "json",
+      "phase"
+    ],
+    "enrichment_version": "1.0.0"
+  },
+  "summaries": {
+    "file_summary": "# Standards directory optimization for Claude Code\n_Exported on 3/16/2026 at 20:11:03 EDT from Cursor (2.6.19)_\n\n---\n\n**User**\n\nreview the below prompt  as you have access to the files in the director please optimize the prompt so I may...",
+    "first_line": "# Standards directory optimization for Claude Code"
+  },
+  "chunks": [
+    {
+      "chunk_id": "2026-03-16T20:31:20+00:00_Standards_Repository_Rationalization_Execution_And_GitHub_Se_chunk1",
+      "chunk_index": 1,
+      "file": "chunk_00000.txt",
+      "tags": [
+        "ai",
+        "archive",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "files",
+        "json",
+        "legal",
+        "markdown",
+        "police",
+        "python",
+        "schema",
+        "schemas",
+        "sql",
+        "standards"
+      ],
+      "key_terms": [
+        "schemas",
+        "schema",
+        "udd",
+        "archive",
+        "standards",
+        "files"
+      ],
+      "summary": "# Standards directory optimization for Claude Code\n_Exported on 3/16/2026 at 20:11:03 EDT from Cursor (2.6.19)_\n\n---\n\n**User**\n\nreview the below prompt  as you have access to the files in the director please optimize the prompt so I may...",
+      "char_length": 30089,
+      "byte_length": 37510
+    },
+    {
+      "chunk_id": "2026-03-16T20:31:20+00:00_Standards_Repository_Rationalization_Execution_And_GitHub_Se_chunk2",
+      "chunk_index": 2,
+      "file": "chunk_00001.txt",
+      "tags": [
+        "ai",
+        "archive",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "files",
+        "json",
+        "legal",
+        "markdown",
+        "move",
+        "phase",
+        "police",
+        "python",
+        "schemas",
+        "sql"
+      ],
+      "key_terms": [
+        "archive",
+        "phase",
+        "schemas",
+        "files",
+        "move",
+        "yes"
+      ],
+      "summary": "Create audit report at docs/merge/RATIONALIZATION_MANIFEST_20260317.md\n\n Phase 2: Non-Destructive Consolidation (~45 min)\n\n 2a.",
+      "char_length": 26544,
+      "byte_length": 36493
+    },
+    {
+      "chunk_id": "2026-03-16T20:31:20+00:00_Standards_Repository_Rationalization_Execution_And_GitHub_Se_chunk3",
+      "chunk_index": 3,
+      "file": "chunk_00002.txt",
+      "tags": [
+        "ai",
+        "archive",
+        "code",
+        "data",
+        "docs",
+        "echo",
+        "excel",
+        "files",
+        "json",
+        "legal",
+        "markdown",
+        "police",
+        "python",
+        "schemas",
+        "sql"
+      ],
+      "key_terms": [
+        "yes",
+        "archive",
+        "json",
+        "echo",
+        "schemas",
+        "files"
+      ],
+      "summary": "Yes\n   2.",
+      "char_length": 18565,
+      "byte_length": 19109
+    },
+    {
+      "chunk_id": "2026-03-16T20:31:20+00:00_Standards_Repository_Rationalization_Execution_And_GitHub_Se_chunk4",
+      "chunk_index": 4,
+      "file": "chunk_00003.txt",
+      "tags": [
+        "ai",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "files",
+        "json",
+        "legal",
+        "mappings",
+        "markdown",
+        "phase",
+        "police",
+        "python",
+        "schemas",
+        "sql",
+        "standards"
+      ],
+      "key_terms": [
+        "schemas",
+        "files",
+        "standards",
+        "git",
+        "mappings",
+        "phase"
+      ],
+      "summary": "Yes\n   2.",
+      "char_length": 25978,
+      "byte_length": 28531
+    },
+    {
+      "chunk_id": "2026-03-16T20:31:20+00:00_Standards_Repository_Rationalization_Execution_And_GitHub_Se_chunk5",
+      "chunk_index": 5,
+      "file": "chunk_00004.txt",
+      "tags": [
+        "ai",
+        "code",
+        "data",
+        "docs",
+        "excel",
+        "exports",
+        "filename",
+        "json",
+        "legal",
+        "markdown",
+        "police",
+        "power",
+        "processed",
+        "processed_exports",
+        "python",
+        "sql",
+        "words"
+      ],
+      "key_terms": [
+        "processed_exports",
+        "filename",
+        "words",
+        "processed",
+        "exports",
+        "power"
+      ],
+      "summary": "**Processed exports (Power BI / reports)**\n\n**Target path:**\n```\nC:\\Users\\carucci_r\\OneDrive - City of Hackensack\\09_Reference\\Standards\\Processed_Exports\\\n```\n\nContains CSVs by category (arrests, traffic, summons, etc.).",
+      "char_length": 753,
+      "byte_length": 788
+    }
+  ],
+  "enrichment_version": "1.0.0"
+}

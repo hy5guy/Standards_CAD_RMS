@@ -1,0 +1,464 @@
+4
+       5 -## Repository Layout
+       5 +## Repository Layout (v3.0.0 - Rationalized 2026-03-17)
+       6
+       7  ```
+       8  Standards/
+       9 -├── archive/                    # Archived files (packages, legacy, duplicates)
+      10 -│   ├── packages/               # Packaging artifacts (Standards.7z)
+      11 -│   ├── legacy_copies/          # Legacy file versions
+      12 -│   └── removed_duplicates/     # Removed duplicate files
+      13 -├── CAD/                        # CAD system standards
+       9 +├── CAD/                        # CAD-specific standards
+      10  │   └── DataDictionary/
+      11 -│       └── current/schema/     # CAD field definitions
+      12 -├── Clery/                      # Clery Act crime statistics (institution requests)
+      11 +│       ├── current/schema/     # cad_export_field_definitions.md
+      12 +│       └── archive/            # Retired v1.0 field maps
+      13 +├── CAD_RMS/                    # CANONICAL unified standards (source of truth)
+      14 +│   ├── DataDictionary/
+      15 +│   │   └── current/schema/     # ALL cross-system schemas + mappings (v2.0)
+      16 +│   └── mappings/               # Field mapping rules, CSVs, policies
+      17 +├── RMS/                        # RMS-specific standards
+      18  │   └── DataDictionary/
+      19 -│       └── current/            # clery_crime_definitions, geography, nibrs_to_clery_map
+      20 -├── CAD_RMS/                    # Cross-system mapping (CANONICAL)
+      21 -│   └── DataDictionary/
+      22 -│       └── current/schema/     # cad_to_rms_field_map.json, rms_to_cad_field_map.json
+      19 +│       └── current/schema/     # RMS field definitions
+      20 +├── Clery/                      # Clery Act crime statistics (v1.1.0)
+      21 +│   └── DataDictionary/current/ # Crime definitions, geography, NIBRS-to-Clery map
+      22 +├── NIBRS/                      # NIBRS offense standards
+      23 +│   └── DataDictionary/current/ # Offense definitions, RMS-to-NIBRS mapping
+      24 +├── Personnel/                  # Personnel/Assignment Master schema
+      25 +├── Processed_Exports/          # Dashboard CSV outputs (regenerated monthly)
+      26  ├── config/                     # ETL configuration files
+      27 -├── docs/                       # Documentation
+      28 -├── mappings/                   # Call type mappings and lookups
+      29 -├── RMS/                        # RMS system standards
+      30 -│   └── DataDictionary/
+      31 -│       └── current/schema/     # RMS field definitions (CANONICAL)
+      32 -└── unified_data_dictionary/    # Unified data dictionary project
+      33 -    ├── docs/chatlogs/          # Development chatlogs
+      34 -    ├── mappings/               # Additional mappings (pointer files to canonical)
+      35 -    ├── schemas/                # Schema definitions
+      36 -    └── src/                    # Python utilities
+      27 +├── data/                       # Sample/test data
+      28 +├── mappings/                   # Call type category CSVs and JSON lookup
+      29 +├── scripts/                    # Utility scripts (extraction, validation)
+      30 +├── docs/                       # All documentation
+      31 +│   ├── ai_handoff/             # AI session handoff documents
+      32 +│   ├── chat_logs/              # Development chat logs
+      33 +│   ├── data_quality/           # Data quality crisis/fix docs
+      34 +│   ├── merge/                  # Repository merge documentation
+      35 +│   ├── response_time/          # Response time data dictionaries
+      36 +│   ├── image/                  # Images and diagrams
+      37 +│   └── task_templates/         # Task management templates
+      38 +├── unified_data_dictionary/    # COMPATIBILITY SHIM ONLY (4 files for schemas.yaml)
+      39 +│   └── schemas/                # canonical_schema, cad/rms_fields_schema, transformation_spec
+      40 +└── archive/                    # All retired/archived content
+      41 +    ├── PD_BCI_01_versions/     # Frozen v0.2.1 files from initial AI setup
+      42 +    ├── unified_data_dictionary_20260317/  # UDD bulk content
+      43 +    ├── schemas_udd_20260317/   # Older duplicate schemas
+      44 +    ├── mappings_field_mappings_20260317/  # v1.0 field mappings
+      45 +    ├── root_loose_files_20260317/  # Relocated root-level files
+      46 +    ├── completed_planning/     # Finished merge/planning docs
+      47 +    ├── directory_trees/        # Historical tree snapshots
+      48 +    ├── legacy_copies/          # Legacy file versions
+      49 +    └── merged_residue/         # Merge artifacts
+      50  ```
+      51
+      52  ## Canonical File Locations
+      53
+      54  | File | Canonical Location |
+      55  |------|-------------------|
+      56 -| `cad_to_rms_field_map.json` | `CAD_RMS/DataDictionary/current/schema/` |
+      57 -| `rms_to_cad_field_map.json` | `CAD_RMS/DataDictionary/current/schema/` |
+      56 +| `canonical_schema.json` | `CAD_RMS/DataDictionary/current/schema/` |
+      57 +| `cad_fields_schema_latest.json` | `CAD_RMS/DataDictionary/current/schema/` |
+      58 +| `rms_fields_schema_latest.json` | `CAD_RMS/DataDictionary/current/schema/` |
+      59 +| `transformation_spec.json` | `CAD_RMS/DataDictionary/current/schema/` |
+      60 +| `cad_rms_schema_registry.yaml` | `CAD_RMS/DataDictionary/current/schema/` |
+      61 +| `cad_to_rms_field_map.json` (v2.0) | `CAD_RMS/DataDictionary/current/schema/` |
+      62 +| `rms_to_cad_field_map.json` (v2.0) | `CAD_RMS/DataDictionary/current/schema/` |
+      63  | `multi_column_matching_strategy.md` | `CAD_RMS/DataDictionary/current/schema/` |
+      64 +| `mapping_rules.md` | `CAD_RMS/mappings/` |
+      65  | `rms_export_field_definitions.md` | `RMS/DataDictionary/current/schema/` |
+      66  | `cad_export_field_definitions.md` | `CAD/DataDictionary/current/schema/` |
+      67  | `clery_crime_definitions.json` | `Clery/DataDictionary/current/schema/` |
+      68  | `nibrs_to_clery_map.json` | `Clery/DataDictionary/current/mappings/` |
+      69
+      70 +**Note:** `unified_data_dictionary/schemas/` is a 4-file compatibility shim for
+         +`02_ETL_Scripts/cad_rms_data_quality/config/schemas.yaml`. The canonical copies live in
+         +`CAD_RMS/DataDictionary/current/schema/`. 71 +
+      72  ## Archive Policy
+      73
+      74 -Files in `archive/` are retained for 30 days after merge to main. See `archive/README.md` for details. 74 +Files in `archive/` are retained indefinitely for reference. See `archive/README.md` for details. 75
+      76  ---
+      77
+
+● Now update the section about Related Documentation at the bottom to fix stale UDD references. ● Update(README.md)
+  ⎿  Added 1 line, removed 1 line
+      126  - **CAD Field Definitions**: `CAD/DataDictionary/current/schema/cad_export_field_definitions.md`
+      127  - **RMS Field Definitions**: `rms_export_field_definitions.md` (comprehensive v1.0 with 29 fields organized into 8
+           functional groups)
+      128  - **Call Type Classification**: `docs/call_type_category_mapping.md` (527 call types mapped to 11 ESRI categories with
+           response types)
+      129 -- **Mapping Rules**: `unified_data_dictionary/mappings/mapping_rules.md`
+      129 +- **Mapping Rules**: `CAD_RMS/mappings/mapping_rules.md`
+      130
+      131  ## Call Type Classification System
+      132
+
+● Now update CHANGELOG.md with the rationalization entry. ● Update(CHANGELOG.md)
+  ⎿  Added 38 lines
+       2
+       3  All notable changes to this Standards folder (structure and key artifacts) will be documented here. 4
+       5 +## [v3.0.0] - 2026-03-17
+       6 +
+       7 +### Repository Rationalization
+       8 +
+       9 +Comprehensive consolidation and cleanup of the Standards repository. Reduced root-level clutter from 50+ files to ~12
+         +essential files. Established `CAD_RMS/DataDictionary/current/schema/` as the single source of truth for all cross-system
+         +schemas and mappings. 10 +
+      11 +#### Schema Consolidation
+      12 +- **Promoted 5 schemas** from `unified_data_dictionary/schemas/` to `CAD_RMS/DataDictionary/current/schema/`:
+         +`canonical_schema.json`, `cad_fields_schema_latest.json`, `rms_fields_schema_latest.json`, `transformation_spec.json`,
+         +`cad_rms_schema_registry.yaml`
+      13 +- **Promoted 12 mapping files** from `unified_data_dictionary/mappings/` to `CAD_RMS/mappings/`
+      14 +- **Created compatibility shim**: `unified_data_dictionary/schemas/` retains 4 files for `schemas.yaml` backward
+         +compatibility
+      15 +
+      16 +#### Archives Created
+      17 +- `archive/PD_BCI_01_versions/` - 64 frozen v0.2.1 files from initial AI setup session
+      18 +- `archive/schemas_udd_20260317/` - 6 older/duplicate schema files from `schemas/udd/`
+      19 +- `archive/mappings_field_mappings_20260317/` - 12 v1.0 field mapping files
+      20 +- `archive/unified_data_dictionary_20260317/` - UDD bulk content (docs, scripts, src, tests, etc.) 21 +- `archive/root_loose_files_20260317/` - 10 root-level data dict/reference files
+      22 +- `archive/completed_planning/` - 7 completed planning/merge docs
+      23 +- `archive/directory_trees/` - 6 historical tree snapshots
+      24 +
+      25 +#### Cleanup
+      26 +- **Deleted** 4 OneDrive "(1)" sync artifacts from `RMS/`
+      27 +- **Removed** empty placeholder directories: `FBI_UCR/`, `StateReporting/`, `tools/`
+      28 +- **Archived** v1.0 field maps from `CAD/DataDictionary/current/schema/` (superseded by CAD_RMS v2.0)
+      29 +- **Moved** `image/` to `docs/image/`, `task_templates/` to `docs/task_templates/`
+      30 +
+      31 +#### Documentation Reorganized
+      32 +- **10 AI handoff docs** (OPUS_*, CURSOR_*, CONTEXT_*) moved to `docs/ai_handoff/`
+      33 +- **6 data quality crisis docs** moved from `CAD/DataDictionary/current/` to `docs/data_quality/`
+      34 +- **2 ResponseTime docs** moved to `docs/response_time/`
+      35 +
+      36 +#### Breaking Changes for Consumers
+      37 +- `mappings/field_mappings/mapping_rules.md` moved to `CAD_RMS/mappings/mapping_rules.md` - update `schemas.yaml`
+         +`field_rules` path
+      38 +- `schemas/udd/` directory removed (contents archived)
+      39 +- `unified_data_dictionary/` slimmed to 4-file schemas-only shim
+      40 +
+      41 +---
+      42 +
+      43  ## [v2.0.0] - 2026-01-15
+      44
+      45  ### Repository Restructuring
+
+● Now update SUMMARY.md. ● Update(SUMMARY.md)
+  ⎿  Added 33 lines, removed 56 lines
+       1  # Summary (current state)
+       2
+       3 -## Repository Structure (v2.0.0)
+       3 +## Repository Structure (v3.0.0 - Rationalized 2026-03-17)
+       4
+       5 -This repository contains a single `.git/` at the root level. The `unified_data_dictionary/` folder is integrated as a
+         -normal directory (not a submodule). 5 +This repository contains a single `.git/` at the root level. The `unified_data_dictionary/` folder has been slimmed to a
+         +4-file compatibility shim; bulk content archived. 6
+       7 -### Canonical Locations
+       7 +### Source of Truth: `CAD_RMS/DataDictionary/current/schema/`
+       8
+       9 -| Schema Type | Location |
+      10 -|-------------|----------|
+      11 -| CAD field definitions | `CAD/DataDictionary/current/schema/` |
+      12 -| RMS field definitions | `RMS/DataDictionary/current/schema/` |
+      13 -| Cross-system mappings | `CAD_RMS/DataDictionary/current/schema/` |
+       9 +All cross-system schemas and mappings are now consolidated here:
+      10
+      11 -### Archive
+      11 +| File | Version | Purpose |
+      12 +|------|---------|---------|
+      13 +| `canonical_schema.json` | v1.0.0 | Unified CAD/RMS field dictionary |
+      14 +| `cad_fields_schema_latest.json` | v1.0 | CAD export field schema |
+      15 +| `rms_fields_schema_latest.json` | v1.0 | RMS export field schema |
+      16 +| `transformation_spec.json` | v1.0.0 | ETL transformation rules |
+      17 +| `cad_rms_schema_registry.yaml` | v2.0 | Schema registry with domain values |
+      18 +| `cad_to_rms_field_map.json` | v2.0 | Enhanced CAD-to-RMS mapping (280 lines) |
+      19 +| `rms_to_cad_field_map.json` | v2.0 | Enhanced RMS-to-CAD mapping |
+      20 +| `multi_column_matching_strategy.md` | v2.0 | Multi-column matching guide |
+      21
+      22 -The `archive/` directory contains:
+      23 -- `packages/` - Packaging artifacts (Standards.7z)
+      24 -- `legacy_copies/` - Old file versions for reference
+      25 -- `removed_duplicates/` - Duplicate files removed during cleanup
+      22 +### Domain-Specific Standards
+      23
+      24 -See `archive/README.md` for retention policy (30 days after merge). 24 +| Domain | Location | Key Files |
+      25 +|--------|----------|-----------|
+      26 +| CAD | `CAD/DataDictionary/current/schema/` | `cad_export_field_definitions.md` |
+      27 +| RMS | `RMS/DataDictionary/current/schema/` | `rms_export_field_definitions.md` (29 fields, 8 groups) |
+      28 +| Clery | `Clery/DataDictionary/current/` | Crime definitions, geography, NIBRS-to-Clery map |
+      29 +| NIBRS | `NIBRS/DataDictionary/current/` | Offense definitions, RMS-to-NIBRS mapping |
+      30 +| Personnel | `Personnel/` | Assignment Master schema (25 columns) |
+      31
+      32 -### Chatlog Storage
+      32 +### Compatibility Shim
+      33
+      34 -Chatlogs are stored in `unified_data_dictionary/docs/chatlogs/`:
+      35 -- `chunked/<chunk_id>/` - Direct flat structure
+      36 -- Each chunk contains: `*_transcript.json`, `*_transcript.md`, `*_sidecar.json`, `*.origin.json`
+      34 +`unified_data_dictionary/schemas/` contains 4 files referenced by
+         +`02_ETL_Scripts/cad_rms_data_quality/config/schemas.yaml`. These are identical copies of the CAD_RMS canonical versions. +Do not modify — update the CAD_RMS copy and re-sync. 35
+      36 ----
+      36 +### Archive
+      37
+      38 +The `archive/` directory contains retired content organized by date and category. Key subdirectories:
+         +`PD_BCI_01_versions/`, `unified_data_dictionary_20260317/`, `schemas_udd_20260317/`, `mappings_field_mappings_20260317/`,
+         +`legacy_copies/`, `merged_residue/`. 39 +
+      40  ## What exists now
+      41
+      42 -- **CAD**
+      43 -  - `CAD/DataDictionary/current/schema/` contains:
+      44 -    - `cad_export_field_definitions.md` (Draft v1.0 - finalized 2025-12-30) - Comprehensive CAD export field definitions
+         -and validation rules
+      45 -- **RMS**
+      46 -  - `RMS/DataDictionary/` scaffolding exists (schema/domains/defaults + archive/templates/scripts)
+      47 -  - `rms_export_field_definitions.md` - Comprehensive field definitions (29 fields, 8 groups)
+      48 -- **Cross-system**
+      49 -  - `CAD_RMS/DataDictionary/current/schema/` contains:
+      50 -    - `cad_to_rms_field_map.json`
+      51 -    - `rms_to_cad_field_map.json`
+      52 -    - `multi_column_matching_strategy.md`
+      53 -    - `rms_export_field_definitions.md` (root-level comprehensive documentation)
+      54 -- **Call Type Classification**
+      55 -  - `docs/call_type_category_mapping.md` - Complete Call Type to Category Type documentation
+      56 -  - `mappings/call_type_category_mapping.json` - JSON lookup for programmatic access
+      57 -  - `mappings/call_types_*.csv` - 11 category-specific CSV files for targeted loading
+      58 -  - Primary reference: `09_Reference/Classifications/CallTypes/CallType_Categories.csv` (649 entries, with Incident_Norm
+         -column, 11 ESRI standard categories only) - **Single Source of Truth**
+      59 -- **ETL Configuration**
+      60 -  - `config/response_time_filters.json` - Response Time ETL filtering rules (How Reported, Category_Type, incident
+         -exclusions, inclusion overrides)
+      42 +- **CAD** - `cad_export_field_definitions.md` (Draft v1.0, finalized 2025-12-30)
+      43 +- **RMS** - `rms_export_field_definitions.md` (29 fields, 8 functional groups)
+      44 +- **Cross-system** - 8 files in `CAD_RMS/DataDictionary/current/schema/` + 12 mapping files in `CAD_RMS/mappings/`
+      45 +- **Call Type Classification** - 649 entries, 11 ESRI categories, JSON + CSV + per-category files
+      46 +- **ETL Configuration** - `config/response_time_filters.json`
+      47 +- **Documentation** - Organized under `docs/` (ai_handoff, chat_logs, data_quality, merge, response_time, image,
+         +task_templates)
+      48
+      49 -## Notes
+      50 -
+      51 -- Cross-system field maps are located in the canonical cross-system location:
+      52 -  - `CAD_RMS/DataDictionary/current/schema/` (v2.0 enhanced mappings with multi-column matching strategies)
+      53 -  - CAD directory contains only CAD-specific schema files (cross-system mappings removed 2025-12-30 for clarity)
+      54 -
+      55 -- A bootstrap script is available at:
+      56 -  - `CAD_RMS/DataDictionary/scripts/init_cad_rms_standards.ps1`
+      57 -
+      58 -- Root + per-DataDictionary documentation exists:
+      59 -  - Root: `README.md`, `SUMMARY.md`, `CHANGELOG.md`
+      60 -  - Per DataDictionary: `*/DataDictionary/{README.md,SUMMARY.md,CHANGELOG.md}`
+      61 -
+      62 -- This folder is a local Git repo:
+      63 -  - Single `.git/` at repository root
+      64 -  - `.gitignore` present
+      65 -  - `unified_data_dictionary/` is integrated (no nested repo)
+      66 -
+      49  ## Recent Enhancements
+      50
+      51  ### 🚀 Response Time Filter Configuration v1.2.2 (2026-01-14)
+
+● Now update SCHEMA_FILES_SUMMARY.md. ● Update(SCHEMA_FILES_SUMMARY.md)
+  ⎿  Added 12 lines, removed 8 lines
+      52  - **`README.md`**
+      53    - Documentation for RMS schema directory
+      54
+      55 -### 3. Legacy CAD Mapping Schemas (Updated)
+      55 +### 3. Unified Schemas (Promoted from UDD - 2026-03-17)
+      56
+      57 -**Directory**: `CAD/DataDictionary/current/schema/`
+      57 +**Directory**: `CAD_RMS/DataDictionary/current/schema/`
+      58
+      59 -- **`cad_to_rms_field_map.json`** (v1.0, updated with note)
+      60 -  - Legacy schema maintained for backward compatibility
+      61 -  - Note added pointing to enhanced v2.0 schema
+      59 +- **`canonical_schema.json`** (v1.0.0) - Unified CAD/RMS field dictionary (100+ fields)
+      60 +- **`cad_fields_schema_latest.json`** (v1.0) - CAD export field schema
+      61 +- **`rms_fields_schema_latest.json`** (v1.0) - RMS export field schema
+      62 +- **`transformation_spec.json`** (v1.0.0) - ETL transformation rules (uses "FullAddress"/"Zone")
+      63 +- **`cad_rms_schema_registry.yaml`** (v2.0) - Schema registry with canonical HowReported domain values
+      64
+      65 -- **`rms_to_cad_field_map.json`** (v1.0, updated with note)
+      66 -  - Legacy schema maintained for backward compatibility
+      67 -  - Note added pointing to enhanced v2.0 schema
+      65 +### 3b. Legacy CAD Mapping Schemas (ARCHIVED 2026-03-17)
+      66
+      67 +**Directory**: `CAD/DataDictionary/archive/`
+      68 +
+      69 +- v1.0 field maps archived (superseded by CAD_RMS v2.0)
+      70 +
+      71  ### 4. Summary Documentation
+      72
+      73  **Directory**: `CAD_RMS/DataDictionary/`
+
+● Update(SCHEMA_FILES_SUMMARY.md)
+  ⎿  Added 11 lines, removed 20 lines
+       79
+       80  ---
+       81
+       82 -## Unified Data Dictionary Locations (Pointer Files)
+       82 +## Compatibility Shim (schemas.yaml backward compatibility)
+       83
+       84 -**Directory**: `unified_data_dictionary/`
+       84 +**Directory**: `unified_data_dictionary/schemas/`
+       85
+       86 -> **Note (2026-01-15)**: Following repository restructuring, duplicate files in unified_data_dictionary
+       87 -> have been replaced with pointer files that reference the canonical locations. 86 +> **Note (2026-03-17)**: Following repository rationalization, `unified_data_dictionary/` has been
+       87 +> slimmed to a 4-file compatibility shim. Bulk content archived to `archive/unified_data_dictionary_20260317/`. 88 +> Mapping pointer files promoted to `CAD_RMS/mappings/`. 89
+       90 -### Mappings Directory
+       91 -**Path**: `unified_data_dictionary/mappings/`
+       90 +These 4 files are referenced by `02_ETL_Scripts/cad_rms_data_quality/config/schemas.yaml`:
+       91 +- `canonical_schema.json` - identical to `CAD_RMS/DataDictionary/current/schema/canonical_schema.json`
+       92 +- `cad_fields_schema_latest.json` - identical to `CAD_RMS/DataDictionary/current/schema/cad_fields_schema_latest.json`
+       93 +- `rms_fields_schema_latest.json` - identical to `CAD_RMS/DataDictionary/current/schema/rms_fields_schema_latest.json`
+       94 +- `transformation_spec.json` - identical to `CAD_RMS/DataDictionary/current/schema/transformation_spec.json`
+       95
+       96 -- **`cad_to_rms_field_map_v2_enhanced.md`** (POINTER)
+       97 -  - Points to canonical: `CAD_RMS/DataDictionary/current/schema/cad_to_rms_field_map.json`
+       96 +**Do not modify these files directly. ** Update the CAD_RMS canonical copy and re-sync the shim. 97
+       98 -- **`rms_to_cad_field_map_v2_enhanced.md`** (POINTER)
+       99 -  - Points to canonical: `CAD_RMS/DataDictionary/current/schema/rms_to_cad_field_map.json`
+      100 -
+      101 -- **`multi_column_matching_strategy_POINTER.md`** (POINTER)
+      102 -  - Points to canonical: `CAD_RMS/DataDictionary/current/schema/multi_column_matching_strategy.md`
+      103 -
+      104 -### Documentation Directory
+      105 -**Path**: `unified_data_dictionary/docs/`
+      106 -
+      107 -- **`rms_export_field_definitions_POINTER.md`** (POINTER)
+      108 -  - Points to canonical: `RMS/DataDictionary/current/schema/rms_export_field_definitions.md`
+      109 -
+       98  ---
+       99
+      100  ## File Summary Table
+
+● Update(SCHEMA_FILES_SUMMARY.md)
+  ⎿  Added 5 lines, removed 2 lines
+      105  | `rms_to_cad_field_map.json` (v2.0) | `CAD_RMS/DataDictionary/current/schema/` |
+           `mappings/rms_to_cad_field_map_v2_enhanced.md` | Enhanced RMS-to-CAD mapping schema |
+      106  | `multi_column_matching_strategy.md` | `CAD_RMS/DataDictionary/current/schema/` |
+           `mappings/multi_column_matching_strategy_POINTER.md` | Multi-column matching guide |
+      107  | `rms_export_field_definitions.md` | `RMS/DataDictionary/current/schema/` |
+           `docs/rms_export_field_definitions_POINTER.md` | RMS field definitions |
+      108 -| `cad_to_rms_field_map.json` (v1.0) | `CAD/DataDictionary/current/schema/` | N/A | Legacy schema (backward
+          -compatibility) |
+      109 -| `rms_to_cad_field_map.json` (v1.0) | `CAD/DataDictionary/current/schema/` | N/A | Legacy schema (backward
+          -compatibility) |
+      108 +| `canonical_schema.json` (v1.0.0) | `CAD_RMS/DataDictionary/current/schema/` | `unified_data_dictionary/schemas/` (shim)
+          + | Unified field dictionary |
+      109 +| `cad_fields_schema_latest.json` | `CAD_RMS/DataDictionary/current/schema/` | `unified_data_dictionary/schemas/` (shim)
+          +| CAD export field schema |
+      110 +| `rms_fields_schema_latest.json` | `CAD_RMS/DataDictionary/current/schema/` | `unified_data_dictionary/schemas/` (shim)
+          +| RMS export field schema |
+      111 +| `transformation_spec.json` | `CAD_RMS/DataDictionary/current/schema/` | `unified_data_dictionary/schemas/` (shim) | ETL
+          + transformation rules |
+      112 +| `cad_rms_schema_registry.yaml` | `CAD_RMS/DataDictionary/current/schema/` | N/A | Schema registry with domain values |
+      113  | `SCHEMA_ENHANCEMENT_SUMMARY.md` | `CAD_RMS/DataDictionary/` | N/A | Enhancement summary |
+      114  | `README.md` (CAD-RMS) | `CAD_RMS/DataDictionary/current/schema/` | N/A | Schema directory documentation |
+      115  | `README.md` (RMS) | `RMS/DataDictionary/current/schema/` | N/A | RMS schema directory documentation |
+
+● Update(SCHEMA_FILES_SUMMARY.md)
+  ⎿  Added 1 line, removed 1 line
+      131
+      132  ### For Backward Compatibility
+      133
+      134 -The legacy v1.0 schemas in `CAD/DataDictionary/current/schema/` remain available for existing code that uses primary key
+          -matching only. 134 +The legacy v1.0 schemas have been archived to `CAD/DataDictionary/archive/` (2026-03-17). Use the v2.0 schemas in
+          +`CAD_RMS/DataDictionary/current/schema/` for all new and existing code. 135
+      136  ### For Reference
+      137
+
+● Update(SCHEMA_FILES_SUMMARY.md)
+  ⎿  Added 3 lines, removed 3 lines
+      146  ### Existing Documentation
+      147
+      148  - **CAD Field Definitions**: `CAD/DataDictionary/current/schema/cad_export_field_definitions.md`
+      149 -- **Mapping Rules**: `unified_data_dictionary/mappings/mapping_rules.md`
+      150 -- **RMS Field Map**: `unified_data_dictionary/mappings/rms_field_map_latest.json`
+      151 -- **CAD Field Map**: `unified_data_dictionary/mappings/cad_field_map_latest.json`
+      149 +- **Mapping Rules**: `CAD_RMS/mappings/mapping_rules.md`
+      150 +- **RMS Field Map**: `CAD_RMS/mappings/rms_field_map_latest.json`
+      151 +- **CAD Field Map**: `CAD_RMS/mappings/cad_field_map_latest.json`
+      152
+      153  ---
+      154
+
+● Update(SCHEMA_FILES_SUMMARY.md)
+  ⎿  Added 1 line
+      172  | 2025-12-30 | RMS field definitions document created |
+      173  | 2025-12-30 | Files copied to unified_data_dictionary directory |
+      174  | 2026-01-15 | Repository restructuring: duplicates replaced with pointer files |
+      175 +| 2026-03-17 | Repository rationalization: schemas promoted to CAD_RMS, UDD slimmed to shim, v1.0 maps archived |
+
+● Now update the CLAUDE.md Repository Architecture section. This is the most critical doc update. ● Read 1 file (ctrl+o to expand)
+
+● Update(CLAUDE.md)
+  ⎿  Added 23 lines, removed 16 lines
+       89              # This is the SINGLE SOURCE OF TRUTH for field normalization
+       90  ```
+       91
+       92 -### Canonical Standards Location
+       92 +### Canonical Standards Location (v3.0.0 - Rationalized 2026-03-17)
+       93
+       94  ```
+       95 -09_Reference/Standards/                # External authoritative schemas
+       96 -├── CAD/DataDictionary/current/        # CAD-specific standards
+       97 -│   ├── schemas/                       # CAD field schemas
+       98 -│   └── scripts/                       # CAD cleaning scripts
+       95 +09_Reference/Standards/                    # External authoritative schemas
+       96 +├── CAD/DataDictionary/current/schema/     # CAD-specific: cad_export_field_definitions.md
+       97 +├── RMS/DataDictionary/current/schema/     # RMS-specific: rms_export_field_definitions.md
+       98 +├── Clery/DataDictionary/current/          # Clery Act: crime definitions, geography
+       99 +├── NIBRS/DataDictionary/current/          # NIBRS: offense definitions, RMS-to-NIBRS map
+      100 +├── Personnel/                             # Assignment Master schema
+      101  │
+      102 -├── RMS/DataDictionary/current/        # RMS-specific standards
+      103 -│   └── schemas/                       # RMS field schemas
+      102 +├── CAD_RMS/                               # 🎯 SINGLE SOURCE OF TRUTH
+      103 +│   ├── DataDictionary/current/schema/     # ALL cross-system schemas:
+      104 +│   │   ├── canonical_schema.json          #   Unified field dictionary (100+ fields)
+      105 +│   │   ├── cad_fields_schema_latest.json  #   CAD export field schema
+      106 +│   │   ├── rms_fields_schema_latest.json  #   RMS export field schema
+      107 +│   │   ├── transformation_spec.json       #   ETL transformation rules
+      108 +│   │   ├── cad_rms_schema_registry.yaml   #   Schema registry + domain values
+      109 +│   │   ├── cad_to_rms_field_map.json      #   v2.0 (2025-12-30) - 280 lines
+      110 +│   │   ├── rms_to_cad_field_map.json      #   v2.0 (2025-12-30) - 258 lines
+      111 +│   │   └── multi_column_matching_strategy.md
+      112 +│   └── mappings/                          # Field mapping rules, CSVs, policies
+      113  │
+      114 -├── CAD_RMS/DataDictionary/current/    # Canonical unified standards
+      115 -│   ├── schemas/
+      116 -│   │   └── canonical_schema.json     # Master field definitions
+      117 -│   └── mappings/
+      118 -│       ├── cad_to_rms_field_map.json # v2.0 (2025-12-30) - 280 lines
+      119 -│       └── rms_to_cad_field_map.json # v2.0 (2025-12-30) - 258 lines
+      114 +├── unified_data_dictionary/schemas/       # ⚠️ COMPATIBILITY SHIM ONLY
+      115 +│   # 4 files for schemas.yaml backward compatibility
+      116 +│   # Identical copies of CAD_RMS canonical versions
+      117 +│   # Do NOT modify — update CAD_RMS copy and re-sync
+      118  │
+      119 -└── unified_data_dictionary/           # ⚠️ DEPRECATED - In consolidation
+      120 -    # DO NOT reference paths here
+      121 -    # Update any references to point to CAD/RMS/CAD_RMS structure
+      119 +└── archive/                               # All retired content (preserve-first)
+      120  ```
+      121
+      122  ### Processed Data Location
+
+● Now update the consolidation status section in CLAUDE.md.

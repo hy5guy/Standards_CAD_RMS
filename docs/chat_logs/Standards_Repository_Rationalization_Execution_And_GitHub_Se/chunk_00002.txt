@@ -1,0 +1,435 @@
+Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3b of the plan:
+
+- **Action:** Move `schemas/udd/*` → `archive/schemas_udd_20260317/`, then remove the empty `schemas/udd` and `schemas` directories
+- **Files:** The 6 schema files in `schemas/udd/` (older copies; canonical versions are in `CAD_RMS/`)
+- **Safety:** Files are moved to archive, not deleted; `rmdir` only runs on empty directories
+
+**Option 2** (“don’t ask again for cd:*”) would suppress future prompts for `cd` + write commands; better to keep approving for this run. Choose **1. Yes**. ---
+
+**User**
+
+next question    cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && mv mappings/field_mappings/*
+   archive/mappings_field_mappings_20260317/ && echo "Archived field_mappings/" && rmdir mappings/field_mappings && echo "Removed empty
+   field_mappings/"
+   Archive mappings/field_mappings/ and remove empty directory
+
+ Do you want to proceed? ❯ 1. Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+---
+
+**Cursor**
+
+
+**Before approving — one important check**
+
+The plan says `mapping_rules.md` is referenced by `schemas.yaml` and must be copied to `CAD_RMS/mappings/` **before** archiving `mappings/field_mappings/`. If you run this command as-is, `mapping_rules.md` will be moved into the archive and the `schemas.yaml` path will break. **Verify first:**
+- Does `CAD_RMS/mappings/mapping_rules.md` already exist? (e.g. from Phase 2b)
+
+**If it exists:** Choose **1. Yes** — safe to archive. **If it does not exist:** Choose **3. No** and ask Claude Code to run this first:
+
+```bash
+cp "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards/mappings/field_mappings/mapping_rules.md" "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards/CAD_RMS/mappings/mapping_rules.md"
+```
+
+Then run the archive command. Checking whether `CAD_RMS/mappings/mapping_rules.md` exists. **Yes — approve it (Option 1). **
+
+`CAD_RMS/mappings/mapping_rules.md` already exists (from Phase 2b), so archiving `mappings/field_mappings/` is safe. **Note:** After this, `schemas.yaml` will still point to `mappings/field_mappings/mapping_rules.md`, which will no longer exist. Phase 5 should update it to:
+
+`CAD_RMS/mappings/mapping_rules.md`
+
+Until that change is made, anything using `field_rules` will fail. Phase 5 should handle this. Choose **1. Yes**. ---
+
+**User**
+
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && mv
+   "CAD/DataDictionary/current/schema/cad_to_rms_field_map.json" "CAD/DataDictionary/archive/" && mv
+   "CAD/DataDictionary/current/schema/rms_to_cad_field_map.json" "CAD/DataDictionary/archive/" && echo "Archived v1.0 maps from CAD/"
+   Archive v1.0 field maps from CAD/DataDictionary/current/schema/
+
+ Do you want to proceed? ❯ 1. Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3d of the plan:
+
+- **Action:** Move the v1.0 field maps from `CAD/DataDictionary/current/schema/` to `CAD/DataDictionary/archive/`
+- **Files:** `cad_to_rms_field_map.json` and `rms_to_cad_field_map.json` (v1.0)
+- **Canonical:** v2.0 versions remain in `CAD_RMS/DataDictionary/current/schema/`
+- **Safety:** Files are moved, not deleted; they stay in the CAD archive
+
+Choose **1. Yes**. ---
+
+**User**
+
+
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && for f in cad_data_dictionary.json
+   cad_data_dictionary_ai.md cad_domains.json cad_export.schema.json cad_field_map.csv timereport_data_dictionary.json
+   timereport_export.schema.json timereport_field_map.csv html_format_scrpa_style.txt enhanced_esri_output_generator_REFERENCE.py; do if
+   [ -f "$f" ]; then mv "$f" archive/root_loose_files_20260317/ && echo "Archived $f"; fi; done
+   Archive root-level loose data dict/reference files
+
+ Command contains ambiguous syntax with command separators that could be misinterpreted
+
+ Do you want to proceed? ❯ 1. Yes
+   2. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3e of the plan: archiving 10 root-level data dictionary and reference files into `archive/root_loose_files_20260317/`. - **Files:** `cad_data_dictionary.json`, `cad_data_dictionary_ai.md`, `cad_domains.json`, `cad_export.schema.json`, `cad_field_map.csv`, `timereport_data_dictionary.json`, `timereport_export.schema.json`, `timereport_field_map.csv`, `html_format_scrpa_style.txt`, `enhanced_esri_output_generator_REFERENCE.py`
+- **Logic:** Uses `if [ -f "$f" ]` so only existing files are moved
+- **Safety:** Files are moved to archive, not deleted
+
+The “ambiguous syntax” warning is about the shell structure (semicolons, `for` loop). The command is valid bash and should run correctly in Git Bash or a similar shell. Choose **1. Yes**. ---
+
+**User**
+
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && for f in MERGE_COMPLETION_ASSESSMENT.md
+   MERGE-STATUS.md PACKAGING_COMPLETION_SUMMARY.md RELEASE_NOTES.md GIT_REPOSITORY_STRUCTURE.md
+   claude_code_standards_pre_flight_migration.md QUICK_START_GUIDE.md; do if [ -f "$f" ]; then mv "$f" archive/completed_planning/ &&
+   echo "Archived $f"; fi; done
+   Archive completed planning docs
+
+ Command contains ambiguous syntax with command separators that could be misinterpreted
+
+ Do you want to proceed? ❯ 1. Yes
+   2. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3e of the plan: archiving 7 completed planning docs into `archive/completed_planning/`. - **Files:** `MERGE_COMPLETION_ASSESSMENT.md`, `MERGE-STATUS.md`, `PACKAGING_COMPLETION_SUMMARY.md`, `RELEASE_NOTES.md`, `GIT_REPOSITORY_STRUCTURE.md`, `claude_code_standards_pre_flight_migration.md`, `QUICK_START_GUIDE.md`
+- **Logic:** Same `for` loop with `if [ -f "$f" ]` so only existing files are moved
+- **Safety:** Files are moved to archive, not deleted
+
+Choose **1. Yes**. ---
+
+**User**
+
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && mv 2026_*_Standards_directory_tree. *
+   archive/directory_trees/ && echo "Archived directory tree snapshots"
+   Archive directory tree snapshots
+
+ Compound command contains cd with write operation - manual approval required to prevent path resolution bypass
+
+ Do you want to proceed? ❯ 1. Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3e of the plan: archiving directory tree snapshots into `archive/directory_trees/`. - **Files:** `2026_*_Standards_directory_tree. *` (e.g. `2026_02_17_Standards_directory_tree.json`, `2026_03_16_Standards_directory_tree.md`, etc.) - **Action:** Move only; files are preserved in the archive
+- **Path:** Correct Standards repo path
+
+Choose **1. Yes**. ---
+
+**User**
+
+  cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && rm "RMS/DataDictionary/CHANGELOG (1).md"
+   "RMS/DataDictionary/README (1).md" "RMS/DataDictionary/SUMMARY (1).md" "RMS/SCRPA/rms_data_quality_report (1).md" && echo "Deleted 4
+   OneDrive sync artifacts"
+   Delete OneDrive sync artifact files
+
+ Compound command contains cd with write operation - manual approval required to prevent path resolution bypass
+
+ Do you want to proceed? ❯ 1. Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3f of the plan: removing OneDrive sync artifact files. - **Files:** `CHANGELOG (1).md`, `README (1).md`, `SUMMARY (1).md`, `rms_data_quality_report (1).md` — all with the `(1)` suffix
+- **Action:** Delete (these are OneDrive duplicates, not originals)
+- **Originals:** `CHANGELOG.md`, `README.md`, `SUMMARY.md`, `rms_data_quality_report.md` (without `(1)`) remain
+
+These `(1)` copies are OneDrive conflict/duplicate artifacts; removing them is correct. Choose **1. Yes**. ---
+
+**User**
+
+  cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && rmdir FBI_UCR 2>/dev/null && echo "Removed FBI_UCR/";
+   rmdir StateReporting 2>/dev/null && echo "Removed StateReporting/"; rmdir tools 2>/dev/null && echo "Removed tools/"; true
+   Remove empty placeholder directories
+
+ Do you want to proceed? ❯ 1. Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3g of the plan: removing empty placeholder directories. - **Directories:** `FBI_UCR/`, `StateReporting/`, `tools/`
+- **Action:** `rmdir` (only removes empty directories)
+- **Safety:** `2>/dev/null` hides errors if a directory is missing or not empty; `rmdir` will not remove non-empty directories
+
+Choose **1. Yes**. ---
+
+**User**
+
+ cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && mv image docs/image && echo "Moved image/ to
+   docs/image/" && mv task_templates docs/task_templates && echo "Moved task_templates/ to docs/task_templates/"
+   Move image/ and task_templates/ to docs/
+
+ Do you want to proceed? ❯ 1. Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3h of the plan: moving `image/` and `task_templates/` into `docs/`. - **Action:** Move only; content is relocated, not deleted
+- **Target:** `docs/image/` and `docs/task_templates/`
+- **Path:** Correct Standards repo path
+
+Choose **1. Yes**. ---
+
+**User**
+
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && find templates/ -type f 2>/dev/null
+   Check templates/ contents
+
+ Compound command contains cd with output redirection - manual approval required to prevent path resolution bypass
+
+ Do you want to proceed? ❯ 1. Yes
+   2. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This is a read-only check: it lists files in `templates/` and does not change anything. - **Action:** `find templates/ -type f` (list files only)
+- **Effect:** No moves, deletes, or other modifications
+- **Purpose:** Likely a pre-check before archiving `templates/` in Phase 3h
+
+Choose **1. Yes**. ---
+
+**User**
+
+  cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && mv templates/udd/README.md
+   archive/root_loose_files_20260317/templates_udd_README.md && rm -rf templates && echo "Archived templates/ content and removed"
+   Archive templates/ content and remove empty directory
+
+ Do you want to proceed? ❯ 1. Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3h of the plan: archive `templates/` and remove it. - **Action 1:** Move `templates/udd/README.md` → `archive/root_loose_files_20260317/templates_udd_README.md` (renamed to avoid overwriting)
+- **Action 2:** `rm -rf templates` removes the remaining empty `templates/` tree
+- **Content:** From the directory tree, `templates/` only contained `udd/README.md`, which is being archived first
+
+Choose **1. Yes**. ---
+
+**User**
+
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards/unified_data_dictionary" && for item in *; do if [ "$item"
+    != "schemas" ]; then mv "$item" "../archive/unified_data_dictionary_20260317/$item" && echo "Moved $item"; fi; done
+   Move all UDD contents except schemas/ to archive
+
+ Command contains ambiguous syntax with command separators that could be misinterpreted
+
+ Do you want to proceed? ❯ 1. Yes
+   2. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3i of the plan: slimming down `unified_data_dictionary/` to the compatibility shim. - **Action:** Move everything in `unified_data_dictionary/` to `archive/unified_data_dictionary_20260317/` **except** `schemas/`
+- **Kept:** `unified_data_dictionary/schemas/` (with the 4 files referenced by `schemas.yaml`)
+- **Archived:** `.claude`, `.github`, `mappings`, `docs`, `src`, `scripts`, `tests`, config files, etc. **Note:** In bash, `*` does not include hidden items (e.g. `.git`, `.claude`). Those may stay in `unified_data_dictionary/`. If you want them archived too, a follow-up step can move them. The main goal—keeping only `schemas/` and archiving the rest—is achieved. Choose **1. Yes**. ---
+
+**User**
+
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards/unified_data_dictionary" && for item in *; do if [ "$item"
+    != "schemas" ]; then mv "$item" "../archive/unified_data_dictionary_20260317/$item" && echo "Moved $item"; fi; done
+   Move all UDD contents except schemas/ to archive
+
+ Command contains ambiguous syntax with command separators that could be misinterpreted
+
+ Do you want to proceed? ❯ 1. Yes
+   2. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches Phase 3i: moving everything in `unified_data_dictionary/` to the archive except `schemas/`, which stays as the compatibility shim for `schemas.yaml`. Choose **1. Yes**. ---
+
+**User**
+
+
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && for f in assignment_master_schema.json
+   cad_assignment_schema.json cad_fields_schema.json cad_fields_schema_v2.json cad_rms_schema_registry.yaml; do mv
+   "unified_data_dictionary/schemas/$f" "archive/unified_data_dictionary_20260317/$f" && echo "Moved $f from shim"; done
+   Remove non-referenced files from UDD shim, keep only 4 schemas.yaml targets
+
+ Do you want to proceed? ❯ 1. Yes
+   2. Yes, and don’t ask again for: cd:*
+   3. No
+
+ Esc to cancel · Tab to amend · ctrl+e to explain
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This matches the plan: keep only the 4 files referenced by `schemas.yaml` and archive the rest. - **Kept in shim:** `canonical_schema.json`, `cad_fields_schema_latest.json`, `rms_fields_schema_latest.json`, `transformation_spec.json`
+- **Archived:** `assignment_master_schema.json`, `cad_assignment_schema.json`, `cad_fields_schema.json`, `cad_fields_schema_v2.json`, `cad_rms_schema_registry.yaml`
+
+The shim will contain only what `schemas.yaml` uses. Choose **1. Yes**. ---
+
+**User**
+
+ cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && git add . && git commit -m "$(cat <<'EOF'
+   Phase 3: Archive duplicates, PD_BCI_01 files, and slim UDD to shim
+
+   - Archive 64 -PD_BCI_01 frozen files to archive/PD_BCI_01_versions/
+   - Archive schemas/udd/ (6 older duplicate schemas) to archive/schemas_udd_20260317/
+   - Archive mappings/field_mappings/ (12 v1.0 files) to archive/mappings_field_mappings_20260317/
+   - Archive v1.0 cad_to_rms/rms_to_cad maps from CAD/DataDictionary/current/schema/
+   - Archive 10 root-level data dict/reference files to archive/root_loose_files_20260317/
+   - Archive 7 completed planning docs to archive/completed_planning/
+   - Archive 6 directory tree snapshots to archive/directory_trees/
+   - Delete 4 OneDrive "(1)" sync artifacts from RMS/
+   - Remove empty placeholders: FBI_UCR/, StateReporting/, tools/
+   - Move image/ to docs/image/, task_templates/ to docs/task_templates/
+   - Archive templates/ content and remove
+   - Slim unified_data_dictionary/ to 4-file compatibility shim (schemas only)
+   - Move UDD bulk (25 dirs/files) to archive/unified_data_dictionary_20260317/
+
+   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+   EOF
+   )"
+   Commit Phase 3 changes
+
+ Command contains $() command substitution
+
+ Do you want to proceed? ❯ 1. Yes
+   2. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This is the planned Phase 3 commit. The `$()` is used to pass the multi-line commit message to `git commit -m`, which is standard. - **Path:** Correct Standards repo path  
+- **Action:** Stage all changes and commit with the Phase 3 summary  
+- **Content:** Matches the Phase 3 work you’ve been approving  
+
+Choose **1. Yes**. ---
+
+**User**
+
+  cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && git log --oneline -4
+   Verify commits
+
+ Compound commands with cd and git require approval to prevent bare repository attacks
+
+ Do you want to proceed? ❯ 1. Yes
+   2. No
+
+---
+
+**Cursor**
+
+
+**Yes — approve it (Option 1). **
+
+This is a read-only check: it shows the last 4 commits and does not change anything. - **Action:** `git log --oneline -4` (view recent commits)
+- **Effect:** No modifications to the repo
+
+Choose **1. Yes**. ---
+
+**User**
+
+   cd "C:/Users/carucci_r/OneDrive - City of Hackensack/09_Reference/Standards" && echo "=== Check 1: schemas.yaml paths ===" && for p in
+    "unified_data_dictionary/schemas/canonical_schema.json" "unified_data_dictionary/schemas/cad_fields_schema_latest.json"
+   "unified_data_dictionary/schemas/rms_fields_schema_latest.json" "unified_data_dictionary/schemas/transformation_spec.json"
+   "CAD_RMS/DataDictionary/current/schema/cad_to_rms_field_map.json" "CAD_RMS/DataDictionary/current/schema/rms_to_cad_field_map.json"
+   "CAD_RMS/DataDictionary/current/schema/multi_column_matching_strategy.md" "config/response_time_filters.json"; do if [ -e "$p" ]; then
+    echo "  OK: $p"; else echo "  MISSING: $p"; fi; done && echo "" && echo "=== Check 2: mapping_rules.md (schemas.yaml refs
+   field_mappings/) ===" && if [ -f "CAD_RMS/mappings/mapping_rules.md" ]; then echo "  OK: exists in CAD_RMS/mappings/"; else echo "
+   MISSING"; fi && echo "" && echo "=== Check 3: No PD_BCI_01 outside archive ===" && count=$(find . -name "*-PD_BCI_01*" -not -path
+   "./archive/*" -not -path "./.git/*" 2>/dev/null | wc -l) && echo "  Count: $count (should be 0)" && echo "" && echo "=== Check 4: No
+   (1) sync artifacts ===" && count2=$(find . -name "*(1)*" -not -path "./.git/*" 2>/dev/null | wc -l) && echo "  Count: $count2 (should
+   be 0)" && echo "" && echo "=== Check 5: transformation_spec uses FullAddress ===" && grep -c "FullAddress"
+   unified_data_dictionary/schemas/transformation_spec.json && grep -c "FullAddress"
+   CAD_RMS/DataDictionary/current/schema/transformation_spec.json && echo "" && echo "=== Check 6: Shim = CAD_RMS byte identity ===" &&
+   for f in canonical_schema.json cad_fields_schema_latest.json rms_fields_schema_latest.json transformation_spec.json; do if diff -q
+   "unified_data_dictionary/schemas/$f" "CAD_RMS/DataDictionary/current/schema/$f" > /dev/null 2>&1; then echo "  IDENTICAL: $f"; else
+   echo "  DIFFERS: $f"; fi; done && echo "" && echo "=== Check 7: Empty dirs removed ===" && for d in FBI_UCR StateReporting tools; do
+   if [ -d "$d" ]; then echo "  EXISTS (bad): $d"; else echo "  GONE (good): $d"; fi; done
+   Run full validation checklist
+
+ Command contains $() command substitution
+
+ Do you want to proceed? ❯ 1.
