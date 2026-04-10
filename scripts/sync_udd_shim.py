@@ -75,7 +75,7 @@ def main():
                 synced += 1
             else:
                 shutil.copy2(canonical, shim)
-                print(f"  SYNCED {pair['shim']} ← {pair['canonical']}")
+                print(f"  SYNCED {pair['shim']} <- {pair['canonical']}")
                 synced += 1
 
     print()
