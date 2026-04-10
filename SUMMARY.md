@@ -37,76 +37,39 @@ All cross-system schemas and mappings are now consolidated here:
 
 The `archive/` directory contains retired content organized by date and category. Key subdirectories: `PD_BCI_01_versions/`, `unified_data_dictionary_20260317/`, `schemas_udd_20260317/`, `mappings_field_mappings_20260317/`, `legacy_copies/`, `merged_residue/`.
 
-## What exists now
+## What Exists Now
 
 - **CAD** - `cad_export_field_definitions.md` (Draft v1.0, finalized 2025-12-30)
 - **RMS** - `rms_export_field_definitions.md` (29 fields, 8 functional groups)
-- **Cross-system** - 8 files in `CAD_RMS/DataDictionary/current/schema/` + 12 mapping files in `CAD_RMS/mappings/`
+- **Cross-system** - 9 files in `CAD_RMS/DataDictionary/current/schema/` + 15 mapping files in `CAD_RMS/mappings/`
+- **Normalization maps** - `how_reported_normalization_map.json` (140 entries), `disposition_normalization_map.json` (55 entries)
 - **Call Type Classification** - 649 entries, 11 ESRI categories, JSON + CSV + per-category files
+- **Processed Exports** - 20 unit subdirectories, ~99 monthly dashboard CSVs
 - **ETL Configuration** - `config/response_time_filters.json`
+- **Utility Scripts** - `sync_udd_shim.py`, `extract_narrative_fields.py`, `validate_rms_export.py`
 - **Documentation** - Organized under `docs/` (ai_handoff, chat_logs, data_quality, merge, response_time, image, task_templates)
+- **CI/Hooks** - `.claude/hooks/session-start.sh` (shim drift detection, git status on session start)
 
-## Recent Enhancements
+## Recent Milestones
 
-### 🚀 Response Time Filter Configuration v1.2.2 (2026-01-14)
+### Standards Audit Phases 1-3 Complete (2026-04-09)
 
-**ETL Configuration Added**
-- New `config/` directory created for ETL configuration files
-- Added `config/response_time_filters.json` - JSON configuration for Response Time ETL filtering rules
-- Used by Response Time Monthly Generator script (v2.0.0)
-- Configuration includes:
-  - How Reported exclusions (Self-Initiated)
-  - Category_Type exclusions (4 categories)
-  - Specific incident exclusions (41 incidents)
-  - Inclusion overrides (14 incidents kept despite category exclusion)
+All 9 audit gaps resolved. See `docs/ai_handoff/Phase1_Standards_Audit.md`.
 
-### 🚀 Call Type to Category Type Mapping v1.2.1 (2026-01-09)
+- Normalization mappings extracted from hardcoded Python dicts to standalone JSON in `CAD_RMS/mappings/`
+- Schema registry HowReported enum expanded 6 to 12 canonical values; Walk-in corrected to Walk-In
+- `transformation_spec.json` field name discrepancies fixed (TimeOfCall, Hour_Calc, PDZone/Zone)
+- Shim sync script added (`scripts/sync_udd_shim.py` + `scripts/shim_sync_manifest.json`)
 
-**Backup Strategy Added**
-- Timestamped backups created automatically in both CallTypes directory and Standards directory
-- Backup script available: `scripts/backup_calltype_categories.py`
-- "Latest" copy maintained in Standards directory for quick access
+### Repository Rationalization v3.0.0 (2026-03-17)
 
-### 🚀 Call Type to Category Type Mapping v1.2.0 (2026-01-08)
+- All schemas promoted to `CAD_RMS/DataDictionary/current/schema/`
+- `unified_data_dictionary/` slimmed to 4-file compatibility shim
+- 64 PD_BCI_01 files archived; root clutter reduced from 50+ to ~12 essential files
+- `schemas.yaml` shim paths validated and functional
 
-**Category Standardization Complete**
-- All categories standardized to 11 ESRI standard categories only
-- Non-standard categories mapped to ESRI equivalents
-- Added 9 remaining unmatched types (total now 649 entries)
+### Call Type Classification v1.2.0 (2026-01-08)
 
-### 🚀 Call Type to Category Type Mapping v1.0 (2026-01-08)
-
-**Call Type Classification System - Added**
-- **Primary Reference File**: `CallType_Categories.csv` (649 entries) - ESRI standardized classification - **Single Source of Truth**
-  - Location: `09_Reference/Classifications/CallTypes/CallType_Categories.csv`
-  - Format: Incident, Incident_Norm, Category_Type, Response_Type
-  - Includes Incident_Norm column for normalized matching
-  - E.D.P. variations (E.D.P., EDP, edp, etc.) all map to "Mental Health Incident"
-  - **11 ESRI Standard Categories Only**: All non-standard categories have been mapped to ESRI standard
-  - 11 standardized categories (Administrative and Support, Assistance and Mutual Aid, Community Engagement, Criminal Incidents, Emergency Response, Investigations and Follow-Ups, Juvenile-Related Incidents, Public Safety and Welfare, Regulatory and Ordinance, Special Operations and Tactical, Traffic and Motor Vehicle)
-  - 3 Response Types (Emergency, Urgent, Routine)
-- **Documentation**: `docs/call_type_category_mapping.md` - Complete breakdown of all Call Types by Category Type
-- **Category-Specific Files**: 11 CSV files in `mappings/call_types_*.csv` for targeted script loading
-- **JSON Mapping**: `mappings/call_type_category_mapping.json` - Programmatic lookup dictionaries
-  - `call_type_to_category`: Quick category lookup
-  - `call_type_to_response`: Response type lookup
-  - `category_to_call_types`: All call types per category
-- **Purpose**: Streamline knowledge base with script-referenceable files for RMS Incident Type classification and filtering
-
-### 🚀 Schema Documentation v0.3.0 (2025-12-30)
-
-**CAD Export Field Definitions - Finalized (Draft v1.0)**
-- Comprehensive CAD export field definitions and validation rules
-- Field-by-field documentation with export header to standard name mapping
-- Validation rules, formats, and allowed values for all CAD export fields (ReportNumberNew, Incident, HowReported, temporal fields, location fields, etc.)
-- Temporal field derivation logic and standard naming conventions
-- Cross-referenced with RMS field definitions for integration
-
-**RMS Export Field Definitions - Added (v1.0)**
-- Comprehensive RMS export schema documentation
-  - 29 documented fields across 8 functional categories
-  - Groups: Incident Identification, Temporal, Incident Classification, Location, Incident Details, Property, Vehicle, Personnel, Case Management
-  - Each field includes validation rules, format patterns, CAD mapping references, and multi-column matching strategy usage
-  - Special narrative extraction logic for deriving suspect descriptions, vehicle details, property information, and M.O.
-  - Integrated with `rms_to_cad_field_map_v2_enhanced.json` and multi-column matching strategies
-  - Data quality validation rules summary organized by field group
+- 649 entries across 11 ESRI standard categories, 3 response types
+- Primary reference: `CallType_Categories_latest.csv`
+- Per-category CSVs in `mappings/`, JSON lookup in `mappings/call_type_category_mapping.json`

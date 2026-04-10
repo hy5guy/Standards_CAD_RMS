@@ -2,6 +2,35 @@
 
 All notable changes to this Standards folder (structure and key artifacts) will be documented here.
 
+## [v3.1.0] - 2026-04-10
+
+### Documentation Refresh & Session Tooling
+
+#### Standards Audit Phases 1-3 Complete (2026-04-09)
+- **Normalization maps extracted** from hardcoded Python dicts to standalone JSON in `CAD_RMS/mappings/`:
+  - `how_reported_normalization_map.json` (140 entries -> 12 canonical targets)
+  - `disposition_normalization_map.json` (55 entries -> 20 canonical targets)
+- **Schema registry updated** to v1.1.0: HowReported enum expanded 6 -> 12 canonical values; Walk-in corrected to Walk-In
+- **transformation_spec.json** field name discrepancies fixed (TimeOfCall, Hour_Calc, PDZone/Zone)
+- **Shim sync tooling added**: `scripts/sync_udd_shim.py` + `scripts/shim_sync_manifest.json`
+- Full audit trail: `docs/ai_handoff/Phase1_Standards_Audit.md`
+
+#### Documentation Updates (2026-04-10)
+- **CLAUDE.md rewritten** (v2.0.0): accurate repo-centric documentation replacing stale cross-repo references
+- **README.md updated**: added missing directories (SCRPA, Processed_Exports, scripts, .claude), removed hardcoded Windows paths
+- **SUMMARY.md modernized**: replaced stale v1.0-v1.2.2 "Recent Enhancements" with current milestone summary
+- **SCHEMA_FILES_SUMMARY.md updated**: corrected date header, added normalization maps section, updated schema registry version to v1.1.0
+
+#### Session Start Hook Added
+- `.claude/hooks/session-start.sh`: runs on Claude Code web session start
+  - Installs Python dependencies from `requirements.txt`
+  - Displays Standards VERSION
+  - Runs `sync_udd_shim.py --dry-run` for shim drift detection
+  - Reports git branch and uncommitted changes
+- `.claude/settings.json`: registers SessionStart hook
+
+---
+
 ## [v3.0.0] - 2026-03-17
 
 ### Repository Rationalization

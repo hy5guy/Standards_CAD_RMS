@@ -1,16 +1,13 @@
 # Schema Files Summary - CAD-RMS Integration
 
-**Date**: 2025-12-30  
-**Purpose**: Summary of all schema, mapping, and definition files created for CAD-RMS integration
+**Date**: 2026-04-10  
+**Purpose**: Summary of all schema, mapping, and definition files for CAD-RMS integration
 
 ---
 
 ## File Locations
 
-All files have been created and/or copied to the appropriate directories under:
-```
-C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\
-```
+All files are organized under the repository root (`09_Reference/Standards/`). See `README.md` for the full directory layout.
 
 ---
 
@@ -60,7 +57,14 @@ C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\
 - **`cad_fields_schema_latest.json`** (v1.0) - CAD export field schema
 - **`rms_fields_schema_latest.json`** (v1.0) - RMS export field schema
 - **`transformation_spec.json`** (v1.0.0) - ETL transformation rules (uses "FullAddress"/"Zone")
-- **`cad_rms_schema_registry.yaml`** (v2.0) - Schema registry with canonical HowReported domain values
+- **`cad_rms_schema_registry.yaml`** (v1.1.0, updated 2026-04-09) - Schema registry with canonical domain values (HowReported: 12 values, Disposition: 20 values)
+
+### 3a. Normalization Maps (Extracted 2026-04-09)
+
+**Directory**: `CAD_RMS/mappings/`
+
+- **`how_reported_normalization_map.json`** - 140 raw values mapped to 12 canonical targets (9-1-1, Phone, Walk-In, Self-Initiated, Radio, eMail, Mail, Other - See Notes, Fax, Teletype, Virtual Patrol, Canceled Call). Loaded at runtime by `enhanced_esri_output_generator.py`.
+- **`disposition_normalization_map.json`** - 55 raw values mapped to 20 canonical targets. Loaded at runtime by `enhanced_esri_output_generator.py`.
 
 ### 3b. Legacy CAD Mapping Schemas (ARCHIVED 2026-03-17)
 
@@ -173,3 +177,5 @@ The legacy v1.0 schemas have been archived to `CAD/DataDictionary/archive/` (202
 | 2025-12-30 | Files copied to unified_data_dictionary directory |
 | 2026-01-15 | Repository restructuring: duplicates replaced with pointer files |
 | 2026-03-17 | Repository rationalization: schemas promoted to CAD_RMS, UDD slimmed to shim, v1.0 maps archived |
+| 2026-04-09 | Phase 1-3 audit: normalization maps extracted to JSON, schema registry updated to v1.1.0 (12 HowReported values), transformation_spec field names fixed, shim sync tooling added |
+| 2026-04-10 | Summary updated to current state; hardcoded paths removed |

@@ -7,38 +7,52 @@ Central repository for CAD/RMS data standards, schemas, and field mappings.
 ```
 Standards/
 ├── CAD/                        # CAD-specific standards
-│   └── DataDictionary/
-│       ├── current/schema/     # cad_export_field_definitions.md
-│       └── archive/            # Retired v1.0 field maps
+│   ├── DataDictionary/
+│   │   ├── current/schema/     # cad_export_field_definitions.md
+│   │   └── archive/            # Retired v1.0 field maps
+│   └── SCRPA/                  # Assignment_Master_V2.csv, cad_data_quality_report.md
 ├── CAD_RMS/                    # CANONICAL unified standards (source of truth)
 │   ├── DataDictionary/
 │   │   └── current/schema/     # ALL cross-system schemas + mappings (v2.0)
-│   └── mappings/               # Field mapping rules, CSVs, policies
+│   └── mappings/               # Normalization maps, field mapping rules, CSVs
 ├── RMS/                        # RMS-specific standards
-│   └── DataDictionary/
-│       └── current/schema/     # RMS field definitions
+│   ├── DataDictionary/
+│   │   └── current/schema/     # rms_export_field_definitions.md (29 fields)
+│   └── SCRPA/                  # SCRPA_7Day_Data_Dictionary.md, rms_data_quality_report.md
 ├── Clery/                      # Clery Act crime statistics (v1.1.0)
-│   └── DataDictionary/current/ # Crime definitions, geography, NIBRS-to-Clery map
-├── NIBRS/                      # NIBRS offense standards
+│   ├── DataDictionary/current/ # Crime definitions, geography, NIBRS-to-Clery map
+│   └── scripts/                # extract_clery_geography_from_arcgis.py
+├── NIBRS/                      # NIBRS offense standards (81 offenses, FBI 2023.0)
 │   └── DataDictionary/current/ # Offense definitions, RMS-to-NIBRS mapping
-├── Personnel/                  # Personnel/Assignment Master schema
-├── Processed_Exports/          # Dashboard CSV outputs (regenerated monthly)
+├── Personnel/                  # Personnel/Assignment Master schema (25 columns)
+├── Processed_Exports/          # Dashboard CSV outputs (20 unit subdirs, ~99 CSVs)
+│   ├── response_time/          # Monthly response time metrics
+│   ├── Drone/                  # DFR activity/performance
+│   ├── detectives/             # Case dispositions, clearance rates
+│   └── ...                     # arrests, Benchmark, chief, esu, remu, stacp, etc.
 ├── config/                     # ETL configuration files
-├── data/                       # Sample/test data
-├── mappings/                   # Call type category CSVs and JSON lookup
-├── scripts/                    # Utility scripts (extraction, validation)
+│   └── response_time_filters.json
+├── data/samples/               # Sample/test data
+├── mappings/                   # Call type category CSVs and JSON lookup (649 entries)
+├── scripts/                    # Utility scripts
+│   ├── sync_udd_shim.py        # Keep UDD shim in sync with CAD_RMS canonical
+│   ├── extraction/              # extract_narrative_fields.py
+│   └── validation/              # validate_rms_export.py
 ├── docs/                       # All documentation
-│   ├── ai_handoff/             # AI session handoff documents
-│   ├── chat_logs/              # Development chat logs
+│   ├── ai_handoff/             # AI session handoff documents (11 files)
+│   ├── chat_logs/              # Development chat logs (14 topics)
 │   ├── data_quality/           # Data quality crisis/fix docs
 │   ├── merge/                  # Repository merge documentation
 │   ├── response_time/          # Response time data dictionaries
 │   ├── image/                  # Images and diagrams
 │   └── task_templates/         # Task management templates
+├── .claude/                    # Claude Code configuration
+│   ├── hooks/session-start.sh  # Session start: shim drift check, git status
+│   └── settings.json           # Hook registration
 ├── VERSION                     # Machine-readable version (3.0.0) for runtime checks
 ├── unified_data_dictionary/    # COMPATIBILITY SHIM ONLY (4 files for schemas.yaml)
 │   └── schemas/                # canonical_schema, cad/rms_fields_schema, transformation_spec
-└── archive/                    # All retired/archived content
+└── archive/                    # All retired/archived content (637+ files)
     ├── PD_BCI_01_versions/     # Frozen v0.2.1 files from initial AI setup
     ├── unified_data_dictionary_20260317/  # UDD bulk content
     ├── schemas_udd_20260317/   # Older duplicate schemas
@@ -143,18 +157,15 @@ The Standards folder now includes a comprehensive Call Type to Category Type map
 import pandas as pd
 from pathlib import Path
 
-# Load standard reference
-calltype_file = Path(r"C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Classifications\CallTypes\CallType_Categories.csv")
-df = pd.read_csv(calltype_file)
+# Load standard reference (from repo root)
+df = pd.read_csv("CallType_Categories_latest.csv")
 
 # Or load specific category
-criminal_file = Path(r"C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\mappings\call_types_criminal_incidents.csv")
-criminal_incidents = pd.read_csv(criminal_file)
+criminal_incidents = pd.read_csv("mappings/call_types_criminal_incidents.csv")
 
 # Or use JSON for quick lookups
 import json
-json_file = Path(r"C:\Users\carucci_r\OneDrive - City of Hackensack\09_Reference\Standards\mappings\call_type_category_mapping.json")
-with open(json_file, 'r') as f:
+with open("mappings/call_type_category_mapping.json", "r") as f:
     mapping = json.load(f)
 category = mapping['call_type_to_category']['Domestic Dispute']  # Returns: 'Criminal Incidents'
 ```
