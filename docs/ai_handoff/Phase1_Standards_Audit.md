@@ -159,3 +159,68 @@ These are **locked** — any modification requires re-audit:
 **Also note for Phase 2:** CLAUDE.md's claim of "280 HOW_REPORTED entries" is incorrect (actual: 145 → 12 targets). Correct CLAUDE.md when next touched.
 
 **Phase 1 locked. Confirm to proceed to Phase 2.**
+
+---
+
+## Phase 2 Completion Record
+
+**Completed:** 2026-04-09 | **Repo:** [hy5guy/Standards_CAD_RMS](https://github.com/hy5guy/Standards_CAD_RMS)
+
+| Gap | Stage | Resolution | Commit | Files Modified |
+|-----|-------|------------|--------|----------------|
+| #2 | A | Extracted mappings to JSON | `03d3aed` | `CAD_RMS/mappings/how_reported_normalization_map.json` (140 entries), `CAD_RMS/mappings/disposition_normalization_map.json` (55 entries) |
+| #3 | B | Fixed schema registry enum 6→12; Walk-in→Walk-In; added post-normalization header | `03d3aed` | `CAD_RMS/DataDictionary/current/schema/cad_rms_schema_registry.yaml` (v1.0.0→v1.1.0) |
+| #5 | C3 | Documented PDZone (CAD) vs Zone (RMS) in Stage 1.3 | `e476508` | `CAD_RMS/DataDictionary/current/schema/transformation_spec.json` |
+| #8 | C1 | Fixed TimeOfCall → "Time of Call" in Stage 1.3 expected_cad_cols | `e476508` | `CAD_RMS/DataDictionary/current/schema/transformation_spec.json` |
+| #9 | C2 | Documented HourMinuetsCalc → Hour_Calc rename in Stage 2.1 | `e476508` | `CAD_RMS/DataDictionary/current/schema/transformation_spec.json` |
+| #4 | C4 | Added shim sync script and manifest | `e476508` | `scripts/sync_udd_shim.py`, `scripts/shim_sync_manifest.json` |
+| — | D1 | Corrected CLAUDE.md mapping counts (280→140 HOW_REPORTED, 100+→55 DISPOSITION) | `6ed2533` | `CLAUDE.md` |
+| — | — | Synced transformation_spec.json shim after Stage C changes | `554b235` | `unified_data_dictionary/schemas/transformation_spec.json` |
+
+**Also completed (ETL scripts repo — [hy5guy/CAD_Data_Cleaning_Engine](https://github.com/hy5guy/CAD_Data_Cleaning_Engine)):**
+- `enhanced_esri_output_generator.py` wired to load from Standards JSON instead of hardcoded dicts (commit `cc06069`)
+
+**Gaps remaining open after Phase 2:**
+- Gap #1 (LOW): `${standards_root}` resolver — deferred, no production script consumes it
+- Gap #6 (LOW): `schemas.yaml` version metadata check on ETL startup — deferred
+- Gap #7 (LOW): `CAD_Data_Cleaning_Engine` OneDrive bloat — extraction done; archive pending confirmation
+
+**Count correction (D2):** Phase 1 §4 and §Thinking reference "145/58" mapping counts. Correct values are "140/55" (effective runtime entries — duplicates removed from original hardcoded dicts during JSON extraction).
+
+---
+
+## Phase 3A — Smoke Test (2026-04-09)
+
+**Purpose:** Validate Phase 2 wiring — `enhanced_esri_output_generator.py` loading normalization mappings from Standards JSON instead of hardcoded Python dicts.
+
+### Test 1: Import & Count — PASS ✅
+
+```
+cd CAD_Data_Cleaning_Engine/
+python -c "from scripts.enhanced_esri_output_generator import HOW_REPORTED_MAPPING, DISPOSITION_MAPPING; ..."
+
+Result:
+  Loaded DISPOSITION_MAPPING: 55 entries from disposition_normalization_map.json
+  Loaded HOW_REPORTED_MAPPING: 140 entries from how_reported_normalization_map.json
+  HOW_REPORTED: 140 entries
+  DISPOSITION: 55 entries
+```
+
+**Wiring chain verified:** `_STANDARDS_ROOT` (line 84) → `_MAPPINGS_DIR` (line 88) → `_load_mapping()` (lines 90–97) → JSON parse → module-level dicts populated.
+
+### Test 2: Normalization Spot-Check — PASS ✅ (4/4 correct)
+
+| Input | Mapping Result | Expected | Status | Notes |
+|-------|---------------|----------|--------|-------|
+| `911` | `9-1-1` | `9-1-1` | ✅ | Direct match |
+| `PHONE/911` | `Phone` | `Phone` | ✅ | Correct — phone-initiated, not direct 911 |
+| `WALK IN` | `Walk-In` | `Walk-In` | ✅ | Direct match |
+| `SELF-INIT` | `Self-Initiated` | `Self-Initiated` | ✅ | Hyphenated key is the actual variant |
+
+Initial test expectations for `PHONE/911` (expected `9-1-1`) and `SELF INIT` (space, not hyphen) were incorrect assumptions — corrected above to match actual source data patterns.
+
+**Unmapped values** are handled by `_normalize_how_reported_advanced()` and `_normalize_disposition_advanced()` fallback functions (lines 138–143), which apply pattern matching and defaults. The direct mapping dict is not the only normalization layer.
+
+### Phase 3A Verdict: PASS
+
+Phase 2 wiring is **production-ready**. Safe to proceed with Gap #7 archive and remaining Phase 3 tasks.
